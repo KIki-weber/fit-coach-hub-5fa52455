@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Mail } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
+import { Mail, Send } from "lucide-react";
 
 interface Message {
   id: string;
@@ -17,7 +19,10 @@ interface MessagesViewProps {
 }
 
 export const MessagesView = ({ userId }: MessagesViewProps) => {
+  const { toast } = useToast();
   const [messages, setMessages] = useState<Message[]>([]);
+  const [replyingTo, setReplyingTo] = useState<string | null>(null);
+  const [replyContent, setReplyContent] = useState("");
 
   useEffect(() => {
     fetchMessages();
@@ -57,6 +62,43 @@ export const MessagesView = ({ userId }: MessagesViewProps) => {
     fetchMessages();
   };
 
+  const handleReply = async (messageId: string) => {
+    if (!replyContent.trim()) {
+      toast({
+        title: "Empty message",
+        description: "Please write a message before sending.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) return;
+
+    const { error } = await supabase.from("messages").insert({
+      user_id: session.user.id,
+      sent_by: session.user.id,
+      subject: "Re: Reply to Coach",
+      content: replyContent,
+      reply_to: messageId,
+    });
+
+    if (error) {
+      toast({
+        title: "Failed to send reply",
+        description: error.message,
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Reply Sent",
+        description: "Your message has been sent to the coach.",
+      });
+      setReplyContent("");
+      setReplyingTo(null);
+    }
+  };
+
   return (
     <Card className="shadow-card">
       <CardHeader>
@@ -74,16 +116,70 @@ export const MessagesView = ({ userId }: MessagesViewProps) => {
         ) : (
           <div className="space-y-4">
             {messages.map((message) => (
-              <div
-                key={message.id}
-                className="p-4 bg-secondary/30 rounded-lg border border-border cursor-pointer hover:bg-secondary/50 transition-colors"
-                onClick={() => !message.read && markAsRead(message.id)}
-              >
-                <div className="flex justify-between items-start mb-2">
-                  <h4 className="font-semibold">{message.subject}</h4>
-                  {!message.read && <Badge variant="default">New</Badge>}
+              <div key={message.id} className="space-y-3">
+                <div
+                  className={`p-4 rounded-lg border ${
+                    message.read
+                      ? "bg-secondary/20 border-border"
+                      : "bg-primary/10 border-primary/30"
+                  }`}
+                  onClick={() => !message.read && markAsRead(message.id)}
+                >
+                  <div className="flex items-start justify-between mb-2">
+                    <h4 className="font-semibold">{message.subject}</h4>
+                    {!message.read && (
+                      <span className="text-xs bg-primary text-primary-foreground px-2 py-1 rounded">
+                        New
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-2">{message.content}</p>
+                  <div className="flex items-center justify-between">
+                    <p className="text-xs text-muted-foreground">
+                      {new Date(message.created_at).toLocaleString()}
+                    </p>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setReplyingTo(replyingTo === message.id ? null : message.id)}
+                    >
+                      <Send className="w-3 h-3 mr-1" />
+                      Reply
+                    </Button>
+                  </div>
                 </div>
-                <p className="text-muted-foreground">{message.content}</p>
+
+                {replyingTo === message.id && (
+                  <div className="ml-6 p-3 bg-secondary/10 rounded-lg border border-border">
+                    <Textarea
+                      placeholder="Write your reply to the coach..."
+                      value={replyContent}
+                      onChange={(e) => setReplyContent(e.target.value)}
+                      rows={3}
+                      className="mb-2"
+                    />
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        className="bg-gradient-primary"
+                        onClick={() => handleReply(message.id)}
+                      >
+                        <Send className="w-3 h-3 mr-1" />
+                        Send Reply
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => {
+                          setReplyingTo(null);
+                          setReplyContent("");
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
           </div>

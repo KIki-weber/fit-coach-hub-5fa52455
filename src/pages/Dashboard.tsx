@@ -10,6 +10,7 @@ import { BMICalculator } from "@/components/dashboard/BMICalculator";
 import { BMRCalculator } from "@/components/dashboard/BMRCalculator";
 import { ScheduleView } from "@/components/dashboard/ScheduleView";
 import { MessagesView } from "@/components/dashboard/MessagesView";
+import { NutritionView } from "@/components/dashboard/NutritionView";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -90,8 +91,9 @@ const Dashboard = () => {
             <BMRCalculator />
           </div>
 
-          {/* Schedules and Messages */}
+          {/* Schedules, Nutrition and Messages */}
           <ScheduleView userId={user?.id || ""} />
+          <NutritionView />
           <MessagesView userId={user?.id || ""} />
         </div>
       </main>

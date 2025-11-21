@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { AdminUserList } from "@/components/admin/AdminUserList";
 import { AdminScheduleManager } from "@/components/admin/AdminScheduleManager";
 import { AdminMessageSender } from "@/components/admin/AdminMessageSender";
+import { AdminNutritionManager } from "@/components/admin/AdminNutritionManager";
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -96,6 +97,7 @@ const Admin = () => {
         <div className="grid gap-6">
           <AdminUserList />
           <AdminScheduleManager />
+          <AdminNutritionManager />
           <AdminMessageSender />
         </div>
       </main>
