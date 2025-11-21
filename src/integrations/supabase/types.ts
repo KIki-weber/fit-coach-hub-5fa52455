@@ -20,6 +20,7 @@ export type Database = {
           created_at: string | null
           id: string
           read: boolean | null
+          reply_to: string | null
           sent_by: string
           subject: string
           user_id: string
@@ -29,6 +30,7 @@ export type Database = {
           created_at?: string | null
           id?: string
           read?: boolean | null
+          reply_to?: string | null
           sent_by: string
           subject: string
           user_id: string
@@ -38,9 +40,66 @@ export type Database = {
           created_at?: string | null
           id?: string
           read?: boolean | null
+          reply_to?: string | null
           sent_by?: string
           subject?: string
           user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_reply_to_fkey"
+            columns: ["reply_to"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      nutrition: {
+        Row: {
+          calories: number | null
+          carbs: number | null
+          created_at: string | null
+          created_by: string
+          description: string | null
+          fats: number | null
+          id: string
+          notes: string | null
+          protein: number | null
+          title: string
+          updated_at: string | null
+          user_id: string
+          vitamins: string | null
+        }
+        Insert: {
+          calories?: number | null
+          carbs?: number | null
+          created_at?: string | null
+          created_by: string
+          description?: string | null
+          fats?: number | null
+          id?: string
+          notes?: string | null
+          protein?: number | null
+          title: string
+          updated_at?: string | null
+          user_id: string
+          vitamins?: string | null
+        }
+        Update: {
+          calories?: number | null
+          carbs?: number | null
+          created_at?: string | null
+          created_by?: string
+          description?: string | null
+          fats?: number | null
+          id?: string
+          notes?: string | null
+          protein?: number | null
+          title?: string
+          updated_at?: string | null
+          user_id?: string
+          vitamins?: string | null
         }
         Relationships: []
       }
