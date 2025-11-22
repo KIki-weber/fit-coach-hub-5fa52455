@@ -110,6 +110,8 @@ export type Database = {
           full_name: string | null
           height: number | null
           id: string
+          photo_description: string | null
+          photo_uploaded_at: string | null
           photo_url: string | null
           updated_at: string | null
           user_id: string
@@ -121,6 +123,8 @@ export type Database = {
           full_name?: string | null
           height?: number | null
           id?: string
+          photo_description?: string | null
+          photo_uploaded_at?: string | null
           photo_url?: string | null
           updated_at?: string | null
           user_id: string
@@ -132,6 +136,8 @@ export type Database = {
           full_name?: string | null
           height?: number | null
           id?: string
+          photo_description?: string | null
+          photo_uploaded_at?: string | null
           photo_url?: string | null
           updated_at?: string | null
           user_id?: string

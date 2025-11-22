@@ -12,6 +12,8 @@ interface UserProfile {
   height: number;
   weight: number;
   photo_url: string;
+  photo_description: string;
+  photo_uploaded_at: string;
   created_at: string;
 }
 
@@ -63,27 +65,51 @@ export const AdminUserList = () => {
             {users.map((user) => (
               <div
                 key={user.id}
-                className="p-4 bg-secondary/30 rounded-lg border border-border flex items-center gap-4"
+                className="p-4 bg-secondary/30 rounded-lg border border-border"
               >
-                <Avatar className="w-12 h-12">
-                  <AvatarImage src={user.photo_url} />
-                  <AvatarFallback>{user.full_name?.charAt(0) || "U"}</AvatarFallback>
-                </Avatar>
-                <div className="flex-1">
-                  <h4 className="font-semibold">{user.full_name || "No name"}</h4>
-                  <p className="text-sm text-muted-foreground">{user.email}</p>
-                </div>
-                <div className="text-right">
-                  <div className="text-sm">
-                    {user.height && user.weight && (
-                      <>
-                        <span className="text-muted-foreground">BMI: </span>
-                        <span className="font-semibold">{calculateBMI(user.height, user.weight)}</span>
-                      </>
+                <div className="flex items-start gap-4">
+                  <Avatar className="w-16 h-16">
+                    <AvatarImage src={user.photo_url} />
+                    <AvatarFallback>{user.full_name?.charAt(0) || "U"}</AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1 space-y-2">
+                    <div>
+                      <h4 className="font-semibold text-lg">{user.full_name || "No name"}</h4>
+                      <p className="text-sm text-muted-foreground">{user.email}</p>
+                    </div>
+                    
+                    {user.photo_description && (
+                      <p className="text-sm text-foreground/80 italic">
+                        "{user.photo_description}"
+                      </p>
                     )}
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    {user.height ? `${user.height}cm` : "N/A"} / {user.weight ? `${user.weight}kg` : "N/A"}
+                    
+                    <div className="grid grid-cols-2 gap-2 text-sm">
+                      <div>
+                        <span className="text-muted-foreground">Height: </span>
+                        <span className="font-medium">{user.height ? `${user.height}cm` : "N/A"}</span>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground">Weight: </span>
+                        <span className="font-medium">{user.weight ? `${user.weight}kg` : "N/A"}</span>
+                      </div>
+                      {user.height && user.weight && (
+                        <div>
+                          <span className="text-muted-foreground">BMI: </span>
+                          <span className="font-semibold text-primary">{calculateBMI(user.height, user.weight)}</span>
+                        </div>
+                      )}
+                      {user.photo_uploaded_at && (
+                        <div>
+                          <span className="text-muted-foreground">Photo: </span>
+                          <span className="text-xs">{new Date(user.photo_uploaded_at).toLocaleDateString()}</span>
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div className="text-xs text-muted-foreground">
+                      Joined: {new Date(user.created_at).toLocaleDateString()}
+                    </div>
                   </div>
                 </div>
               </div>
