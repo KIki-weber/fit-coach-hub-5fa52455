@@ -22,6 +22,8 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
     height: "",
     weight: "",
     photo_url: "",
+    photo_description: "",
+    photo_uploaded_at: "",
   });
 
   useEffect(() => {
@@ -42,6 +44,8 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
         height: data.height?.toString() || "",
         weight: data.weight?.toString() || "",
         photo_url: data.photo_url || "",
+        photo_description: data.photo_description || "",
+        photo_uploaded_at: data.photo_uploaded_at || "",
       });
     }
   };
@@ -69,11 +73,25 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
         .from('profile-photos')
         .getPublicUrl(fileName);
 
-      setProfile({ ...profile, photo_url: publicUrl });
-      toast({
-        title: "Photo Uploaded",
-        description: "Your profile photo has been updated.",
-      });
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({
+          photo_url: publicUrl,
+          photo_uploaded_at: new Date().toISOString(),
+        })
+        .eq('user_id', userId);
+
+      if (!updateError) {
+        setProfile({ 
+          ...profile, 
+          photo_url: publicUrl,
+          photo_uploaded_at: new Date().toISOString(),
+        });
+        toast({
+          title: "Photo Uploaded",
+          description: "Your profile photo has been updated.",
+        });
+      }
     }
     setUploading(false);
   };
@@ -87,6 +105,7 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
         height: parseFloat(profile.height) || null,
         weight: parseFloat(profile.weight) || null,
         photo_url: profile.photo_url,
+        photo_description: profile.photo_description,
       })
       .eq("user_id", userId);
 
@@ -112,27 +131,44 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
         <CardDescription>Manage your personal information and training metrics</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="flex items-center gap-6">
-          <Avatar className="w-24 h-24">
-            <AvatarImage src={profile.photo_url} />
-            <AvatarFallback>{profile.full_name.charAt(0)}</AvatarFallback>
-          </Avatar>
-          <div>
-            <Label htmlFor="photo-upload" className="cursor-pointer">
-              <Button variant="outline" disabled={uploading} asChild>
-                <span>
-                  <Upload className="w-4 h-4 mr-2" />
-                  {uploading ? "Uploading..." : "Upload Photo"}
-                </span>
-              </Button>
-              <Input
-                id="photo-upload"
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handlePhotoUpload}
-              />
-            </Label>
+        <div className="space-y-4">
+          <div className="flex items-center gap-6">
+            <Avatar className="w-24 h-24">
+              <AvatarImage src={profile.photo_url} />
+              <AvatarFallback>{profile.full_name.charAt(0)}</AvatarFallback>
+            </Avatar>
+            <div className="flex-1">
+              <Label htmlFor="photo-upload" className="cursor-pointer">
+                <Button variant="outline" disabled={uploading} asChild>
+                  <span>
+                    <Upload className="w-4 h-4 mr-2" />
+                    {uploading ? "Uploading..." : "Upload Photo"}
+                  </span>
+                </Button>
+                <Input
+                  id="photo-upload"
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handlePhotoUpload}
+                />
+              </Label>
+              {profile.photo_uploaded_at && (
+                <p className="text-xs text-muted-foreground mt-2">
+                  Uploaded: {new Date(profile.photo_uploaded_at).toLocaleDateString()}
+                </p>
+              )}
+            </div>
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="photo-description">Photo Description</Label>
+            <Input
+              id="photo-description"
+              placeholder="Describe your trainer status or photo..."
+              value={profile.photo_description}
+              onChange={(e) => setProfile({ ...profile, photo_description: e.target.value })}
+            />
           </div>
         </div>
 
