@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
-import { Dumbbell, LogOut } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { UserProfile } from "@/components/dashboard/UserProfile";
 import { BMICalculator } from "@/components/dashboard/BMICalculator";
@@ -11,6 +11,8 @@ import { BMRCalculator } from "@/components/dashboard/BMRCalculator";
 import { ScheduleView } from "@/components/dashboard/ScheduleView";
 import { MessagesView } from "@/components/dashboard/MessagesView";
 import { NutritionView } from "@/components/dashboard/NutritionView";
+import { EventsView } from "@/components/dashboard/EventsView";
+import logoRunner from "@/assets/logo-runner.png";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -52,7 +54,7 @@ const Dashboard = () => {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <Dumbbell className="w-12 h-12 text-primary mx-auto mb-4 animate-pulse" />
+          <img src={logoRunner} alt="VitalityHub" className="w-12 h-12 mx-auto mb-4 animate-pulse" />
           <p className="text-muted-foreground">Loading...</p>
         </div>
       </div>
@@ -65,8 +67,8 @@ const Dashboard = () => {
       <header className="border-b border-border bg-card">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Dumbbell className="w-6 h-6 text-primary" />
-            <span className="text-xl font-bold">FitCoach Pro</span>
+            <img src={logoRunner} alt="VitalityHub" className="w-6 h-6" />
+            <span className="text-xl font-bold">VitalityHub</span>
           </div>
           <Button variant="ghost" onClick={handleLogout}>
             <LogOut className="w-4 h-4 mr-2" />
@@ -84,6 +86,9 @@ const Dashboard = () => {
         <div className="grid gap-6">
           {/* Profile Section */}
           <UserProfile userId={user?.id || ""} />
+
+          {/* Events */}
+          <EventsView />
 
           {/* Calculators */}
           <div className="grid md:grid-cols-2 gap-6">

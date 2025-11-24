@@ -7,8 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Dumbbell } from "lucide-react";
 import { Link } from "react-router-dom";
+import logoRunner from "@/assets/logo-runner.png";
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -78,7 +78,7 @@ const Auth = () => {
     } else {
       toast({
         title: "Account Created!",
-        description: "Welcome to FitCoach Pro. Let's get started!",
+        description: "Welcome to VitalityHub. Let's get started!",
       });
       navigate("/dashboard");
     }
@@ -91,8 +91,8 @@ const Auth = () => {
     <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <Link to="/" className="flex items-center justify-center gap-2 mb-8">
-          <Dumbbell className="w-8 h-8 text-white" />
-          <span className="text-2xl font-bold text-white">FitCoach Pro</span>
+          <img src={logoRunner} alt="VitalityHub" className="w-10 h-10" />
+          <span className="text-2xl font-bold text-white">VitalityHub</span>
         </Link>
 
         <Tabs defaultValue={defaultTab} className="w-full">
@@ -141,7 +141,7 @@ const Auth = () => {
             <Card>
               <CardHeader>
                 <CardTitle>Create Account</CardTitle>
-                <CardDescription>Sign up to start your fitness journey</CardDescription>
+                <CardDescription>Sign up to start your wellness journey</CardDescription>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSignup} className="space-y-4">
@@ -172,7 +172,9 @@ const Auth = () => {
                       value={signupData.password}
                       onChange={(e) => setSignupData({ ...signupData, password: e.target.value })}
                       required
+                      minLength={6}
                     />
+                    <p className="text-xs text-muted-foreground">Minimum 6 characters</p>
                   </div>
                   <Button type="submit" className="w-full bg-gradient-primary" disabled={loading}>
                     {loading ? "Creating account..." : "Sign Up"}

@@ -4,10 +4,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Dumbbell, LogOut } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import logoRunner from "@/assets/logo-runner.png";
 import { AdminUserList } from "@/components/admin/AdminUserList";
 import { AdminScheduleManager } from "@/components/admin/AdminScheduleManager";
 import { AdminMessageSender } from "@/components/admin/AdminMessageSender";
 import { AdminNutritionManager } from "@/components/admin/AdminNutritionManager";
+import { AdminEventManager } from "@/components/admin/AdminEventManager";
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -61,7 +63,7 @@ const Admin = () => {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <Dumbbell className="w-12 h-12 text-primary mx-auto mb-4 animate-pulse" />
+          <img src={logoRunner} alt="VitalityHub" className="w-12 h-12 mx-auto mb-4 animate-pulse" />
           <p className="text-muted-foreground">Loading...</p>
         </div>
       </div>
@@ -78,7 +80,7 @@ const Admin = () => {
       <header className="border-b border-border bg-card">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Dumbbell className="w-6 h-6 text-primary" />
+            <img src={logoRunner} alt="VitalityHub" className="w-6 h-6" />
             <span className="text-xl font-bold">Admin Dashboard</span>
           </div>
           <Button variant="ghost" onClick={handleLogout}>
@@ -96,6 +98,7 @@ const Admin = () => {
 
         <div className="grid gap-6">
           <AdminUserList />
+          <AdminEventManager />
           <AdminScheduleManager />
           <AdminNutritionManager />
           <AdminMessageSender />

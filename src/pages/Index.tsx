@@ -16,11 +16,11 @@ const Index = () => {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
               <h1 className="text-5xl md:text-6xl font-bold leading-tight">
-                Transform Your Body with
-                <span className="text-primary block">Personal Coaching</span>
+                Transform Your Health with
+                <span className="text-primary block">Expert Wellness Coaching</span>
               </h1>
               <p className="text-xl text-muted-foreground">
-                Get personalized training plans, track your progress, and achieve your fitness goals with expert guidance.
+                Get personalized wellness plans, track your progress, and achieve your health goals with expert guidance.
               </p>
               <div className="flex gap-4">
                 <Link to="/auth?tab=signup">
@@ -50,7 +50,7 @@ const Index = () => {
       <section className="py-16 px-4 bg-secondary/30">
         <div className="container mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
-            Why Choose FitCoach Pro?
+            Why Choose VitalityHub?
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             <Card className="shadow-card hover:shadow-smooth transition-shadow">
@@ -124,7 +124,7 @@ const Index = () => {
       {/* Footer */}
       <footer className="py-8 px-4 border-t border-border">
         <div className="container mx-auto text-center text-muted-foreground">
-          <p>© 2024 FitCoach Pro. All rights reserved.</p>
+          <p>© 2024 VitalityHub. All rights reserved.</p>
         </div>
       </footer>
     </div>
