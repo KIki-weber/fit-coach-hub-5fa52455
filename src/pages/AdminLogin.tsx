@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Dumbbell } from "lucide-react";
+import logoRunner from "@/assets/logo-runner.png";
 import { useToast } from "@/hooks/use-toast";
 
 const AdminLogin = () => {
@@ -68,7 +68,7 @@ const AdminLogin = () => {
       <Card className="w-full max-w-md shadow-elegant">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
-            <Dumbbell className="w-12 h-12 text-primary" />
+            <img src={logoRunner} alt="VitalityHub" className="w-12 h-12" />
           </div>
           <CardTitle className="text-2xl">Admin Login</CardTitle>
           <CardDescription>
@@ -82,7 +82,7 @@ const AdminLogin = () => {
               <Input
                 id="admin-email"
                 type="email"
-                placeholder="admin@fitcoach.com"
+                placeholder="admin@vitalityhub.com"
                 value={credentials.email}
                 onChange={(e) => setCredentials({ ...credentials, email: e.target.value })}
                 required
