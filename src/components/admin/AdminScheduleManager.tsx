@@ -47,7 +47,7 @@ export const AdminScheduleManager = () => {
     if (!selectedUser) {
       toast({
         title: "Select a user",
-        description: "Please select a user to assign this schedule to.",
+        description: "Please select a user to assign this schedule.",
         variant: "destructive",
       });
       return;
@@ -56,28 +56,58 @@ export const AdminScheduleManager = () => {
     setLoading(true);
     const { data: { session } } = await supabase.auth.getSession();
 
-    const { error } = await supabase.from("schedules").insert({
-      user_id: selectedUser,
-      title: scheduleData.title,
-      description: scheduleData.description,
-      date: scheduleData.date,
-      time: scheduleData.time || null,
-      created_by: session?.user.id,
-    });
+    if (selectedUser === "all") {
+      // Send to all users
+      const schedules = users.map(user => ({
+        user_id: user.user_id,
+        title: scheduleData.title,
+        description: scheduleData.description,
+        date: scheduleData.date,
+        time: scheduleData.time,
+        created_by: session?.user.id,
+      }));
 
-    if (error) {
-      toast({
-        title: "Failed to create schedule",
-        description: error.message,
-        variant: "destructive",
-      });
+      const { error } = await supabase.from("schedules").insert(schedules);
+
+      if (error) {
+        toast({
+          title: "Failed to create schedules",
+          description: error.message,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Schedules Created",
+          description: `Training schedule sent to all ${users.length} users successfully.`,
+        });
+        setScheduleData({ title: "", description: "", date: "", time: "" });
+        setSelectedUser("");
+      }
     } else {
-      toast({
-        title: "Schedule Created",
-        description: "Training schedule has been sent to the user.",
+      // Send to single user
+      const { error } = await supabase.from("schedules").insert({
+        user_id: selectedUser,
+        title: scheduleData.title,
+        description: scheduleData.description,
+        date: scheduleData.date,
+        time: scheduleData.time || null,
+        created_by: session?.user.id,
       });
-      setScheduleData({ title: "", description: "", date: "", time: "" });
-      setSelectedUser("");
+
+      if (error) {
+        toast({
+          title: "Failed to create schedule",
+          description: error.message,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Schedule Created",
+          description: "Training schedule has been sent to the user.",
+        });
+        setScheduleData({ title: "", description: "", date: "", time: "" });
+        setSelectedUser("");
+      }
     }
     setLoading(false);
   };
@@ -100,6 +130,7 @@ export const AdminScheduleManager = () => {
                 <SelectValue placeholder="Choose a user..." />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="all">All Users</SelectItem>
                 {users.map((user) => (
                   <SelectItem key={user.user_id} value={user.user_id}>
                     {user.full_name || user.email}

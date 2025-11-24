@@ -10,6 +10,7 @@ import { AdminScheduleManager } from "@/components/admin/AdminScheduleManager";
 import { AdminMessageSender } from "@/components/admin/AdminMessageSender";
 import { AdminNutritionManager } from "@/components/admin/AdminNutritionManager";
 import { AdminEventManager } from "@/components/admin/AdminEventManager";
+import { AdminStatsOverview } from "@/components/admin/AdminStatsOverview";
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -97,6 +98,7 @@ const Admin = () => {
         </h1>
 
         <div className="grid gap-6">
+          <AdminStatsOverview />
           <AdminUserList />
           <AdminEventManager />
           <AdminScheduleManager />
