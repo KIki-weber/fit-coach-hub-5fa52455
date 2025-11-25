@@ -1,7 +1,7 @@
 import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Activity, Users, Calendar, TrendingUp } from "lucide-react";
+import { Activity, Users, Calendar, TrendingUp, Apple, Dumbbell, MessageSquare } from "lucide-react";
 import { Link } from "react-router-dom";
 import heroImage from "@/assets/hero-fitness.jpg";
 
@@ -104,17 +104,87 @@ const Index = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* Services Section */}
       <section className="py-16 px-4">
+        <div className="container mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Our Wellness Services
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Comprehensive health and fitness solutions tailored to your needs
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <Card className="shadow-card hover:shadow-smooth transition-all duration-300">
+              <CardContent className="pt-6 space-y-4">
+                <div className="w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center mx-auto">
+                  <Dumbbell className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-2xl font-semibold text-center">Personal Training</h3>
+                <p className="text-muted-foreground text-center">
+                  One-on-one coaching sessions with certified trainers. Get customized workout plans designed for your fitness level and goals.
+                </p>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  <li>✓ Personalized exercise routines</li>
+                  <li>✓ Form correction and technique guidance</li>
+                  <li>✓ Progress tracking and adjustments</li>
+                  <li>✓ Flexible scheduling options</li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card className="shadow-card hover:shadow-smooth transition-all duration-300">
+              <CardContent className="pt-6 space-y-4">
+                <div className="w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center mx-auto">
+                  <Apple className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-2xl font-semibold text-center">Nutrition Planning</h3>
+                <p className="text-muted-foreground text-center">
+                  Custom meal plans based on your BMI, BMR, and fitness goals. Learn to fuel your body properly for optimal results.
+                </p>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  <li>✓ Personalized macronutrient targets</li>
+                  <li>✓ Meal suggestions and recipes</li>
+                  <li>✓ Supplement recommendations</li>
+                  <li>✓ Regular nutritional adjustments</li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card className="shadow-card hover:shadow-smooth transition-all duration-300">
+              <CardContent className="pt-6 space-y-4">
+                <div className="w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center mx-auto">
+                  <MessageSquare className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-2xl font-semibold text-center">24/7 Support</h3>
+                <p className="text-muted-foreground text-center">
+                  Direct messaging with your coach anytime. Get answers to questions, motivation, and guidance whenever you need it.
+                </p>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  <li>✓ Real-time chat with trainers</li>
+                  <li>✓ Health tips and wellness advice</li>
+                  <li>✓ Schedule management tools</li>
+                  <li>✓ Event and workshop notifications</li>
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-16 px-4 bg-gradient-hero">
         <div className="container mx-auto text-center space-y-6">
-          <h2 className="text-3xl md:text-4xl font-bold">
+          <h2 className="text-3xl md:text-4xl font-bold text-white">
             Ready to Start Your Journey?
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-xl text-white/90 max-w-2xl mx-auto">
             Join thousands of people transforming their lives with personalized coaching
           </p>
           <Link to="/auth?tab=signup">
-            <Button size="lg" className="bg-gradient-accent shadow-smooth">
+            <Button size="lg" className="bg-white text-primary hover:bg-white/90 shadow-smooth">
               Get Started Now
             </Button>
           </Link>

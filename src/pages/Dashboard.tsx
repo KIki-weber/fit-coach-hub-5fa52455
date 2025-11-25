@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { UserProfile } from "@/components/dashboard/UserProfile";
 import { BMICalculator } from "@/components/dashboard/BMICalculator";
 import { BMRCalculator } from "@/components/dashboard/BMRCalculator";
+import AutoNutritionRecommendations from "@/components/dashboard/AutoNutritionRecommendations";
 import { ScheduleView } from "@/components/dashboard/ScheduleView";
 import { MessagesView } from "@/components/dashboard/MessagesView";
 import { NutritionView } from "@/components/dashboard/NutritionView";
@@ -19,6 +20,8 @@ const Dashboard = () => {
   const { toast } = useToast();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [bmi, setBmi] = useState<number | null>(null);
+  const [bmr, setBmr] = useState<number | null>(null);
 
   useEffect(() => {
     // Get initial session
@@ -92,9 +95,12 @@ const Dashboard = () => {
 
           {/* Calculators */}
           <div className="grid md:grid-cols-2 gap-6">
-            <BMICalculator />
-            <BMRCalculator />
+            <BMICalculator onCalculate={(value) => setBmi(value)} />
+            <BMRCalculator onCalculate={(value) => setBmr(value)} />
           </div>
+
+          {/* Auto Nutrition Recommendations */}
+          <AutoNutritionRecommendations bmi={bmi} bmr={bmr} />
 
           {/* Schedules, Nutrition and Messages */}
           <ScheduleView userId={user?.id || ""} />

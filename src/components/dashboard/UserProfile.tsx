@@ -19,6 +19,7 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
   const [profile, setProfile] = useState({
     full_name: "",
     email: "",
+    phone_number: "",
     height: "",
     weight: "",
     photo_url: "",
@@ -41,6 +42,7 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
       setProfile({
         full_name: data.full_name || "",
         email: data.email || "",
+        phone_number: data.phone_number || "",
         height: data.height?.toString() || "",
         weight: data.weight?.toString() || "",
         photo_url: data.photo_url || "",
@@ -102,6 +104,7 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
       .from("profiles")
       .update({
         full_name: profile.full_name,
+        phone_number: profile.phone_number,
         height: parseFloat(profile.height) || null,
         weight: parseFloat(profile.weight) || null,
         photo_url: profile.photo_url,
@@ -185,8 +188,21 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
             <Label htmlFor="email">Email</Label>
             <Input
               id="email"
+              type="email"
               value={profile.email}
               disabled
+              className="bg-muted"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="phone">Phone Number</Label>
+            <Input
+              id="phone"
+              type="tel"
+              value={profile.phone_number}
+              onChange={(e) => setProfile({ ...profile, phone_number: e.target.value })}
+              placeholder="+1234567890"
             />
           </div>
           <div className="space-y-2">

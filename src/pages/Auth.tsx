@@ -16,7 +16,7 @@ const Auth = () => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [loginData, setLoginData] = useState({ email: "", password: "" });
-  const [signupData, setSignupData] = useState({ fullName: "", email: "", password: "" });
+  const [signupData, setSignupData] = useState({ fullName: "", email: "", phoneNumber: "", password: "" });
 
   useEffect(() => {
     // Check if user is already logged in
@@ -65,6 +65,7 @@ const Auth = () => {
         emailRedirectTo: redirectUrl,
         data: {
           full_name: signupData.fullName,
+          phone_number: signupData.phoneNumber,
         }
       }
     });
@@ -162,6 +163,17 @@ const Auth = () => {
                       value={signupData.email}
                       onChange={(e) => setSignupData({ ...signupData, email: e.target.value })}
                       required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-phone">Phone Number</Label>
+                    <Input
+                      id="signup-phone"
+                      type="tel"
+                      value={signupData.phoneNumber}
+                      onChange={(e) => setSignupData({ ...signupData, phoneNumber: e.target.value })}
+                      required
+                      placeholder="+1234567890"
                     />
                   </div>
                   <div className="space-y-2">
