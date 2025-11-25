@@ -6,7 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Activity } from "lucide-react";
 
-export const BMRCalculator = () => {
+interface BMRCalculatorProps {
+  onCalculate?: (bmr: number) => void;
+}
+
+export const BMRCalculator = ({ onCalculate }: BMRCalculatorProps) => {
   const [height, setHeight] = useState("");
   const [weight, setWeight] = useState("");
   const [age, setAge] = useState("");
@@ -25,7 +29,9 @@ export const BMRCalculator = () => {
       } else {
         result = 447.593 + (9.247 * w) + (3.098 * h) - (4.330 * a);
       }
-      setBmr(Math.round(result));
+      const calculatedBMR = Math.round(result);
+      setBmr(calculatedBMR);
+      onCalculate?.(calculatedBMR);
     }
   };
 

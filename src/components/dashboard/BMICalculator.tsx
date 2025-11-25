@@ -5,7 +5,11 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Calculator } from "lucide-react";
 
-export const BMICalculator = () => {
+interface BMICalculatorProps {
+  onCalculate?: (bmi: number) => void;
+}
+
+export const BMICalculator = ({ onCalculate }: BMICalculatorProps) => {
   const [height, setHeight] = useState("");
   const [weight, setWeight] = useState("");
   const [bmi, setBmi] = useState<number | null>(null);
@@ -15,7 +19,9 @@ export const BMICalculator = () => {
     const w = parseFloat(weight);
     if (h > 0 && w > 0) {
       const result = w / (h * h);
-      setBmi(Math.round(result * 10) / 10);
+      const calculatedBMI = Math.round(result * 10) / 10;
+      setBmi(calculatedBMI);
+      onCalculate?.(calculatedBMI);
     }
   };
 

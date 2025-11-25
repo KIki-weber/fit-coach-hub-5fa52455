@@ -9,6 +9,7 @@ interface UserProfile {
   user_id: string;
   full_name: string;
   email: string;
+  phone_number: string;
   height: number;
   weight: number;
   photo_url: string;
@@ -76,6 +77,9 @@ export const AdminUserList = () => {
                     <div>
                       <h4 className="font-semibold text-lg">{user.full_name || "No name"}</h4>
                       <p className="text-sm text-muted-foreground">{user.email}</p>
+                      {user.phone_number && (
+                        <p className="text-sm text-muted-foreground">📱 {user.phone_number}</p>
+                      )}
                     </div>
                     
                     {user.photo_description && (
