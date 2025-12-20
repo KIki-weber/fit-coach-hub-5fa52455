@@ -7,8 +7,9 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Camera, Plus, Trash2 } from "lucide-react";
+import { Camera, Plus, Trash2, TrendingUp } from "lucide-react";
 import { format } from "date-fns";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 
 interface ProgressEntry {
   id: string;
@@ -274,46 +275,93 @@ export const ProgressTracking = ({ userId }: ProgressTrackingProps) => {
             No progress entries yet. Start tracking your journey!
           </p>
         ) : (
-          <div className="grid gap-4">
-            {entries.map((entry) => (
-              <div key={entry.id} className="flex gap-4 p-4 border rounded-lg">
-                {entry.photo_url && (
-                  <img
-                    src={entry.photo_url}
-                    alt="Progress"
-                    className="w-24 h-24 object-cover rounded-lg"
-                  />
-                )}
-                <div className="flex-1">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <p className="text-sm text-muted-foreground">
-                        {format(new Date(entry.created_at), "PPP 'at' p")}
-                      </p>
-                      <div className="flex gap-4 mt-2">
-                        <span className="text-sm">
-                          <strong>Height:</strong> {formatHeight(entry.height, entry.height_unit)}
-                        </span>
-                        <span className="text-sm">
-                          <strong>Weight:</strong> {formatWeight(entry.weight, entry.weight_unit)}
-                        </span>
+          <div className="space-y-6">
+            {/* Weight Progress Chart */}
+            {entries.filter(e => e.weight).length > 1 && (
+              <div className="p-4 border rounded-lg bg-muted/30">
+                <h4 className="font-semibold flex items-center gap-2 mb-4">
+                  <TrendingUp className="w-4 h-4 text-primary" />
+                  Weight Progress Over Time
+                </h4>
+                <ResponsiveContainer width="100%" height={250}>
+                  <LineChart
+                    data={[...entries]
+                      .filter(e => e.weight)
+                      .reverse()
+                      .map(e => ({
+                        date: format(new Date(e.created_at), "MMM dd"),
+                        weight: e.weight_unit === "lb" ? Number((e.weight! * 0.453592).toFixed(1)) : e.weight,
+                        originalWeight: e.weight,
+                        unit: e.weight_unit
+                      }))}
+                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                    <XAxis dataKey="date" className="text-xs" />
+                    <YAxis domain={['auto', 'auto']} className="text-xs" />
+                    <Tooltip
+                      contentStyle={{ backgroundColor: 'hsl(var(--background))', border: '1px solid hsl(var(--border))' }}
+                      formatter={(value: number, name: string, props: any) => [
+                        `${props.payload.originalWeight} ${props.payload.unit}`,
+                        'Weight'
+                      ]}
+                    />
+                    <Legend />
+                    <Line
+                      type="monotone"
+                      dataKey="weight"
+                      stroke="hsl(var(--primary))"
+                      strokeWidth={2}
+                      dot={{ fill: 'hsl(var(--primary))', strokeWidth: 2 }}
+                      name="Weight (kg)"
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+
+            {/* Progress Entries Grid */}
+            <div className="grid gap-4">
+              {entries.map((entry) => (
+                <div key={entry.id} className="flex gap-4 p-4 border rounded-lg">
+                  {entry.photo_url && (
+                    <img
+                      src={entry.photo_url}
+                      alt="Progress"
+                      className="w-24 h-24 object-cover rounded-lg"
+                    />
+                  )}
+                  <div className="flex-1">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <p className="text-sm text-muted-foreground">
+                          {format(new Date(entry.created_at), "PPP 'at' p")}
+                        </p>
+                        <div className="flex gap-4 mt-2">
+                          <span className="text-sm">
+                            <strong>Height:</strong> {formatHeight(entry.height, entry.height_unit)}
+                          </span>
+                          <span className="text-sm">
+                            <strong>Weight:</strong> {formatWeight(entry.weight, entry.weight_unit)}
+                          </span>
+                        </div>
+                        {entry.notes && (
+                          <p className="text-sm mt-2 text-muted-foreground">{entry.notes}</p>
+                        )}
                       </div>
-                      {entry.notes && (
-                        <p className="text-sm mt-2 text-muted-foreground">{entry.notes}</p>
-                      )}
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleDelete(entry.id)}
+                        className="text-destructive hover:text-destructive"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => handleDelete(entry.id)}
-                      className="text-destructive hover:text-destructive"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         )}
       </CardContent>

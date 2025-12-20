@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,9 +9,9 @@ import { useToast } from "@/hooks/use-toast";
 interface NutritionData {
   dailyCalories: number;
   macros: { protein: number; carbs: number; fats: number };
-  recommendedFoods: { name: string; benefits: string }[];
+  recommendedFoods: { name: string; benefits: string; icon?: string; imageUrl?: string }[];
   avoidFoods: string[];
-  mealSuggestions: { name: string; description: string }[];
+  mealSuggestions: { name: string; description: string; imageUrl?: string }[];
 }
 
 interface AINutritionRecommendationsProps {
@@ -119,17 +119,32 @@ export const AINutritionRecommendations = ({ bmi }: AINutritionRecommendationsPr
                   </div>
                 </div>
 
-                {/* Recommended Foods */}
+                {/* Recommended Foods with Images */}
                 <div>
                   <h4 className="font-semibold flex items-center gap-2 mb-3">
                     <Apple className="w-4 h-4 text-green-500" />
                     Recommended Foods
                   </h4>
-                  <div className="grid gap-2">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {nutritionData.recommendedFoods.map((food, index) => (
-                      <div key={index} className="flex justify-between items-center p-3 bg-muted/50 rounded-lg">
-                        <span className="font-medium">{food.name}</span>
-                        <span className="text-sm text-muted-foreground">{food.benefits}</span>
+                      <div key={index} className="overflow-hidden rounded-lg border bg-card">
+                        {food.imageUrl && (
+                          <img
+                            src={food.imageUrl}
+                            alt={food.name}
+                            className="w-full h-32 object-cover"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).style.display = 'none';
+                            }}
+                          />
+                        )}
+                        <div className="p-3">
+                          <div className="flex items-center gap-2">
+                            {food.icon && <span className="text-xl">{food.icon}</span>}
+                            <span className="font-medium">{food.name}</span>
+                          </div>
+                          <p className="text-sm text-muted-foreground mt-1">{food.benefits}</p>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -150,17 +165,29 @@ export const AINutritionRecommendations = ({ bmi }: AINutritionRecommendationsPr
                   </div>
                 </div>
 
-                {/* Meal Suggestions */}
+                {/* Meal Suggestions with Images */}
                 <div>
                   <h4 className="font-semibold flex items-center gap-2 mb-3">
                     <Utensils className="w-4 h-4 text-primary" />
                     Meal Suggestions
                   </h4>
-                  <div className="grid gap-3">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {nutritionData.mealSuggestions.map((meal, index) => (
-                      <div key={index} className="p-4 border rounded-lg">
-                        <p className="font-medium">{meal.name}</p>
-                        <p className="text-sm text-muted-foreground">{meal.description}</p>
+                      <div key={index} className="overflow-hidden rounded-lg border bg-card">
+                        {meal.imageUrl && (
+                          <img
+                            src={meal.imageUrl}
+                            alt={meal.name}
+                            className="w-full h-40 object-cover"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).style.display = 'none';
+                            }}
+                          />
+                        )}
+                        <div className="p-4">
+                          <p className="font-medium">{meal.name}</p>
+                          <p className="text-sm text-muted-foreground mt-1">{meal.description}</p>
+                        </div>
                       </div>
                     ))}
                   </div>

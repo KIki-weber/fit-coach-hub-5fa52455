@@ -27,18 +27,31 @@ serve(async (req) => {
     const prompt = `Based on a BMI of ${bmi} (${bmiCategory}), provide personalized nutrition recommendations. Include:
 1. Daily calorie target
 2. Macronutrient breakdown (protein, carbs, fats in grams)
-3. List of 5 recommended foods with their nutritional benefits
+3. List of 5 recommended foods with their nutritional benefits and a relevant emoji icon
 4. 3 foods to avoid or limit
-5. 2 healthy meal suggestions
+5. 3 healthy meal suggestions with descriptions
 
 Format the response as JSON with this structure:
 {
   "dailyCalories": number,
   "macros": { "protein": number, "carbs": number, "fats": number },
-  "recommendedFoods": [{ "name": string, "benefits": string }],
+  "recommendedFoods": [{ "name": string, "benefits": string, "icon": string, "imageUrl": string }],
   "avoidFoods": [string],
-  "mealSuggestions": [{ "name": string, "description": string }]
-}`;
+  "mealSuggestions": [{ "name": string, "description": string, "imageUrl": string }]
+}
+
+For imageUrl fields, use real Unsplash image URLs in this format: https://images.unsplash.com/photo-XXXXXXXX?w=400&h=300&fit=crop
+Use actual food-related Unsplash photo IDs that match the food items. Examples:
+- Chicken: https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=400&h=300&fit=crop
+- Salmon: https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=400&h=300&fit=crop
+- Broccoli: https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?w=400&h=300&fit=crop
+- Quinoa: https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400&h=300&fit=crop
+- Greek Yogurt: https://images.unsplash.com/photo-1488477181946-6428a0291777?w=400&h=300&fit=crop
+- Eggs: https://images.unsplash.com/photo-1482049016gy-2f53bff25f4f?w=400&h=300&fit=crop
+- Avocado: https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=400&h=300&fit=crop
+- Oatmeal: https://images.unsplash.com/photo-1517673400267-0251440c45dc?w=400&h=300&fit=crop
+- Salad: https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop
+- Grilled chicken bowl: https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -96,16 +109,17 @@ Format the response as JSON with this structure:
         dailyCalories: bmi < 25 ? 2000 : 1800,
         macros: { protein: 100, carbs: 200, fats: 65 },
         recommendedFoods: [
-          { name: "Lean Chicken", benefits: "High protein, low fat" },
-          { name: "Quinoa", benefits: "Complete protein, fiber-rich" },
-          { name: "Broccoli", benefits: "Vitamins, fiber, low calories" },
-          { name: "Salmon", benefits: "Omega-3, protein" },
-          { name: "Greek Yogurt", benefits: "Probiotics, protein" }
+          { name: "Lean Chicken", benefits: "High protein, low fat", icon: "🍗", imageUrl: "https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=400&h=300&fit=crop" },
+          { name: "Quinoa", benefits: "Complete protein, fiber-rich", icon: "🌾", imageUrl: "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400&h=300&fit=crop" },
+          { name: "Broccoli", benefits: "Vitamins, fiber, low calories", icon: "🥦", imageUrl: "https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?w=400&h=300&fit=crop" },
+          { name: "Salmon", benefits: "Omega-3, protein", icon: "🐟", imageUrl: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=400&h=300&fit=crop" },
+          { name: "Greek Yogurt", benefits: "Probiotics, protein", icon: "🥛", imageUrl: "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=400&h=300&fit=crop" }
         ],
         avoidFoods: ["Processed snacks", "Sugary drinks", "Fried foods"],
         mealSuggestions: [
-          { name: "Grilled Salmon Bowl", description: "Salmon with quinoa and roasted vegetables" },
-          { name: "Greek Yogurt Parfait", description: "Yogurt with berries and nuts" }
+          { name: "Grilled Salmon Bowl", description: "Salmon with quinoa and roasted vegetables", imageUrl: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop" },
+          { name: "Greek Yogurt Parfait", description: "Yogurt with berries and nuts", imageUrl: "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=400&h=300&fit=crop" },
+          { name: "Veggie Stir Fry", description: "Mixed vegetables with lean protein", imageUrl: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop" }
         ]
       };
     }
