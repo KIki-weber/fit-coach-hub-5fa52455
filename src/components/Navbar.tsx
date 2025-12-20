@@ -16,6 +16,12 @@ export const Navbar = () => {
           <Link to="/" className="text-foreground hover:text-primary transition-colors">
             Home
           </Link>
+          <Link to="/nutrition" className="text-foreground hover:text-primary transition-colors">
+            Nutrition
+          </Link>
+          <Link to="/training" className="text-foreground hover:text-primary transition-colors">
+            Training
+          </Link>
           <Link to="/about" className="text-foreground hover:text-primary transition-colors">
             About
           </Link>
