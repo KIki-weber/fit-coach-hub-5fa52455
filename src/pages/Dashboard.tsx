@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
-import { Button } from "@/components/ui/button";
-import { LogOut } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { UserProfile } from "@/components/dashboard/UserProfile";
 import { BMICalculator } from "@/components/dashboard/BMICalculator";
@@ -16,6 +14,8 @@ import { MessagesView } from "@/components/dashboard/MessagesView";
 import { NutritionView } from "@/components/dashboard/NutritionView";
 import { EventsView } from "@/components/dashboard/EventsView";
 import logoRunner from "@/assets/logo-runner.png";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -24,6 +24,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [bmi, setBmi] = useState<number | null>(null);
   const [bmr, setBmr] = useState<number | null>(null);
+  const [activeSection, setActiveSection] = useState("profile");
 
   useEffect(() => {
     // Get initial session
@@ -66,57 +67,76 @@ const Dashboard = () => {
     );
   }
 
+  const renderContent = () => {
+    switch (activeSection) {
+      case "profile":
+        return <UserProfile userId={user?.id || ""} />;
+      case "progress":
+        return <ProgressTracking userId={user?.id || ""} />;
+      case "events":
+        return <EventsView />;
+      case "calculators":
+        return (
+          <div className="space-y-6">
+            <div className="grid md:grid-cols-2 gap-6">
+              <BMICalculator onCalculate={(value) => setBmi(value)} />
+              <BMRCalculator onCalculate={(value) => setBmr(value)} />
+            </div>
+          </div>
+        );
+      case "nutrition":
+        return (
+          <div className="space-y-6">
+            <AINutritionRecommendations bmi={bmi} />
+            <AutoNutritionRecommendations bmi={bmi} bmr={bmr} />
+            <NutritionView />
+          </div>
+        );
+      case "schedule":
+        return <ScheduleView userId={user?.id || ""} />;
+      case "messages":
+        return <MessagesView userId={user?.id || ""} />;
+      default:
+        return <UserProfile userId={user?.id || ""} />;
+    }
+  };
+
+  const getSectionTitle = () => {
+    switch (activeSection) {
+      case "profile": return "My Profile";
+      case "progress": return "Progress Tracking";
+      case "events": return "Events";
+      case "calculators": return "BMI & BMR Calculator";
+      case "nutrition": return "AI Nutrition Recommendations";
+      case "schedule": return "My Schedule";
+      case "messages": return "Messages";
+      default: return "Dashboard";
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-border bg-card">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <img src={logoRunner} alt="VitalityHub" className="w-6 h-6" />
-            <span className="text-xl font-bold">VitalityHub</span>
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full bg-background">
+        <DashboardSidebar 
+          activeSection={activeSection} 
+          onSectionChange={setActiveSection}
+          onLogout={handleLogout}
+        />
+        
+        <main className="flex-1 flex flex-col">
+          {/* Header */}
+          <header className="border-b border-border bg-card px-6 py-4 flex items-center gap-4">
+            <SidebarTrigger />
+            <h1 className="text-2xl font-bold">{getSectionTitle()}</h1>
+          </header>
+
+          {/* Content */}
+          <div className="flex-1 p-6 overflow-auto">
+            {renderContent()}
           </div>
-          <Button variant="ghost" onClick={handleLogout}>
-            <LogOut className="w-4 h-4 mr-2" />
-            Logout
-          </Button>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-8">
-          Welcome to Your Dashboard
-        </h1>
-
-        <div className="grid gap-6">
-          {/* Profile Section */}
-          <UserProfile userId={user?.id || ""} />
-
-          {/* Progress Tracking */}
-          <ProgressTracking userId={user?.id || ""} />
-
-          {/* Events */}
-          <EventsView />
-
-          {/* Calculators */}
-          <div className="grid md:grid-cols-2 gap-6">
-            <BMICalculator onCalculate={(value) => setBmi(value)} />
-            <BMRCalculator onCalculate={(value) => setBmr(value)} />
-          </div>
-
-          {/* AI Nutrition Recommendations */}
-          <AINutritionRecommendations bmi={bmi} />
-
-          {/* Auto Nutrition Recommendations */}
-          <AutoNutritionRecommendations bmi={bmi} bmr={bmr} />
-
-          {/* Schedules, Nutrition and Messages */}
-          <ScheduleView userId={user?.id || ""} />
-          <NutritionView />
-          <MessagesView userId={user?.id || ""} />
-        </div>
-      </main>
-    </div>
+        </main>
+      </div>
+    </SidebarProvider>
   );
 };
 
