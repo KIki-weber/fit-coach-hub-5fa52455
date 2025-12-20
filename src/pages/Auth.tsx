@@ -6,9 +6,20 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
 import logoRunner from "@/assets/logo-runner.png";
+
+const EXERCISE_PLANS = [
+  { value: "weight_loss", label: "Weight Loss" },
+  { value: "weight_gain", label: "Weight Gain" },
+  { value: "muscle_building", label: "Muscle Building" },
+  { value: "endurance", label: "Endurance Training" },
+  { value: "flexibility", label: "Flexibility & Mobility" },
+  { value: "general_fitness", label: "General Fitness" },
+  { value: "maintenance", label: "Maintenance" },
+];
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -16,10 +27,19 @@ const Auth = () => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [loginData, setLoginData] = useState({ email: "", password: "" });
-  const [signupData, setSignupData] = useState({ fullName: "", email: "", phoneNumber: "", password: "" });
+  const [signupData, setSignupData] = useState({
+    fullName: "",
+    email: "",
+    phoneNumber: "",
+    password: "",
+    height: "",
+    heightUnit: "cm",
+    weight: "",
+    weightUnit: "kg",
+    exercisePlan: ""
+  });
 
   useEffect(() => {
-    // Check if user is already logged in
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
         navigate("/dashboard");
@@ -31,7 +51,7 @@ const Auth = () => {
     e.preventDefault();
     setLoading(true);
 
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { error } = await supabase.auth.signInWithPassword({
       email: loginData.email,
       password: loginData.password,
     });
@@ -58,6 +78,18 @@ const Auth = () => {
 
     const redirectUrl = `${window.location.origin}/dashboard`;
     
+    // Convert height to cm for storage
+    let heightInCm = parseFloat(signupData.height);
+    if (signupData.heightUnit === "inch") {
+      heightInCm = heightInCm * 2.54;
+    }
+
+    // Convert weight to kg for storage
+    let weightInKg = parseFloat(signupData.weight);
+    if (signupData.weightUnit === "lb") {
+      weightInKg = weightInKg * 0.453592;
+    }
+
     const { error } = await supabase.auth.signUp({
       email: signupData.email,
       password: signupData.password,
@@ -66,6 +98,11 @@ const Auth = () => {
         data: {
           full_name: signupData.fullName,
           phone_number: signupData.phoneNumber,
+          height: heightInCm,
+          height_unit: signupData.heightUnit,
+          weight: weightInKg,
+          weight_unit: signupData.weightUnit,
+          exercise_plan: signupData.exercisePlan,
         }
       }
     });
@@ -77,6 +114,21 @@ const Auth = () => {
         variant: "destructive",
       });
     } else {
+      // Update profile with height, weight, and exercise plan
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await supabase
+          .from("profiles")
+          .update({
+            height: heightInCm,
+            weight: weightInKg,
+            height_unit: signupData.heightUnit,
+            weight_unit: signupData.weightUnit,
+            exercise_plan: signupData.exercisePlan,
+          })
+          .eq("user_id", user.id);
+      }
+
       toast({
         title: "Account Created!",
         description: "Welcome to VitalityHub. Let's get started!",
@@ -176,6 +228,81 @@ const Auth = () => {
                       placeholder="+1234567890"
                     />
                   </div>
+
+                  {/* Height with unit selection */}
+                  <div className="space-y-2">
+                    <Label>Height</Label>
+                    <div className="flex gap-2">
+                      <Input
+                        type="number"
+                        step="0.1"
+                        value={signupData.height}
+                        onChange={(e) => setSignupData({ ...signupData, height: e.target.value })}
+                        placeholder={signupData.heightUnit === "cm" ? "170" : "67"}
+                        required
+                      />
+                      <Select
+                        value={signupData.heightUnit}
+                        onValueChange={(v) => setSignupData({ ...signupData, heightUnit: v })}
+                      >
+                        <SelectTrigger className="w-24">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="cm">cm</SelectItem>
+                          <SelectItem value="inch">inch</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                  {/* Weight with unit selection */}
+                  <div className="space-y-2">
+                    <Label>Weight</Label>
+                    <div className="flex gap-2">
+                      <Input
+                        type="number"
+                        step="0.1"
+                        value={signupData.weight}
+                        onChange={(e) => setSignupData({ ...signupData, weight: e.target.value })}
+                        placeholder={signupData.weightUnit === "kg" ? "70" : "154"}
+                        required
+                      />
+                      <Select
+                        value={signupData.weightUnit}
+                        onValueChange={(v) => setSignupData({ ...signupData, weightUnit: v })}
+                      >
+                        <SelectTrigger className="w-24">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="kg">kg</SelectItem>
+                          <SelectItem value="lb">lb</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                  {/* Exercise Plan */}
+                  <div className="space-y-2">
+                    <Label>Exercise Plan Goal</Label>
+                    <Select
+                      value={signupData.exercisePlan}
+                      onValueChange={(v) => setSignupData({ ...signupData, exercisePlan: v })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select your fitness goal" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {EXERCISE_PLANS.map((plan) => (
+                          <SelectItem key={plan.value} value={plan.value}>
+                            {plan.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
                   <div className="space-y-2">
                     <Label htmlFor="signup-password">Password</Label>
                     <Input

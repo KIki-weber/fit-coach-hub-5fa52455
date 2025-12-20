@@ -2,7 +2,10 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Users } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Users, Camera, ChevronDown, ChevronUp } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { format } from "date-fns";
 
 interface UserProfile {
   id: string;
@@ -11,16 +14,43 @@ interface UserProfile {
   email: string;
   phone_number: string;
   height: number;
+  height_unit: string;
   weight: number;
+  weight_unit: string;
+  exercise_plan: string;
   photo_url: string;
   photo_description: string;
   photo_uploaded_at: string;
   created_at: string;
 }
 
+interface ProgressEntry {
+  id: string;
+  user_id: string;
+  photo_url: string | null;
+  height: number | null;
+  height_unit: string;
+  weight: number | null;
+  weight_unit: string;
+  notes: string | null;
+  created_at: string;
+}
+
+const EXERCISE_PLAN_LABELS: Record<string, string> = {
+  weight_loss: "Weight Loss",
+  weight_gain: "Weight Gain",
+  muscle_building: "Muscle Building",
+  endurance: "Endurance Training",
+  flexibility: "Flexibility & Mobility",
+  general_fitness: "General Fitness",
+  maintenance: "Maintenance",
+};
+
 export const AdminUserList = () => {
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [totalUsers, setTotalUsers] = useState(0);
+  const [progressData, setProgressData] = useState<Record<string, ProgressEntry[]>>({});
+  const [expandedUsers, setExpandedUsers] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     fetchUsers();
@@ -35,6 +65,27 @@ export const AdminUserList = () => {
     if (data) {
       setUsers(data);
       setTotalUsers(count || 0);
+      
+      // Fetch progress for all users
+      const userIds = data.map(u => u.user_id);
+      if (userIds.length > 0) {
+        const { data: progress } = await supabase
+          .from("progress_tracking")
+          .select("*")
+          .in("user_id", userIds)
+          .order("created_at", { ascending: false });
+        
+        if (progress) {
+          const grouped: Record<string, ProgressEntry[]> = {};
+          progress.forEach((entry) => {
+            if (!grouped[entry.user_id]) {
+              grouped[entry.user_id] = [];
+            }
+            grouped[entry.user_id].push(entry);
+          });
+          setProgressData(grouped);
+        }
+      }
     }
   };
 
@@ -43,6 +94,18 @@ export const AdminUserList = () => {
     const h = height / 100;
     const bmi = weight / (h * h);
     return Math.round(bmi * 10) / 10;
+  };
+
+  const toggleExpand = (userId: string) => {
+    setExpandedUsers(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(userId)) {
+        newSet.delete(userId);
+      } else {
+        newSet.add(userId);
+      }
+      return newSet;
+    });
   };
 
   return (
@@ -63,61 +126,119 @@ export const AdminUserList = () => {
           </p>
         ) : (
           <div className="space-y-4">
-            {users.map((user) => (
-              <div
-                key={user.id}
-                className="p-4 bg-secondary/30 rounded-lg border border-border"
-              >
-                <div className="flex items-start gap-4">
-                  <Avatar className="w-16 h-16">
-                    <AvatarImage src={user.photo_url} />
-                    <AvatarFallback>{user.full_name?.charAt(0) || "U"}</AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1 space-y-2">
-                    <div>
-                      <h4 className="font-semibold text-lg">{user.full_name || "No name"}</h4>
-                      <p className="text-sm text-muted-foreground">{user.email}</p>
-                      {user.phone_number && (
-                        <p className="text-sm text-muted-foreground">📱 {user.phone_number}</p>
-                      )}
-                    </div>
-                    
-                    {user.photo_description && (
-                      <p className="text-sm text-foreground/80 italic">
-                        "{user.photo_description}"
-                      </p>
-                    )}
-                    
-                    <div className="grid grid-cols-2 gap-2 text-sm">
-                      <div>
-                        <span className="text-muted-foreground">Height: </span>
-                        <span className="font-medium">{user.height ? `${user.height}cm` : "N/A"}</span>
-                      </div>
-                      <div>
-                        <span className="text-muted-foreground">Weight: </span>
-                        <span className="font-medium">{user.weight ? `${user.weight}kg` : "N/A"}</span>
-                      </div>
-                      {user.height && user.weight && (
+            {users.map((user) => {
+              const userProgress = progressData[user.user_id] || [];
+              const isExpanded = expandedUsers.has(user.user_id);
+              
+              return (
+                <div
+                  key={user.id}
+                  className="p-4 bg-secondary/30 rounded-lg border border-border"
+                >
+                  <div className="flex items-start gap-4">
+                    <Avatar className="w-16 h-16">
+                      <AvatarImage src={user.photo_url} />
+                      <AvatarFallback>{user.full_name?.charAt(0) || "U"}</AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1 space-y-2">
+                      <div className="flex justify-between items-start">
                         <div>
-                          <span className="text-muted-foreground">BMI: </span>
-                          <span className="font-semibold text-primary">{calculateBMI(user.height, user.weight)}</span>
+                          <h4 className="font-semibold text-lg">{user.full_name || "No name"}</h4>
+                          <p className="text-sm text-muted-foreground">{user.email}</p>
+                          {user.phone_number && (
+                            <p className="text-sm text-muted-foreground">📱 {user.phone_number}</p>
+                          )}
+                        </div>
+                        {user.exercise_plan && (
+                          <Badge variant="secondary">
+                            {EXERCISE_PLAN_LABELS[user.exercise_plan] || user.exercise_plan}
+                          </Badge>
+                        )}
+                      </div>
+                      
+                      {user.photo_description && (
+                        <p className="text-sm text-foreground/80 italic">
+                          "{user.photo_description}"
+                        </p>
+                      )}
+                      
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
+                        <div>
+                          <span className="text-muted-foreground">Height: </span>
+                          <span className="font-medium">
+                            {user.height ? `${user.height}${user.height_unit || 'cm'}` : "N/A"}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-muted-foreground">Weight: </span>
+                          <span className="font-medium">
+                            {user.weight ? `${user.weight}${user.weight_unit || 'kg'}` : "N/A"}
+                          </span>
+                        </div>
+                        {user.height && user.weight && (
+                          <div>
+                            <span className="text-muted-foreground">BMI: </span>
+                            <span className="font-semibold text-primary">{calculateBMI(user.height, user.weight)}</span>
+                          </div>
+                        )}
+                        <div>
+                          <span className="text-muted-foreground">Joined: </span>
+                          <span className="text-xs">{new Date(user.created_at).toLocaleDateString()}</span>
+                        </div>
+                      </div>
+
+                      {/* Progress Tracking Section */}
+                      {userProgress.length > 0 && (
+                        <div className="mt-3 pt-3 border-t border-border">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => toggleExpand(user.user_id)}
+                            className="flex items-center gap-2 text-sm"
+                          >
+                            <Camera className="w-4 h-4" />
+                            Progress Photos ({userProgress.length})
+                            {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                          </Button>
+                          
+                          {isExpanded && (
+                            <div className="mt-3 grid gap-3">
+                              {userProgress.map((entry) => (
+                                <div key={entry.id} className="flex gap-3 p-3 bg-background/50 rounded-lg">
+                                  {entry.photo_url && (
+                                    <img
+                                      src={entry.photo_url}
+                                      alt="Progress"
+                                      className="w-20 h-20 object-cover rounded-lg"
+                                    />
+                                  )}
+                                  <div className="flex-1 text-sm">
+                                    <p className="text-muted-foreground">
+                                      {format(new Date(entry.created_at), "PPP 'at' p")}
+                                    </p>
+                                    <div className="flex gap-4 mt-1">
+                                      <span>
+                                        <strong>Height:</strong> {entry.height || "N/A"} {entry.height_unit}
+                                      </span>
+                                      <span>
+                                        <strong>Weight:</strong> {entry.weight || "N/A"} {entry.weight_unit}
+                                      </span>
+                                    </div>
+                                    {entry.notes && (
+                                      <p className="mt-1 text-muted-foreground italic">{entry.notes}</p>
+                                    )}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       )}
-                      {user.photo_uploaded_at && (
-                        <div>
-                          <span className="text-muted-foreground">Photo: </span>
-                          <span className="text-xs">{new Date(user.photo_uploaded_at).toLocaleDateString()}</span>
-                        </div>
-                      )}
-                    </div>
-                    
-                    <div className="text-xs text-muted-foreground">
-                      Joined: {new Date(user.created_at).toLocaleDateString()}
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </CardContent>
