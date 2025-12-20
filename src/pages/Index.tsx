@@ -10,38 +10,36 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       
-      {/* Hero Section */}
-      <section className="pt-24 pb-16 px-4">
-        <div className="container mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-6">
-              <h1 className="text-5xl md:text-6xl font-bold leading-tight">
-                Transform Your Health with
-                <span className="text-primary block">Expert Wellness Coaching</span>
-              </h1>
-              <p className="text-xl text-muted-foreground">
-                Get personalized wellness plans, track your progress, and achieve your health goals with expert guidance.
-              </p>
-              <div className="flex gap-4">
-                <Link to="/auth?tab=signup">
-                  <Button size="lg" className="bg-gradient-primary shadow-smooth">
-                    Start Free Trial
-                  </Button>
-                </Link>
-                <Link to="/about">
-                  <Button size="lg" variant="outline">
-                    Learn More
-                  </Button>
-                </Link>
-              </div>
-            </div>
-            <div className="relative">
-              <img 
-                src={heroImage} 
-                alt="Fitness training environment" 
-                className="rounded-2xl shadow-smooth w-full h-auto"
-              />
-            </div>
+      {/* Hero Section with Background Image */}
+      <section 
+        className="relative min-h-[90vh] flex items-center justify-center px-4"
+        style={{
+          backgroundImage: `url(${heroImage})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed'
+        }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background" />
+        <div className="container mx-auto relative z-10 text-center space-y-8 pt-16">
+          <h1 className="text-5xl md:text-7xl font-bold leading-tight">
+            Transform Your Health with
+            <span className="text-primary block mt-2">Expert Wellness Coaching</span>
+          </h1>
+          <p className="text-xl md:text-2xl text-foreground/80 max-w-3xl mx-auto">
+            Get personalized wellness plans, track your progress, and achieve your health goals with expert guidance.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link to="/auth?tab=signup">
+              <Button size="lg" className="bg-gradient-primary shadow-smooth text-lg px-8 py-6">
+                Start Free Trial
+              </Button>
+            </Link>
+            <Link to="/about">
+              <Button size="lg" variant="outline" className="text-lg px-8 py-6 bg-background/50 backdrop-blur-sm">
+                Learn More
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
