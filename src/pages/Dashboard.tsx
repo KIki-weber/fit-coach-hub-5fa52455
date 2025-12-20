@@ -9,6 +9,8 @@ import { UserProfile } from "@/components/dashboard/UserProfile";
 import { BMICalculator } from "@/components/dashboard/BMICalculator";
 import { BMRCalculator } from "@/components/dashboard/BMRCalculator";
 import AutoNutritionRecommendations from "@/components/dashboard/AutoNutritionRecommendations";
+import { AINutritionRecommendations } from "@/components/dashboard/AINutritionRecommendations";
+import { ProgressTracking } from "@/components/dashboard/ProgressTracking";
 import { ScheduleView } from "@/components/dashboard/ScheduleView";
 import { MessagesView } from "@/components/dashboard/MessagesView";
 import { NutritionView } from "@/components/dashboard/NutritionView";
@@ -90,6 +92,9 @@ const Dashboard = () => {
           {/* Profile Section */}
           <UserProfile userId={user?.id || ""} />
 
+          {/* Progress Tracking */}
+          <ProgressTracking userId={user?.id || ""} />
+
           {/* Events */}
           <EventsView />
 
@@ -98,6 +103,9 @@ const Dashboard = () => {
             <BMICalculator onCalculate={(value) => setBmi(value)} />
             <BMRCalculator onCalculate={(value) => setBmr(value)} />
           </div>
+
+          {/* AI Nutrition Recommendations */}
+          <AINutritionRecommendations bmi={bmi} />
 
           {/* Auto Nutrition Recommendations */}
           <AutoNutritionRecommendations bmi={bmi} bmr={bmr} />

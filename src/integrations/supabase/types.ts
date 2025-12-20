@@ -143,8 +143,10 @@ export type Database = {
         Row: {
           created_at: string | null
           email: string | null
+          exercise_plan: string | null
           full_name: string | null
           height: number | null
+          height_unit: string | null
           id: string
           phone_number: string | null
           photo_description: string | null
@@ -153,12 +155,15 @@ export type Database = {
           updated_at: string | null
           user_id: string
           weight: number | null
+          weight_unit: string | null
         }
         Insert: {
           created_at?: string | null
           email?: string | null
+          exercise_plan?: string | null
           full_name?: string | null
           height?: number | null
+          height_unit?: string | null
           id?: string
           phone_number?: string | null
           photo_description?: string | null
@@ -167,12 +172,15 @@ export type Database = {
           updated_at?: string | null
           user_id: string
           weight?: number | null
+          weight_unit?: string | null
         }
         Update: {
           created_at?: string | null
           email?: string | null
+          exercise_plan?: string | null
           full_name?: string | null
           height?: number | null
+          height_unit?: string | null
           id?: string
           phone_number?: string | null
           photo_description?: string | null
@@ -181,6 +189,46 @@ export type Database = {
           updated_at?: string | null
           user_id?: string
           weight?: number | null
+          weight_unit?: string | null
+        }
+        Relationships: []
+      }
+      progress_tracking: {
+        Row: {
+          created_at: string
+          height: number | null
+          height_unit: string | null
+          id: string
+          notes: string | null
+          photo_url: string | null
+          updated_at: string
+          user_id: string
+          weight: number | null
+          weight_unit: string | null
+        }
+        Insert: {
+          created_at?: string
+          height?: number | null
+          height_unit?: string | null
+          id?: string
+          notes?: string | null
+          photo_url?: string | null
+          updated_at?: string
+          user_id: string
+          weight?: number | null
+          weight_unit?: string | null
+        }
+        Update: {
+          created_at?: string
+          height?: number | null
+          height_unit?: string | null
+          id?: string
+          notes?: string | null
+          photo_url?: string | null
+          updated_at?: string
+          user_id?: string
+          weight?: number | null
+          weight_unit?: string | null
         }
         Relationships: []
       }
