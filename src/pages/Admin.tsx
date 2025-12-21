@@ -9,6 +9,7 @@ import { AdminMessageSender } from "@/components/admin/AdminMessageSender";
 import { AdminNutritionManager } from "@/components/admin/AdminNutritionManager";
 import { AdminEventManager } from "@/components/admin/AdminEventManager";
 import { AdminStatsOverview } from "@/components/admin/AdminStatsOverview";
+import { AdminBookingManager } from "@/components/admin/AdminBookingManager";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { Bell } from "lucide-react";
@@ -126,6 +127,8 @@ const Admin = () => {
         return <AdminStatsOverview />;
       case "users":
         return <AdminUserList />;
+      case "bookings":
+        return <AdminBookingManager />;
       case "events":
         return <AdminEventManager />;
       case "schedules":
@@ -143,6 +146,7 @@ const Admin = () => {
     switch (activeSection) {
       case "overview": return "Dashboard Overview";
       case "users": return "Registered Users";
+      case "bookings": return "Booking Requests";
       case "events": return "Event Management";
       case "schedules": return "Schedule Management";
       case "nutrition": return "Nutrition Plans";

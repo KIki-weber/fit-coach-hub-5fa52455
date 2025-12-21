@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      bookings: {
+        Row: {
+          booking_date: string
+          booking_time: string
+          created_at: string
+          id: string
+          notes: string | null
+          service_type: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          booking_date: string
+          booking_time: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          service_type: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          booking_date?: string
+          booking_time?: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          service_type?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       events: {
         Row: {
           content: string
@@ -145,6 +181,7 @@ export type Database = {
           email: string | null
           exercise_plan: string | null
           full_name: string | null
+          gender: string | null
           height: number | null
           height_unit: string | null
           id: string
@@ -162,6 +199,7 @@ export type Database = {
           email?: string | null
           exercise_plan?: string | null
           full_name?: string | null
+          gender?: string | null
           height?: number | null
           height_unit?: string | null
           id?: string
@@ -179,6 +217,7 @@ export type Database = {
           email?: string | null
           exercise_plan?: string | null
           full_name?: string | null
+          gender?: string | null
           height?: number | null
           height_unit?: string | null
           id?: string

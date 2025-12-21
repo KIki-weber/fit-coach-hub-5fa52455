@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
 import logoRunner from "@/assets/logo-runner.png";
@@ -27,7 +28,7 @@ const Auth = () => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [loginData, setLoginData] = useState({ email: "", password: "" });
-  const [signupData, setSignupData] = useState({
+const [signupData, setSignupData] = useState({
     fullName: "",
     email: "",
     phoneNumber: "",
@@ -36,7 +37,8 @@ const Auth = () => {
     heightUnit: "cm",
     weight: "",
     weightUnit: "kg",
-    exercisePlan: ""
+    exercisePlan: "",
+    gender: ""
   });
 
   useEffect(() => {
@@ -103,6 +105,7 @@ const Auth = () => {
           weight: weightInKg,
           weight_unit: signupData.weightUnit,
           exercise_plan: signupData.exercisePlan,
+          gender: signupData.gender,
         }
       }
     });
@@ -125,6 +128,7 @@ const Auth = () => {
             height_unit: signupData.heightUnit,
             weight_unit: signupData.weightUnit,
             exercise_plan: signupData.exercisePlan,
+            gender: signupData.gender,
           })
           .eq("user_id", user.id);
       }
@@ -281,6 +285,29 @@ const Auth = () => {
                         </SelectContent>
                       </Select>
                     </div>
+                  </div>
+
+                  {/* Gender Selection */}
+                  <div className="space-y-2">
+                    <Label>Gender</Label>
+                    <RadioGroup
+                      value={signupData.gender}
+                      onValueChange={(v) => setSignupData({ ...signupData, gender: v })}
+                      className="flex gap-4"
+                    >
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="male" id="male" />
+                        <Label htmlFor="male" className="cursor-pointer">Male</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="female" id="female" />
+                        <Label htmlFor="female" className="cursor-pointer">Female</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="other" id="other" />
+                        <Label htmlFor="other" className="cursor-pointer">Other</Label>
+                      </div>
+                    </RadioGroup>
                   </div>
 
                   {/* Exercise Plan */}

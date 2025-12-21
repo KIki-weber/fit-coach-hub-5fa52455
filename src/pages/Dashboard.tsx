@@ -13,6 +13,7 @@ import { ScheduleView } from "@/components/dashboard/ScheduleView";
 import { MessagesView } from "@/components/dashboard/MessagesView";
 import { NutritionView } from "@/components/dashboard/NutritionView";
 import { EventsView } from "@/components/dashboard/EventsView";
+import { BookingView } from "@/components/dashboard/BookingView";
 import logoRunner from "@/assets/logo-runner.png";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
@@ -24,6 +25,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [bmi, setBmi] = useState<number | null>(null);
   const [bmr, setBmr] = useState<number | null>(null);
+  const [gender, setGender] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState("profile");
 
   useEffect(() => {
@@ -33,6 +35,9 @@ const Dashboard = () => {
       setLoading(false);
       if (!session) {
         navigate("/auth");
+      } else {
+        // Fetch user profile to get gender
+        fetchUserProfile(session.user.id);
       }
     });
 
@@ -46,6 +51,18 @@ const Dashboard = () => {
 
     return () => subscription.unsubscribe();
   }, [navigate]);
+
+  const fetchUserProfile = async (userId: string) => {
+    const { data } = await supabase
+      .from("profiles")
+      .select("gender")
+      .eq("user_id", userId)
+      .single();
+    
+    if (data?.gender) {
+      setGender(data.gender);
+    }
+  };
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -87,11 +104,13 @@ const Dashboard = () => {
       case "nutrition":
         return (
           <div className="space-y-6">
-            <AINutritionRecommendations bmi={bmi} />
+            <AINutritionRecommendations bmi={bmi} gender={gender} />
             <AutoNutritionRecommendations bmi={bmi} bmr={bmr} />
             <NutritionView />
           </div>
         );
+      case "booking":
+        return <BookingView userId={user?.id || ""} />;
       case "schedule":
         return <ScheduleView userId={user?.id || ""} />;
       case "messages":
@@ -108,6 +127,7 @@ const Dashboard = () => {
       case "events": return "Events";
       case "calculators": return "BMI & BMR Calculator";
       case "nutrition": return "AI Nutrition Recommendations";
+      case "booking": return "Book with Coach Dave";
       case "schedule": return "My Schedule";
       case "messages": return "Messages";
       default: return "Dashboard";

@@ -11,7 +11,7 @@ serve(async (req) => {
   }
 
   try {
-    const { bmi } = await req.json();
+    const { bmi, gender } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     
     if (!LOVABLE_API_KEY) {
@@ -24,8 +24,16 @@ serve(async (req) => {
     else if (bmi < 30) bmiCategory = "overweight";
     else bmiCategory = "obese";
 
-    const prompt = `Based on a BMI of ${bmi} (${bmiCategory}), provide personalized nutrition recommendations. Include:
-1. Daily calorie target
+    const genderContext = gender ? `The user is ${gender}. Consider gender-specific nutritional needs such as:
+- ${gender === 'female' ? 'Higher iron requirements, especially during menstruation' : 'Higher protein needs for muscle maintenance'}
+- ${gender === 'female' ? 'Calcium needs for bone health' : 'Higher calorie baseline'}
+- ${gender === 'female' ? 'Folate requirements' : 'Zinc for testosterone production'}` : '';
+
+    const prompt = `Based on a BMI of ${bmi} (${bmiCategory})${gender ? ` for a ${gender} individual` : ''}, provide personalized nutrition recommendations. 
+${genderContext}
+
+Include:
+1. Daily calorie target (adjusted for gender if specified)
 2. Macronutrient breakdown (protein, carbs, fats in grams)
 3. List of 5 recommended foods with their nutritional benefits and a relevant emoji icon
 4. 3 foods to avoid or limit

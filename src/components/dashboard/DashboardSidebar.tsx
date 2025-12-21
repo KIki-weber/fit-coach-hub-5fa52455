@@ -33,6 +33,7 @@ interface DashboardSidebarProps {
 const menuItems = [
   { id: "profile", title: "My Profile", icon: User },
   { id: "progress", title: "Progress Tracking", icon: Camera },
+  { id: "booking", title: "Book with Coach Dave", icon: Activity },
   { id: "events", title: "Events", icon: CalendarDays },
   { id: "calculators", title: "BMI & BMR Calculator", icon: Calculator },
   { id: "nutrition", title: "AI Nutrition", icon: Utensils },
