@@ -12,31 +12,31 @@ const Index = () => {
       
       {/* Hero Section with Background Image */}
       <section 
-        className="relative min-h-[90vh] flex items-center justify-center px-4"
+        className="relative min-h-[85vh] md:min-h-[90vh] flex items-center justify-center px-4"
         style={{
           backgroundImage: `url(${heroImage})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-          backgroundAttachment: 'fixed'
+          backgroundAttachment: 'scroll'
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background" />
-        <div className="container mx-auto relative z-10 text-center space-y-8 pt-16">
-          <h1 className="text-5xl md:text-7xl font-bold leading-tight">
+        <div className="absolute inset-0 bg-gradient-to-b from-background/85 via-background/70 to-background" />
+        <div className="container mx-auto relative z-10 text-center space-y-6 md:space-y-8 pt-20 md:pt-16 px-2">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold leading-tight">
             Transform Your Health with
             <span className="text-primary block mt-2">Expert Wellness Coaching</span>
           </h1>
-          <p className="text-xl md:text-2xl text-foreground/80 max-w-3xl mx-auto">
+          <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-foreground/80 max-w-3xl mx-auto px-2">
             Get personalized wellness plans, track your progress, and achieve your health goals with expert guidance.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/auth?tab=signup">
-              <Button size="lg" className="bg-gradient-primary shadow-smooth text-lg px-8 py-6">
+          <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center px-4">
+            <Link to="/auth?tab=signup" className="w-full sm:w-auto">
+              <Button size="lg" className="w-full sm:w-auto bg-gradient-primary shadow-smooth text-base md:text-lg px-6 md:px-8 py-5 md:py-6">
                 Start Free Trial
               </Button>
             </Link>
-            <Link to="/about">
-              <Button size="lg" variant="outline" className="text-lg px-8 py-6 bg-background/50 backdrop-blur-sm">
+            <Link to="/about" className="w-full sm:w-auto">
+              <Button size="lg" variant="outline" className="w-full sm:w-auto text-base md:text-lg px-6 md:px-8 py-5 md:py-6 bg-background/50 backdrop-blur-sm">
                 Learn More
               </Button>
             </Link>
@@ -45,12 +45,12 @@ const Index = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-16 px-4 bg-secondary/30">
+      <section className="py-10 md:py-16 px-4 bg-secondary/30">
         <div className="container mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 md:mb-12">
             Why Choose VitalityHub?
           </h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             <Card className="shadow-card hover:shadow-smooth transition-shadow">
               <CardContent className="pt-6 text-center space-y-4">
                 <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center mx-auto">
@@ -103,18 +103,18 @@ const Index = () => {
       </section>
 
       {/* Services Section */}
-      <section className="py-16 px-4">
+      <section className="py-10 md:py-16 px-4">
         <div className="container mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          <div className="text-center mb-8 md:mb-12">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 md:mb-4">
               Our Wellness Services
             </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-base md:text-xl text-muted-foreground max-w-2xl mx-auto px-2">
               Comprehensive health and fitness solutions tailored to your needs
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             <Card className="shadow-card hover:shadow-smooth transition-all duration-300">
               <CardContent className="pt-6 space-y-4">
                 <div className="w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center mx-auto">
@@ -173,12 +173,12 @@ const Index = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 px-4 bg-gradient-hero">
-        <div className="container mx-auto text-center space-y-6">
-          <h2 className="text-3xl md:text-4xl font-bold text-white">
+      <section className="py-10 md:py-16 px-4 bg-gradient-hero">
+        <div className="container mx-auto text-center space-y-4 md:space-y-6">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white px-2">
             Ready to Start Your Journey?
           </h2>
-          <p className="text-xl text-white/90 max-w-2xl mx-auto">
+          <p className="text-base md:text-xl text-white/90 max-w-2xl mx-auto px-2">
             Join thousands of people transforming their lives with personalized coaching
           </p>
           <Link to="/auth?tab=signup">
@@ -190,8 +190,8 @@ const Index = () => {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 px-4 border-t border-border">
-        <div className="container mx-auto text-center text-muted-foreground">
+      <footer className="py-6 md:py-8 px-4 border-t border-border">
+        <div className="container mx-auto text-center text-muted-foreground text-sm md:text-base">
           <p>© 2024 VitalityHub. All rights reserved.</p>
         </div>
       </footer>

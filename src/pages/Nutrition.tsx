@@ -48,15 +48,15 @@ const Nutrition = () => {
       <Navbar />
       
       {/* Hero Section */}
-      <section className="pt-24 pb-16 px-4 bg-gradient-to-br from-green-500/10 to-emerald-500/10">
-        <div className="container mx-auto text-center space-y-6">
-          <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto">
-            <Apple className="w-10 h-10 text-white" />
+      <section className="pt-20 md:pt-24 pb-10 md:pb-16 px-4 bg-gradient-to-br from-green-500/10 to-emerald-500/10">
+        <div className="container mx-auto text-center space-y-4 md:space-y-6">
+          <div className="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto">
+            <Apple className="w-8 h-8 md:w-10 md:h-10 text-white" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold">
             Nutrition <span className="text-primary">Planning</span>
           </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-base md:text-xl text-muted-foreground max-w-2xl mx-auto px-2">
             Fuel your body with personalized meal plans designed to match your fitness goals and lifestyle
           </p>
           <Link to="/auth?tab=signup">
@@ -68,10 +68,10 @@ const Nutrition = () => {
       </section>
 
       {/* Nutrition Plans */}
-      <section className="py-16 px-4">
+      <section className="py-10 md:py-16 px-4">
         <div className="container mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">Our Nutrition Plans</h2>
-          <div className="grid md:grid-cols-2 gap-8">
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 md:mb-12">Our Nutrition Plans</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             {nutritionPlans.map((plan, index) => (
               <Card key={index} className="shadow-card hover:shadow-smooth transition-all duration-300 overflow-hidden">
                 <CardHeader className={`bg-gradient-to-r ${plan.color} text-white`}>
@@ -98,10 +98,10 @@ const Nutrition = () => {
       </section>
 
       {/* Food Categories */}
-      <section className="py-16 px-4 bg-secondary/30">
+      <section className="py-10 md:py-16 px-4 bg-secondary/30">
         <div className="container mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">Essential Food Groups</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 md:mb-12">Essential Food Groups</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             {foodCategories.map((category, index) => (
               <Card key={index} className={`${category.color} border-0 shadow-card`}>
                 <CardContent className="pt-6 space-y-4">
@@ -122,12 +122,12 @@ const Nutrition = () => {
       </section>
 
       {/* AI Nutrition Feature */}
-      <section className="py-16 px-4">
+      <section className="py-10 md:py-16 px-4">
         <div className="container mx-auto">
           <Card className="shadow-smooth bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
-            <CardContent className="py-12 text-center space-y-6">
-              <h2 className="text-3xl font-bold">AI-Powered Nutrition Recommendations</h2>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            <CardContent className="py-8 md:py-12 text-center space-y-4 md:space-y-6 px-4 md:px-8">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold">AI-Powered Nutrition Recommendations</h2>
+              <p className="text-sm md:text-lg text-muted-foreground max-w-2xl mx-auto">
                 Get personalized meal suggestions based on your BMI, fitness goals, and dietary preferences. 
                 Our AI analyzes your profile to recommend the perfect nutrition plan for you.
               </p>
@@ -142,8 +142,8 @@ const Nutrition = () => {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 px-4 border-t border-border">
-        <div className="container mx-auto text-center text-muted-foreground">
+      <footer className="py-6 md:py-8 px-4 border-t border-border">
+        <div className="container mx-auto text-center text-muted-foreground text-sm md:text-base">
           <p>© 2024 VitalityHub. All rights reserved.</p>
         </div>
       </footer>
