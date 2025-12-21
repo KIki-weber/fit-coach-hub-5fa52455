@@ -86,15 +86,15 @@ const Training = () => {
       <Navbar />
       
       {/* Hero Section */}
-      <section className="pt-24 pb-16 px-4 bg-gradient-to-br from-blue-500/10 to-indigo-500/10">
-        <div className="container mx-auto text-center space-y-6">
-          <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto">
-            <Dumbbell className="w-10 h-10 text-white" />
+      <section className="pt-20 md:pt-24 pb-10 md:pb-16 px-4 bg-gradient-to-br from-blue-500/10 to-indigo-500/10">
+        <div className="container mx-auto text-center space-y-4 md:space-y-6">
+          <div className="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto">
+            <Dumbbell className="w-8 h-8 md:w-10 md:h-10 text-white" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold">
             Training <span className="text-primary">Programs</span>
           </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-base md:text-xl text-muted-foreground max-w-2xl mx-auto px-2">
             Choose from our expert-designed training programs tailored to your fitness goals and experience level
           </p>
           <Link to="/auth?tab=signup">
@@ -106,9 +106,9 @@ const Training = () => {
       </section>
 
       {/* Benefits */}
-      <section className="py-12 px-4 bg-secondary/30">
+      <section className="py-8 md:py-12 px-4 bg-secondary/30">
         <div className="container mx-auto">
-          <div className="grid md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             {benefits.map((benefit, index) => (
               <div key={index} className="flex items-center gap-4 p-4 rounded-lg bg-background shadow-card">
                 <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center flex-shrink-0">
@@ -125,10 +125,10 @@ const Training = () => {
       </section>
 
       {/* Training Plans */}
-      <section className="py-16 px-4">
+      <section className="py-10 md:py-16 px-4">
         <div className="container mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">Choose Your Program</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 md:mb-12">Choose Your Program</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {trainingPlans.map((plan) => (
               <Card key={plan.id} className="shadow-card hover:shadow-smooth transition-all duration-300 overflow-hidden group">
                 <CardHeader className={`bg-gradient-to-r ${plan.color} text-white`}>
@@ -178,12 +178,12 @@ const Training = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 px-4 bg-gradient-hero">
-        <div className="container mx-auto text-center space-y-6">
-          <h2 className="text-3xl md:text-4xl font-bold text-white">
+      <section className="py-10 md:py-16 px-4 bg-gradient-hero">
+        <div className="container mx-auto text-center space-y-4 md:space-y-6">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white px-2">
             Ready to Transform Your Body?
           </h2>
-          <p className="text-xl text-white/90 max-w-2xl mx-auto">
+          <p className="text-base md:text-xl text-white/90 max-w-2xl mx-auto px-2">
             Join VitalityHub today and get access to personalized training programs, expert coaching, and a supportive community
           </p>
           <Link to="/auth?tab=signup">
@@ -195,8 +195,8 @@ const Training = () => {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 px-4 border-t border-border">
-        <div className="container mx-auto text-center text-muted-foreground">
+      <footer className="py-6 md:py-8 px-4 border-t border-border">
+        <div className="container mx-auto text-center text-muted-foreground text-sm md:text-base">
           <p>© 2024 VitalityHub. All rights reserved.</p>
         </div>
       </footer>
