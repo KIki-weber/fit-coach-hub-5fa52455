@@ -6,7 +6,7 @@ import {
   CalendarDays,
   BarChart3,
   LogOut,
-  Bell
+  ClipboardList
 } from "lucide-react";
 import {
   Sidebar,
@@ -34,6 +34,7 @@ interface AdminSidebarProps {
 const menuItems = [
   { id: "overview", title: "Overview", icon: BarChart3 },
   { id: "users", title: "Registered Users", icon: Users, showBadge: true },
+  { id: "bookings", title: "Booking Requests", icon: ClipboardList },
   { id: "events", title: "Events", icon: CalendarDays },
   { id: "schedules", title: "Schedules", icon: Calendar },
   { id: "nutrition", title: "Nutrition Plans", icon: Utensils },
