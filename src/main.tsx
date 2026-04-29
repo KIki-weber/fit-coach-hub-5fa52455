@@ -3,11 +3,14 @@ import { createRoot } from "react-dom/client";
 import { ThemeProvider } from "next-themes";
 import App from "./App.tsx";
 import "./index.css";
+import { I18nProvider } from "@/lib/i18n";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-      <App />
+    <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+      <I18nProvider>
+        <App />
+      </I18nProvider>
     </ThemeProvider>
   </StrictMode>
 );
