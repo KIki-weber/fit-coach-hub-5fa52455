@@ -175,13 +175,15 @@ const Admin = () => {
         
         <main className="flex-1 flex flex-col">
           {/* Header */}
-          <header className="border-b border-border bg-card px-6 py-4 flex items-center gap-4">
+          <header className="border-b border-border bg-card px-3 sm:px-6 py-3 sm:py-4 flex items-center gap-2 sm:gap-4 flex-wrap">
             <SidebarTrigger />
-            <h1 className="text-2xl font-bold flex-1">{getSectionTitle()}</h1>
+            <h1 className="text-lg sm:text-2xl font-bold flex-1 truncate">{getSectionTitle()}</h1>
+            <LanguageSelector compact persistToProfile />
+            <ThemeToggle />
             {newUserCount > 0 && (
               <div className="flex items-center gap-2 bg-destructive/10 text-destructive px-3 py-1.5 rounded-full">
                 <Bell className="h-4 w-4" />
-                <span className="text-sm font-medium">{newUserCount} new user(s)</span>
+                <span className="text-xs sm:text-sm font-medium">{newUserCount} new</span>
               </div>
             )}
           </header>
