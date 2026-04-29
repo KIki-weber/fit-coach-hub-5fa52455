@@ -15,6 +15,7 @@ export const Navbar = () => {
   const navLinks = [
     { to: "/", label: t("home") },
     { to: "/about", label: t("about") },
+    { to: "/services", label: "Services" },
     { to: "/nutrition", label: t("nutrition") },
     { to: "/training", label: t("training") },
     { to: "/contact", label: t("contact") },
