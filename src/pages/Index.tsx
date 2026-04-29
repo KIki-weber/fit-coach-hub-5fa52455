@@ -4,12 +4,33 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Activity, Users, Calendar, TrendingUp, Apple, Dumbbell, MessageSquare } from "lucide-react";
 import { Link } from "react-router-dom";
 import heroImage from "@/assets/hero-fitness.jpg";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+
+interface EventItem {
+  id: string;
+  title: string;
+  description: string | null;
+  content: string;
+  event_date: string | null;
+  event_time: string | null;
+  image_url: string | null;
+  created_at: string;
+}
+
 
 const Index = () => {
+  const [events, setEvents] = useState<EventItem[]>([]);
+  useEffect(() => {
+    supabase.from("events").select("*").order("created_at", { ascending: false }).limit(6)
+      .then(({ data }) => { if (data) setEvents(data as any); });
+  }, []);
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      
+
+
       {/* Hero Section with Background Image */}
       <section 
         className="relative min-h-[85vh] md:min-h-[90vh] flex items-center justify-center px-4"
@@ -172,7 +193,42 @@ const Index = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* Events Section - posts from Coach Dave */}
+      {events.length > 0 && (
+        <section className="py-10 md:py-16 px-4 bg-secondary/20">
+          <div className="container mx-auto">
+            <div className="text-center mb-8 md:mb-12">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3">Upcoming Events</h2>
+              <p className="text-base md:text-lg text-muted-foreground">Latest events from Coach Dave</p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {events.map((ev) => (
+                <Card key={ev.id} className="shadow-card hover:shadow-smooth transition-shadow overflow-hidden">
+                  {ev.image_url && (
+                    <img src={ev.image_url} alt={ev.title} className="w-full h-44 object-cover" />
+                  )}
+                  <CardContent className="pt-5 space-y-2">
+                    <h3 className="text-lg font-semibold">{ev.title}</h3>
+                    {ev.description && (
+                      <p className="text-sm text-muted-foreground">{ev.description}</p>
+                    )}
+                    <p className="text-sm text-foreground/80 line-clamp-3">{ev.content}</p>
+                    {(ev.event_date || ev.event_time) && (
+                      <div className="flex items-center gap-2 text-sm text-primary font-medium pt-2">
+                        <Calendar className="w-4 h-4" />
+                        {ev.event_date && new Date(ev.event_date).toLocaleDateString()}
+                        {ev.event_time && ` • ${ev.event_time}`}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+
       <section className="py-10 md:py-16 px-4 bg-gradient-hero">
         <div className="container mx-auto text-center space-y-4 md:space-y-6">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white px-2">

@@ -17,6 +17,8 @@ import { BookingView } from "@/components/dashboard/BookingView";
 import logoRunner from "@/assets/logo-runner.png";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
+import { LanguageSelector } from "@/components/LanguageSelector";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -145,9 +147,11 @@ const Dashboard = () => {
         
         <main className="flex-1 flex flex-col">
           {/* Header */}
-          <header className="border-b border-border bg-card px-6 py-4 flex items-center gap-4">
+          <header className="border-b border-border bg-card px-3 sm:px-6 py-3 sm:py-4 flex items-center gap-2 sm:gap-4 flex-wrap">
             <SidebarTrigger />
-            <h1 className="text-2xl font-bold">{getSectionTitle()}</h1>
+            <h1 className="text-lg sm:text-2xl font-bold flex-1 truncate">{getSectionTitle()}</h1>
+            <LanguageSelector compact persistToProfile />
+            <ThemeToggle />
           </header>
 
           {/* Content */}

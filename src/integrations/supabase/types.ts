@@ -59,6 +59,7 @@ export type Database = {
           event_date: string | null
           event_time: string | null
           id: string
+          image_url: string | null
           title: string
           updated_at: string | null
         }
@@ -70,6 +71,7 @@ export type Database = {
           event_date?: string | null
           event_time?: string | null
           id?: string
+          image_url?: string | null
           title: string
           updated_at?: string | null
         }
@@ -81,6 +83,7 @@ export type Database = {
           event_date?: string | null
           event_time?: string | null
           id?: string
+          image_url?: string | null
           title?: string
           updated_at?: string | null
         }
@@ -185,6 +188,7 @@ export type Database = {
           height: number | null
           height_unit: string | null
           id: string
+          language: string | null
           phone_number: string | null
           photo_description: string | null
           photo_uploaded_at: string | null
@@ -203,6 +207,7 @@ export type Database = {
           height?: number | null
           height_unit?: string | null
           id?: string
+          language?: string | null
           phone_number?: string | null
           photo_description?: string | null
           photo_uploaded_at?: string | null
@@ -221,6 +226,7 @@ export type Database = {
           height?: number | null
           height_unit?: string | null
           id?: string
+          language?: string | null
           phone_number?: string | null
           photo_description?: string | null
           photo_uploaded_at?: string | null
