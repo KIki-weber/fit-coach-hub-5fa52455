@@ -4,12 +4,33 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Activity, Users, Calendar, TrendingUp, Apple, Dumbbell, MessageSquare } from "lucide-react";
 import { Link } from "react-router-dom";
 import heroImage from "@/assets/hero-fitness.jpg";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+
+interface EventItem {
+  id: string;
+  title: string;
+  description: string | null;
+  content: string;
+  event_date: string | null;
+  event_time: string | null;
+  image_url: string | null;
+  created_at: string;
+}
+
 
 const Index = () => {
+  const [events, setEvents] = useState<EventItem[]>([]);
+  useEffect(() => {
+    supabase.from("events").select("*").order("created_at", { ascending: false }).limit(6)
+      .then(({ data }) => { if (data) setEvents(data as any); });
+  }, []);
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      
+
+
       {/* Hero Section with Background Image */}
       <section 
         className="relative min-h-[85vh] md:min-h-[90vh] flex items-center justify-center px-4"
