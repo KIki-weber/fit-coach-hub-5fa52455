@@ -10,10 +10,13 @@ import { AdminNutritionManager } from "@/components/admin/AdminNutritionManager"
 import { AdminEventManager } from "@/components/admin/AdminEventManager";
 import { AdminStatsOverview } from "@/components/admin/AdminStatsOverview";
 import { AdminBookingManager } from "@/components/admin/AdminBookingManager";
+import { AdminAddUser } from "@/components/admin/AdminAddUser";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { Bell } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { LanguageSelector } from "@/components/LanguageSelector";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -126,7 +129,12 @@ const Admin = () => {
       case "overview":
         return <AdminStatsOverview />;
       case "users":
-        return <AdminUserList />;
+        return (
+          <div className="space-y-6">
+            <AdminAddUser />
+            <AdminUserList />
+          </div>
+        );
       case "bookings":
         return <AdminBookingManager />;
       case "events":
