@@ -180,6 +180,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          age: number | null
           created_at: string | null
           email: string | null
           exercise_plan: string | null
@@ -199,6 +200,7 @@ export type Database = {
           weight_unit: string | null
         }
         Insert: {
+          age?: number | null
           created_at?: string | null
           email?: string | null
           exercise_plan?: string | null
@@ -218,6 +220,7 @@ export type Database = {
           weight_unit?: string | null
         }
         Update: {
+          age?: number | null
           created_at?: string | null
           email?: string | null
           exercise_plan?: string | null
