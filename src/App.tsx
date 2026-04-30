@@ -10,6 +10,7 @@ import Nutrition from "./pages/Nutrition";
 import Training from "./pages/Training";
 import Service from "./pages/Service";
 import Auth from "./pages/Auth";
+import ResetPassword from "./pages/ResetPassword";
 import Dashboard from "./pages/Dashboard";
 import Admin from "./pages/Admin";
 import AdminLogin from "./pages/AdminLogin";
@@ -31,6 +32,7 @@ const App = () => (
           <Route path="/training" element={<Training />} />
           <Route path="/services" element={<Service />} />
           <Route path="/auth" element={<Auth />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<Admin />} />
