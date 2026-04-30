@@ -214,6 +214,11 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
               onChange={(e) => setProfile({ ...profile, full_name: e.target.value })} />
           </div>
           <div className="space-y-2">
+            <Label htmlFor="age">Age</Label>
+            <Input id="age" type="number" min="1" max="120" value={profile.age}
+              onChange={(e) => setProfile({ ...profile, age: e.target.value })} />
+          </div>
+          <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input id="email" type="email" value={profile.email} disabled className="bg-muted" />
           </div>
