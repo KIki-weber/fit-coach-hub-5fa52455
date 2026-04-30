@@ -28,11 +28,15 @@ const Auth = () => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [loginData, setLoginData] = useState({ email: "", password: "" });
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [forgotLoading, setForgotLoading] = useState(false);
+  const [showForgot, setShowForgot] = useState(false);
 const [signupData, setSignupData] = useState({
     fullName: "",
     email: "",
     phoneNumber: "",
     password: "",
+    age: "",
     height: "",
     heightUnit: "cm",
     weight: "",
@@ -40,6 +44,43 @@ const [signupData, setSignupData] = useState({
     exercisePlan: "",
     gender: ""
   });
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!forgotEmail) return;
+    setForgotLoading(true);
+    // Verify the email exists in our profiles before "sending"
+    const { data: existing } = await supabase
+      .from("profiles")
+      .select("user_id")
+      .eq("email", forgotEmail.trim().toLowerCase())
+      .maybeSingle();
+
+    if (!existing) {
+      setForgotLoading(false);
+      toast({
+        title: "Email not found",
+        description: "No account is registered with that email.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const { error } = await supabase.auth.resetPasswordForEmail(forgotEmail.trim(), {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    setForgotLoading(false);
+    if (error) {
+      toast({ title: "Failed to send", description: error.message, variant: "destructive" });
+    } else {
+      toast({
+        title: "Reset link sent",
+        description: "Check your inbox. The link is valid for about 20 minutes.",
+      });
+      setShowForgot(false);
+      setForgotEmail("");
+    }
+  };
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -106,6 +147,7 @@ const [signupData, setSignupData] = useState({
           weight_unit: signupData.weightUnit,
           exercise_plan: signupData.exercisePlan,
           gender: signupData.gender,
+          age: signupData.age ? parseInt(signupData.age) : null,
         }
       }
     });
@@ -129,7 +171,8 @@ const [signupData, setSignupData] = useState({
             weight_unit: signupData.weightUnit,
             exercise_plan: signupData.exercisePlan,
             gender: signupData.gender,
-          })
+            age: signupData.age ? parseInt(signupData.age) : null,
+          } as any)
           .eq("user_id", user.id);
       }
 
