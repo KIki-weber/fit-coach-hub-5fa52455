@@ -22,6 +22,7 @@ interface UserProfile {
   weight_unit: string;
   exercise_plan: string;
   gender: string;
+  age: number | null;
   photo_url: string;
   photo_description: string;
   photo_uploaded_at: string;
@@ -274,12 +275,16 @@ export const AdminUserList = () => {
                         </p>
                       )}
                       
-                      <div className="grid grid-cols-2 md:grid-cols-5 gap-2 text-sm">
+                      <div className="grid grid-cols-2 md:grid-cols-6 gap-2 text-sm">
                         <div>
                           <span className="text-muted-foreground">Gender: </span>
                           <span className="font-medium capitalize">
                             {user.gender || "N/A"}
                           </span>
+                        </div>
+                        <div>
+                          <span className="text-muted-foreground">Age: </span>
+                          <span className="font-medium">{user.age ?? "N/A"}</span>
                         </div>
                         <div>
                           <span className="text-muted-foreground">Height: </span>

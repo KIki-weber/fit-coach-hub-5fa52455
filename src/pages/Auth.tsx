@@ -28,11 +28,15 @@ const Auth = () => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [loginData, setLoginData] = useState({ email: "", password: "" });
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [forgotLoading, setForgotLoading] = useState(false);
+  const [showForgot, setShowForgot] = useState(false);
 const [signupData, setSignupData] = useState({
     fullName: "",
     email: "",
     phoneNumber: "",
     password: "",
+    age: "",
     height: "",
     heightUnit: "cm",
     weight: "",
@@ -40,6 +44,43 @@ const [signupData, setSignupData] = useState({
     exercisePlan: "",
     gender: ""
   });
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!forgotEmail) return;
+    setForgotLoading(true);
+    // Verify the email exists in our profiles before "sending"
+    const { data: existing } = await supabase
+      .from("profiles")
+      .select("user_id")
+      .eq("email", forgotEmail.trim().toLowerCase())
+      .maybeSingle();
+
+    if (!existing) {
+      setForgotLoading(false);
+      toast({
+        title: "Email not found",
+        description: "No account is registered with that email.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const { error } = await supabase.auth.resetPasswordForEmail(forgotEmail.trim(), {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    setForgotLoading(false);
+    if (error) {
+      toast({ title: "Failed to send", description: error.message, variant: "destructive" });
+    } else {
+      toast({
+        title: "Reset link sent",
+        description: "Check your inbox. The link is valid for about 20 minutes.",
+      });
+      setShowForgot(false);
+      setForgotEmail("");
+    }
+  };
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -106,6 +147,7 @@ const [signupData, setSignupData] = useState({
           weight_unit: signupData.weightUnit,
           exercise_plan: signupData.exercisePlan,
           gender: signupData.gender,
+          age: signupData.age ? parseInt(signupData.age) : null,
         }
       }
     });
@@ -129,7 +171,8 @@ const [signupData, setSignupData] = useState({
             weight_unit: signupData.weightUnit,
             exercise_plan: signupData.exercisePlan,
             gender: signupData.gender,
-          })
+            age: signupData.age ? parseInt(signupData.age) : null,
+          } as any)
           .eq("user_id", user.id);
       }
 
@@ -189,7 +232,25 @@ const [signupData, setSignupData] = useState({
                   <Button type="submit" className="w-full bg-gradient-primary" disabled={loading}>
                     {loading ? "Logging in..." : "Login"}
                   </Button>
+                  <button type="button" onClick={() => setShowForgot(s => !s)}
+                    className="text-sm text-primary hover:underline w-full text-center">
+                    Forgot password?
+                  </button>
                 </form>
+
+                {showForgot && (
+                  <form onSubmit={handleForgotPassword} className="mt-4 p-4 rounded-lg bg-muted/40 space-y-3">
+                    <Label htmlFor="forgot-email">Enter your account email</Label>
+                    <Input id="forgot-email" type="email" required value={forgotEmail}
+                      onChange={(e) => setForgotEmail(e.target.value)} placeholder="you@example.com" />
+                    <p className="text-xs text-muted-foreground">
+                      We'll send a reset link valid for ~20 minutes (only if the email exists).
+                    </p>
+                    <Button type="submit" disabled={forgotLoading} className="w-full">
+                      {forgotLoading ? "Sending…" : "Send reset link"}
+                    </Button>
+                  </form>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
@@ -231,6 +292,14 @@ const [signupData, setSignupData] = useState({
                       required
                       placeholder="+1234567890"
                     />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-age">Age</Label>
+                    <Input id="signup-age" type="number" min="1" max="120" required
+                      value={signupData.age}
+                      onChange={(e) => setSignupData({ ...signupData, age: e.target.value })}
+                      placeholder="e.g. 30" />
                   </div>
 
                   {/* Height with unit selection */}

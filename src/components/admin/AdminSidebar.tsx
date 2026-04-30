@@ -6,6 +6,7 @@ import {
   CalendarDays,
   BarChart3,
   LogOut,
+  KeyRound,
   ClipboardList
 } from "lucide-react";
 import {
@@ -39,6 +40,7 @@ const menuItems = [
   { id: "schedules", title: "Schedules", icon: Calendar },
   { id: "nutrition", title: "Nutrition Plans", icon: Utensils },
   { id: "messages", title: "Messages", icon: Mail },
+  { id: "passwords", title: "Passwords", icon: KeyRound },
 ];
 
 export function AdminSidebar({ activeSection, onSectionChange, onLogout, newUserCount }: AdminSidebarProps) {

@@ -26,6 +26,7 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
     full_name: "",
     email: "",
     phone_number: "",
+    age: "",
     height: "",            // displayed value (in selected unit)
     height_unit: "in",     // default to imperial (American focus)
     weight: "",
@@ -61,6 +62,7 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
         full_name: data.full_name || "",
         email: data.email || "",
         phone_number: data.phone_number || "",
+        age: (data as any).age != null ? String((data as any).age) : "",
         height: displayH,
         height_unit: heightUnit,
         weight: displayW,
@@ -137,6 +139,7 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
       .update({
         full_name: profile.full_name,
         phone_number: profile.phone_number,
+        age: profile.age ? parseInt(profile.age) : null,
         height: heightCm,
         weight: weightKg,
         height_unit: profile.height_unit,
@@ -209,6 +212,11 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
             <Label htmlFor="full-name">Full Name</Label>
             <Input id="full-name" value={profile.full_name}
               onChange={(e) => setProfile({ ...profile, full_name: e.target.value })} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="age">Age</Label>
+            <Input id="age" type="number" min="1" max="120" value={profile.age}
+              onChange={(e) => setProfile({ ...profile, age: e.target.value })} />
           </div>
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>

@@ -17,9 +17,10 @@ interface NutritionData {
 interface AINutritionRecommendationsProps {
   bmi: number | null;
   gender?: string | null;
+  age?: number | null;
 }
 
-export const AINutritionRecommendations = ({ bmi, gender }: AINutritionRecommendationsProps) => {
+export const AINutritionRecommendations = ({ bmi, gender, age }: AINutritionRecommendationsProps) => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [nutritionData, setNutritionData] = useState<NutritionData | null>(null);
@@ -37,7 +38,7 @@ export const AINutritionRecommendations = ({ bmi, gender }: AINutritionRecommend
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("ai-nutrition", {
-        body: { bmi, gender },
+        body: { bmi, gender, age },
       });
 
       if (error) throw error;

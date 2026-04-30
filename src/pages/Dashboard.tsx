@@ -14,6 +14,8 @@ import { MessagesView } from "@/components/dashboard/MessagesView";
 import { NutritionView } from "@/components/dashboard/NutritionView";
 import { EventsView } from "@/components/dashboard/EventsView";
 import { BookingView } from "@/components/dashboard/BookingView";
+import { HeartRateChecker } from "@/components/dashboard/HeartRateChecker";
+import { ChangePassword } from "@/components/dashboard/ChangePassword";
 import logoRunner from "@/assets/logo-runner.png";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
@@ -28,6 +30,7 @@ const Dashboard = () => {
   const [bmi, setBmi] = useState<number | null>(null);
   const [bmr, setBmr] = useState<number | null>(null);
   const [gender, setGender] = useState<string | null>(null);
+  const [age, setAge] = useState<number | null>(null);
   const [activeSection, setActiveSection] = useState("profile");
 
   useEffect(() => {
@@ -57,13 +60,12 @@ const Dashboard = () => {
   const fetchUserProfile = async (userId: string) => {
     const { data } = await supabase
       .from("profiles")
-      .select("gender")
+      .select("gender, age")
       .eq("user_id", userId)
       .single();
-    
-    if (data?.gender) {
-      setGender(data.gender);
-    }
+
+    if (data?.gender) setGender(data.gender);
+    if ((data as any)?.age) setAge((data as any).age);
   };
 
   const handleLogout = async () => {
@@ -106,17 +108,21 @@ const Dashboard = () => {
       case "nutrition":
         return (
           <div className="space-y-6">
-            <AINutritionRecommendations bmi={bmi} gender={gender} />
+            <AINutritionRecommendations bmi={bmi} gender={gender} age={age} />
             <AutoNutritionRecommendations bmi={bmi} bmr={bmr} />
             <NutritionView />
           </div>
         );
+      case "heartrate":
+        return <HeartRateChecker age={age} />;
       case "booking":
         return <BookingView userId={user?.id || ""} />;
       case "schedule":
         return <ScheduleView userId={user?.id || ""} />;
       case "messages":
         return <MessagesView userId={user?.id || ""} />;
+      case "password":
+        return <ChangePassword />;
       default:
         return <UserProfile userId={user?.id || ""} />;
     }
@@ -129,9 +135,11 @@ const Dashboard = () => {
       case "events": return "Events";
       case "calculators": return "BMI & BMR Calculator";
       case "nutrition": return "AI Nutrition Recommendations";
+      case "heartrate": return "Heart Rate Checker";
       case "booking": return "Book with Coach Dave";
       case "schedule": return "My Schedule";
       case "messages": return "Messages";
+      case "password": return "Change Password";
       default: return "Dashboard";
     }
   };

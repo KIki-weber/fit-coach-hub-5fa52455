@@ -7,6 +7,8 @@ import {
   Mail, 
   CalendarDays,
   Activity,
+  Heart,
+  KeyRound,
   LogOut
 } from "lucide-react";
 import {
@@ -36,9 +38,11 @@ const menuItems = [
   { id: "booking", title: "Book with Coach Dave", icon: Activity },
   { id: "events", title: "Events", icon: CalendarDays },
   { id: "calculators", title: "BMI & BMR Calculator", icon: Calculator },
+  { id: "heartrate", title: "Heart Rate Checker", icon: Heart },
   { id: "nutrition", title: "AI Nutrition", icon: Utensils },
   { id: "schedule", title: "My Schedule", icon: Calendar },
   { id: "messages", title: "Messages", icon: Mail },
+  { id: "password", title: "Change Password", icon: KeyRound },
 ];
 
 export function DashboardSidebar({ activeSection, onSectionChange, onLogout }: DashboardSidebarProps) {

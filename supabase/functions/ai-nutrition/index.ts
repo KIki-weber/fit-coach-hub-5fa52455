@@ -11,7 +11,7 @@ serve(async (req) => {
   }
 
   try {
-    const { bmi, gender } = await req.json();
+    const { bmi, gender, age } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     
     if (!LOVABLE_API_KEY) {
@@ -24,13 +24,23 @@ serve(async (req) => {
     else if (bmi < 30) bmiCategory = "overweight";
     else bmiCategory = "obese";
 
+    let ageGroup = "";
+    if (age) {
+      if (age < 18) ageGroup = "adolescent (growth + higher protein/calcium needs)";
+      else if (age < 30) ageGroup = "young adult (high metabolism, muscle-building window)";
+      else if (age < 50) ageGroup = "adult (maintain lean mass, watch refined carbs)";
+      else if (age < 65) ageGroup = "middle-aged adult (more protein for sarcopenia, more fiber)";
+      else ageGroup = "senior (higher protein, B12, vitamin D, calcium; easy-to-digest meals)";
+    }
+
     const genderContext = gender ? `The user is ${gender}. Consider gender-specific nutritional needs such as:
 - ${gender === 'female' ? 'Higher iron requirements, especially during menstruation' : 'Higher protein needs for muscle maintenance'}
 - ${gender === 'female' ? 'Calcium needs for bone health' : 'Higher calorie baseline'}
 - ${gender === 'female' ? 'Folate requirements' : 'Zinc for testosterone production'}` : '';
 
-    const prompt = `Based on a BMI of ${bmi} (${bmiCategory})${gender ? ` for a ${gender} individual` : ''}, provide personalized nutrition recommendations. 
+    const prompt = `Based on a BMI of ${bmi} (${bmiCategory})${gender ? ` for a ${gender} individual` : ''}${age ? `, age ${age} (${ageGroup})` : ''}, provide personalized nutrition recommendations. 
 ${genderContext}
+${age ? `Adjust calorie target and macro split for the user's age group: ${ageGroup}.` : ''}
 
 Include:
 1. Daily calorie target (adjusted for gender if specified)
