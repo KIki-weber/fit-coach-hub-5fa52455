@@ -8,11 +8,19 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Calendar, Plus } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface UserOption {
   user_id: string;
   full_name: string;
   email: string;
+  age: number | null;
+  height: number | null;
+  height_unit: string | null;
+  weight: number | null;
+  weight_unit: string | null;
+  photo_url: string | null;
+  exercise_plan: string | null;
 }
 
 export const AdminScheduleManager = () => {
@@ -34,13 +42,15 @@ export const AdminScheduleManager = () => {
   const fetchUsers = async () => {
     const { data } = await supabase
       .from("profiles")
-      .select("user_id, full_name, email")
+      .select("user_id, full_name, email, age, height, height_unit, weight, weight_unit, photo_url, exercise_plan")
       .order("full_name");
 
     if (data) {
-      setUsers(data);
+      setUsers(data as any);
     }
   };
+
+  const selected = users.find(u => u.user_id === selectedUser);
 
   const handleCreateSchedule = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -139,6 +149,24 @@ export const AdminScheduleManager = () => {
               </SelectContent>
             </Select>
           </div>
+
+          {selected && (
+            <div className="p-4 bg-muted/40 rounded-lg border border-border flex gap-4">
+              <Avatar className="w-16 h-16">
+                <AvatarImage src={selected.photo_url || undefined} />
+                <AvatarFallback>{selected.full_name?.charAt(0) || "U"}</AvatarFallback>
+              </Avatar>
+              <div className="flex-1 text-sm">
+                <p className="font-semibold">{selected.full_name || selected.email}</p>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-2 text-muted-foreground">
+                  <div>Age: <span className="text-foreground font-medium">{selected.age ?? "N/A"}</span></div>
+                  <div>Height: <span className="text-foreground font-medium">{selected.height ? `${selected.height} ${selected.height_unit || 'cm'}` : "N/A"}</span></div>
+                  <div>Weight: <span className="text-foreground font-medium">{selected.weight ? `${selected.weight} ${selected.weight_unit || 'kg'}` : "N/A"}</span></div>
+                  <div>Plan: <span className="text-foreground font-medium">{selected.exercise_plan || "N/A"}</span></div>
+                </div>
+              </div>
+            </div>
+          )}
 
           <div className="space-y-2">
             <Label htmlFor="schedule-title">Title</Label>
