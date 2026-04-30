@@ -232,7 +232,25 @@ const [signupData, setSignupData] = useState({
                   <Button type="submit" className="w-full bg-gradient-primary" disabled={loading}>
                     {loading ? "Logging in..." : "Login"}
                   </Button>
+                  <button type="button" onClick={() => setShowForgot(s => !s)}
+                    className="text-sm text-primary hover:underline w-full text-center">
+                    Forgot password?
+                  </button>
                 </form>
+
+                {showForgot && (
+                  <form onSubmit={handleForgotPassword} className="mt-4 p-4 rounded-lg bg-muted/40 space-y-3">
+                    <Label htmlFor="forgot-email">Enter your account email</Label>
+                    <Input id="forgot-email" type="email" required value={forgotEmail}
+                      onChange={(e) => setForgotEmail(e.target.value)} placeholder="you@example.com" />
+                    <p className="text-xs text-muted-foreground">
+                      We'll send a reset link valid for ~20 minutes (only if the email exists).
+                    </p>
+                    <Button type="submit" disabled={forgotLoading} className="w-full">
+                      {forgotLoading ? "Sending…" : "Send reset link"}
+                    </Button>
+                  </form>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
