@@ -294,6 +294,14 @@ const [signupData, setSignupData] = useState({
                     />
                   </div>
 
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-age">Age</Label>
+                    <Input id="signup-age" type="number" min="1" max="120" required
+                      value={signupData.age}
+                      onChange={(e) => setSignupData({ ...signupData, age: e.target.value })}
+                      placeholder="e.g. 30" />
+                  </div>
+
                   {/* Height with unit selection */}
                   <div className="space-y-2">
                     <Label>Height</Label>
