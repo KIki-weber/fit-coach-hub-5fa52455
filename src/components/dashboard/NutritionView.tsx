@@ -13,6 +13,7 @@ interface Nutrition {
   carbs: number;
   fats: number;
   notes: string;
+  pdf_url?: string | null;
   created_at: string;
 }
 
