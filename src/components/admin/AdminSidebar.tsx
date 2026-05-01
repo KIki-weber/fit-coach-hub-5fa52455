@@ -1,13 +1,13 @@
-import { 
-  Users, 
-  Calendar, 
-  Mail, 
-  Utensils, 
+import {
+  Users,
+  Calendar,
+  Mail,
+  Utensils,
   CalendarDays,
   BarChart3,
   LogOut,
   KeyRound,
-  ClipboardList
+  ClipboardList,
 } from "lucide-react";
 import {
   Sidebar,
@@ -20,10 +20,12 @@ import {
   SidebarMenuItem,
   SidebarHeader,
   SidebarFooter,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import logoRunner from "@/assets/logo-runner.png";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useI18n } from "@/lib/i18n";
 
 interface AdminSidebarProps {
   activeSection: string;
@@ -32,26 +34,34 @@ interface AdminSidebarProps {
   newUserCount: number;
 }
 
-const menuItems = [
-  { id: "overview", title: "Overview", icon: BarChart3 },
-  { id: "users", title: "Registered Users", icon: Users, showBadge: true },
-  { id: "bookings", title: "Booking Requests", icon: ClipboardList },
-  { id: "events", title: "Events", icon: CalendarDays },
-  { id: "schedules", title: "Schedules", icon: Calendar },
-  { id: "nutrition", title: "Nutrition Plans", icon: Utensils },
-  { id: "messages", title: "Messages", icon: Mail },
-  { id: "passwords", title: "Passwords", icon: KeyRound },
-];
-
 export function AdminSidebar({ activeSection, onSectionChange, onLogout, newUserCount }: AdminSidebarProps) {
+  const { isMobile, setOpenMobile } = useSidebar();
+  const { t } = useI18n();
+
+  const menuItems = [
+    { id: "overview", title: t("overview"), icon: BarChart3 },
+    { id: "users", title: t("registeredUsers"), icon: Users, showBadge: true },
+    { id: "bookings", title: t("bookingRequests"), icon: ClipboardList },
+    { id: "events", title: t("events"), icon: CalendarDays },
+    { id: "schedules", title: t("schedules"), icon: Calendar },
+    { id: "nutrition", title: t("nutritionPlans"), icon: Utensils },
+    { id: "messages", title: t("messages"), icon: Mail },
+    { id: "passwords", title: t("passwords"), icon: KeyRound },
+  ];
+
+  const handleClick = (id: string) => {
+    onSectionChange(id);
+    if (isMobile) setOpenMobile(false);
+  };
+
   return (
     <Sidebar className="border-r border-border">
       <SidebarHeader className="border-b border-border p-4">
         <div className="flex items-center gap-3">
-          <img src={logoRunner} alt="VitalityHub" className="w-8 h-8" />
+          <img src={logoRunner} alt="OneLove Fitness" className="w-8 h-8" />
           <div>
-            <h2 className="font-bold text-lg">VitalityHub</h2>
-            <p className="text-xs text-muted-foreground">Admin Panel</p>
+            <h2 className="font-bold text-lg bg-gradient-primary bg-clip-text text-transparent">OneLove Fitness</h2>
+            <p className="text-xs text-muted-foreground">{t("adminPanel")}</p>
           </div>
         </div>
       </SidebarHeader>
@@ -65,14 +75,14 @@ export function AdminSidebar({ activeSection, onSectionChange, onLogout, newUser
                 <SidebarMenuItem key={item.id}>
                   <SidebarMenuButton
                     isActive={activeSection === item.id}
-                    onClick={() => onSectionChange(item.id)}
+                    onClick={() => handleClick(item.id)}
                     className="cursor-pointer"
                   >
                     <item.icon className="h-4 w-4" />
                     <span className="flex-1">{item.title}</span>
                     {item.showBadge && newUserCount > 0 && (
                       <Badge variant="destructive" className="ml-auto text-xs px-1.5 py-0.5">
-                        {newUserCount} new
+                        {newUserCount}
                       </Badge>
                     )}
                   </SidebarMenuButton>
@@ -86,7 +96,7 @@ export function AdminSidebar({ activeSection, onSectionChange, onLogout, newUser
       <SidebarFooter className="border-t border-border p-4">
         <Button variant="ghost" onClick={onLogout} className="w-full justify-start">
           <LogOut className="h-4 w-4 mr-2" />
-          Logout
+          {t("logout")}
         </Button>
       </SidebarFooter>
     </Sidebar>

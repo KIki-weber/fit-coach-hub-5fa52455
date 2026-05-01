@@ -81,7 +81,7 @@ const Dashboard = () => {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <img src={logoRunner} alt="VitalityHub" className="w-12 h-12 mx-auto mb-4 animate-pulse" />
+          <img src={logoRunner} alt="OneLove Fitness" className="w-12 h-12 mx-auto mb-4 animate-pulse" />
           <p className="text-muted-foreground">Loading...</p>
         </div>
       </div>
@@ -156,7 +156,7 @@ const Dashboard = () => {
         <main className="flex-1 flex flex-col">
           {/* Header */}
           <header className="border-b border-border bg-card px-3 sm:px-6 py-3 sm:py-4 flex items-center gap-2 sm:gap-4 flex-wrap">
-            <SidebarTrigger />
+            <SidebarTrigger className="bg-primary/10 hover:bg-primary/20 text-primary border border-primary/30" />
             <h1 className="text-lg sm:text-2xl font-bold flex-1 truncate">{getSectionTitle()}</h1>
             <LanguageSelector compact persistToProfile />
             <ThemeToggle />

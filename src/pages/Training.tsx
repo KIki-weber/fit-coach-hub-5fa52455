@@ -184,7 +184,7 @@ const Training = () => {
             Ready to Transform Your Body?
           </h2>
           <p className="text-base md:text-xl text-white/90 max-w-2xl mx-auto px-2">
-            Join VitalityHub today and get access to personalized training programs, expert coaching, and a supportive community
+            Join OneLove Fitness today and get access to personalized training programs, expert coaching, and a supportive community
           </p>
           <Link to="/auth?tab=signup">
             <Button size="lg" className="bg-white text-primary hover:bg-white/90 shadow-smooth">
@@ -197,7 +197,7 @@ const Training = () => {
       {/* Footer */}
       <footer className="py-6 md:py-8 px-4 border-t border-border">
         <div className="container mx-auto text-center text-muted-foreground text-sm md:text-base">
-          <p>© 2024 VitalityHub. All rights reserved.</p>
+          <p>© 2026 OneLove Fitness. All rights reserved.</p>
         </div>
       </footer>
     </div>

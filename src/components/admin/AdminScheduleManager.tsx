@@ -27,6 +27,7 @@ export const AdminScheduleManager = () => {
   const { toast } = useToast();
   const [users, setUsers] = useState<UserOption[]>([]);
   const [selectedUser, setSelectedUser] = useState("");
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [scheduleData, setScheduleData] = useState({
     title: "",
     description: "",
@@ -34,6 +35,19 @@ export const AdminScheduleManager = () => {
     time: "",
   });
   const [loading, setLoading] = useState(false);
+
+  const uploadPdf = async (): Promise<string | null> => {
+    if (!pdfFile) return null;
+    const ext = pdfFile.name.split(".").pop() || "pdf";
+    const path = `schedules/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+    const { error } = await supabase.storage.from("plan-pdfs").upload(path, pdfFile, { contentType: pdfFile.type || "application/pdf" });
+    if (error) {
+      toast({ title: "PDF upload failed", description: error.message, variant: "destructive" });
+      return null;
+    }
+    const { data } = supabase.storage.from("plan-pdfs").getPublicUrl(path);
+    return data.publicUrl;
+  };
 
   useEffect(() => {
     fetchUsers();
@@ -65,58 +79,48 @@ export const AdminScheduleManager = () => {
 
     setLoading(true);
     const { data: { session } } = await supabase.auth.getSession();
+    const pdf_url = await uploadPdf();
+
+    const reset = () => {
+      setScheduleData({ title: "", description: "", date: "", time: "" });
+      setPdfFile(null);
+      setSelectedUser("");
+    };
 
     if (selectedUser === "all") {
-      // Send to all users
       const schedules = users.map(user => ({
         user_id: user.user_id,
         title: scheduleData.title,
         description: scheduleData.description,
         date: scheduleData.date,
-        time: scheduleData.time,
+        time: scheduleData.time || null,
+        pdf_url,
         created_by: session?.user.id,
-      }));
+      })) as any;
 
       const { error } = await supabase.from("schedules").insert(schedules);
-
       if (error) {
-        toast({
-          title: "Failed to create schedules",
-          description: error.message,
-          variant: "destructive",
-        });
+        toast({ title: "Failed to create schedules", description: error.message, variant: "destructive" });
       } else {
-        toast({
-          title: "Schedules Created",
-          description: `Training schedule sent to all ${users.length} users successfully.`,
-        });
-        setScheduleData({ title: "", description: "", date: "", time: "" });
-        setSelectedUser("");
+        toast({ title: "Schedules Created", description: `Sent to all ${users.length} users.` });
+        reset();
       }
     } else {
-      // Send to single user
       const { error } = await supabase.from("schedules").insert({
         user_id: selectedUser,
         title: scheduleData.title,
         description: scheduleData.description,
         date: scheduleData.date,
         time: scheduleData.time || null,
+        pdf_url,
         created_by: session?.user.id,
-      });
+      } as any);
 
       if (error) {
-        toast({
-          title: "Failed to create schedule",
-          description: error.message,
-          variant: "destructive",
-        });
+        toast({ title: "Failed to create schedule", description: error.message, variant: "destructive" });
       } else {
-        toast({
-          title: "Schedule Created",
-          description: "Training schedule has been sent to the user.",
-        });
-        setScheduleData({ title: "", description: "", date: "", time: "" });
-        setSelectedUser("");
+        toast({ title: "Schedule Created", description: "Training schedule has been sent to the user." });
+        reset();
       }
     }
     setLoading(false);
@@ -210,6 +214,17 @@ export const AdminScheduleManager = () => {
                 onChange={(e) => setScheduleData({ ...scheduleData, time: e.target.value })}
               />
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="schedule-pdf">Attach PDF (optional)</Label>
+            <Input
+              id="schedule-pdf"
+              type="file"
+              accept="application/pdf"
+              onChange={(e) => setPdfFile(e.target.files?.[0] || null)}
+            />
+            {pdfFile && <p className="text-xs text-muted-foreground">Selected: {pdfFile.name}</p>}
           </div>
 
           <Button type="submit" className="w-full bg-gradient-primary" disabled={loading}>

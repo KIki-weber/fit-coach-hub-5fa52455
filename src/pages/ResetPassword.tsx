@@ -55,8 +55,8 @@ const ResetPassword = () => {
     <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="flex items-center justify-center gap-2 mb-8">
-          <img src={logoRunner} alt="VitalityHub" className="w-10 h-10" />
-          <span className="text-2xl font-bold text-white">VitalityHub</span>
+          <img src={logoRunner} alt="OneLove Fitness" className="w-10 h-10" />
+          <span className="text-2xl font-bold text-white">OneLove Fitness</span>
         </div>
         <Card>
           <CardHeader>

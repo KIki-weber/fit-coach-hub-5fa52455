@@ -68,7 +68,7 @@ const AdminLogin = () => {
       <Card className="w-full max-w-md shadow-elegant">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
-            <img src={logoRunner} alt="VitalityHub" className="w-12 h-12" />
+            <img src={logoRunner} alt="OneLove Fitness" className="w-12 h-12" />
           </div>
           <CardTitle className="text-2xl">Admin Login</CardTitle>
           <CardDescription>

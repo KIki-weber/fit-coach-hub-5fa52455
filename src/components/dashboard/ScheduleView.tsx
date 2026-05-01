@@ -10,6 +10,7 @@ interface Schedule {
   description: string;
   date: string;
   time: string;
+  pdf_url?: string | null;
 }
 
 interface ScheduleViewProps {
@@ -78,6 +79,17 @@ export const ScheduleView = ({ userId }: ScheduleViewProps) => {
                 </div>
                 {schedule.description && (
                   <p className="text-muted-foreground">{schedule.description}</p>
+                )}
+                {schedule.pdf_url && (
+                  <a
+                    href={schedule.pdf_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    download
+                    className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-primary/10 text-primary border border-primary/30 text-sm font-medium hover:bg-primary/20 transition"
+                  >
+                    📄 Download Plan PDF
+                  </a>
                 )}
               </div>
             ))}

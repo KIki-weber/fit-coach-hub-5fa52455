@@ -13,6 +13,7 @@ interface Nutrition {
   carbs: number;
   fats: number;
   notes: string;
+  pdf_url?: string | null;
   created_at: string;
 }
 
@@ -123,6 +124,18 @@ export const NutritionView = () => {
                     <span className="text-xs text-muted-foreground">Notes:</span>
                     <p className="text-sm mt-1">{plan.notes}</p>
                   </div>
+                )}
+
+                {plan.pdf_url && (
+                  <a
+                    href={plan.pdf_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    download
+                    className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-primary/10 text-primary border border-primary/30 text-sm font-medium hover:bg-primary/20 transition"
+                  >
+                    📄 Download PDF Plan
+                  </a>
                 )}
 
                 <p className="text-xs text-muted-foreground mt-3">

@@ -144,7 +144,7 @@ const Nutrition = () => {
       {/* Footer */}
       <footer className="py-6 md:py-8 px-4 border-t border-border">
         <div className="container mx-auto text-center text-muted-foreground text-sm md:text-base">
-          <p>© 2024 VitalityHub. All rights reserved.</p>
+          <p>© 2026 OneLove Fitness. All rights reserved.</p>
         </div>
       </footer>
     </div>
