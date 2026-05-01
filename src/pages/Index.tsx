@@ -1,11 +1,12 @@
 import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Activity, Users, Calendar, TrendingUp, Apple, Dumbbell, MessageSquare } from "lucide-react";
+import { Activity, Users, Calendar, TrendingUp, Apple, Dumbbell, MessageSquare, Zap, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import heroImage from "@/assets/hero-fitness.jpg";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 interface EventItem {
   id: string;
