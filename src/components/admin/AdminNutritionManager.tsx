@@ -21,6 +21,7 @@ export const AdminNutritionManager = () => {
   const { toast } = useToast();
   const [users, setUsers] = useState<UserOption[]>([]);
   const [selectedUser, setSelectedUser] = useState("");
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [nutritionData, setNutritionData] = useState({
     title: "",
     description: "",
@@ -32,6 +33,19 @@ export const AdminNutritionManager = () => {
     notes: "",
   });
   const [loading, setLoading] = useState(false);
+
+  const uploadPdf = async (): Promise<string | null> => {
+    if (!pdfFile) return null;
+    const ext = pdfFile.name.split(".").pop() || "pdf";
+    const path = `nutrition/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+    const { error } = await supabase.storage.from("plan-pdfs").upload(path, pdfFile, { contentType: pdfFile.type || "application/pdf" });
+    if (error) {
+      toast({ title: "PDF upload failed", description: error.message, variant: "destructive" });
+      return null;
+    }
+    const { data } = supabase.storage.from("plan-pdfs").getPublicUrl(path);
+    return data.publicUrl;
+  };
 
   useEffect(() => {
     fetchUsers();
