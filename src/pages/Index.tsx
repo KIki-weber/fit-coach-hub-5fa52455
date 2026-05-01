@@ -213,30 +213,67 @@ const Index = () => {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {events.map((ev) => (
-                <Card key={ev.id} className="shadow-card hover:shadow-smooth transition-shadow overflow-hidden">
-                  {ev.image_url && (
-                    <img src={ev.image_url} alt={ev.title} className="w-full h-44 object-cover" />
+                <button
+                  key={ev.id}
+                  onClick={() => setActive(ev)}
+                  className="group text-left rounded-2xl bg-card border border-border hover:border-primary/50 shadow-card hover:shadow-glow transition-all overflow-hidden"
+                >
+                  {ev.image_url ? (
+                    <div className="relative h-48 overflow-hidden">
+                      <img src={ev.image_url} alt={ev.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
+                      {ev.event_date && (
+                        <span className="absolute top-3 left-3 px-3 py-1 rounded-full bg-primary text-primary-foreground text-xs font-bold shadow-glow">
+                          {new Date(ev.event_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                        </span>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="h-32 bg-gradient-primary" />
                   )}
-                  <CardContent className="pt-5 space-y-2">
-                    <h3 className="text-lg font-semibold">{ev.title}</h3>
+                  <div className="p-5 space-y-2">
+                    <h3 className="text-lg font-bold group-hover:text-primary transition-colors">{ev.title}</h3>
                     {ev.description && (
-                      <p className="text-sm text-muted-foreground">{ev.description}</p>
+                      <p className="text-sm text-muted-foreground line-clamp-2">{ev.description}</p>
                     )}
-                    <p className="text-sm text-foreground/80 line-clamp-3">{ev.content}</p>
-                    {(ev.event_date || ev.event_time) && (
-                      <div className="flex items-center gap-2 text-sm text-primary font-medium pt-2">
-                        <Calendar className="w-4 h-4" />
-                        {ev.event_date && new Date(ev.event_date).toLocaleDateString()}
-                        {ev.event_time && ` • ${ev.event_time}`}
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
+                    <p className="text-sm text-foreground/80 line-clamp-2">{ev.content}</p>
+                    <div className="inline-flex items-center gap-1 text-sm text-primary font-semibold pt-1">
+                      View details <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </div>
+                </button>
               ))}
             </div>
           </div>
         </section>
       )}
+
+      <Dialog open={!!active} onOpenChange={(o) => !o && setActive(null)}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-xl sm:text-2xl">{active?.title}</DialogTitle>
+            {active?.description && <DialogDescription>{active.description}</DialogDescription>}
+          </DialogHeader>
+          {active?.image_url && (
+            <img src={active.image_url} alt={active.title} className="w-full max-h-[380px] object-cover rounded-lg" />
+          )}
+          {(active?.event_date || active?.event_time) && (
+            <div className="flex flex-wrap gap-2 text-sm">
+              {active?.event_date && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/15 text-primary font-medium">
+                  <Calendar className="w-4 h-4" /> {new Date(active.event_date).toLocaleDateString()}
+                </span>
+              )}
+              {active?.event_time && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent/15 text-accent font-medium">
+                  {active.event_time}
+                </span>
+              )}
+            </div>
+          )}
+          <p className="text-foreground/90 whitespace-pre-wrap leading-relaxed">{active?.content}</p>
+        </DialogContent>
+      </Dialog>
 
 
       <section className="py-10 md:py-16 px-4 bg-gradient-hero">
@@ -245,10 +282,10 @@ const Index = () => {
             Ready to Start Your Journey?
           </h2>
           <p className="text-base md:text-xl text-white/90 max-w-2xl mx-auto px-2">
-            Join thousands of people transforming their lives with personalized coaching
+            Join thousands of people transforming their lives with OneLove Fitness coaching
           </p>
           <Link to="/auth?tab=signup">
-            <Button size="lg" className="bg-white text-primary hover:bg-white/90 shadow-smooth">
+            <Button size="lg" className="bg-white text-primary hover:bg-white/90 shadow-smooth font-semibold">
               Get Started Now
             </Button>
           </Link>
@@ -258,7 +295,7 @@ const Index = () => {
       {/* Footer */}
       <footer className="py-6 md:py-8 px-4 border-t border-border">
         <div className="container mx-auto text-center text-muted-foreground text-sm md:text-base">
-          <p>© 2024 VitalityHub. All rights reserved.</p>
+          <p>© 2026 OneLove Fitness. All rights reserved.</p>
         </div>
       </footer>
     </div>
