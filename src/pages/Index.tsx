@@ -79,7 +79,7 @@ const Index = () => {
       <section className="py-10 md:py-16 px-4 bg-secondary/30">
         <div className="container mx-auto">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 md:mb-12">
-            Why Choose VitalityHub?
+            Why Choose <span className="text-primary">OneLove Fitness</span>?
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             <Card className="shadow-card hover:shadow-smooth transition-shadow">
