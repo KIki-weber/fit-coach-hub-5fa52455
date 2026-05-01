@@ -75,49 +75,37 @@ export const AdminNutritionManager = () => {
 
     setLoading(true);
     const { data: { session } } = await supabase.auth.getSession();
+    const pdf_url = await uploadPdf();
+
+    const reset = () => {
+      setNutritionData({ title: "", description: "", protein: "", vitamins: "", calories: "", carbs: "", fats: "", notes: "" });
+      setPdfFile(null);
+      setSelectedUser("");
+    };
 
     if (selectedUser === "all") {
-      // Send to all users
       const nutritionPlans = users.map(user => ({
         user_id: user.user_id,
         title: nutritionData.title,
-        description: nutritionData.description,
+        description: nutritionData.description || null,
         protein: nutritionData.protein ? parseFloat(nutritionData.protein) : null,
         calories: nutritionData.calories ? parseFloat(nutritionData.calories) : null,
         carbs: nutritionData.carbs ? parseFloat(nutritionData.carbs) : null,
         fats: nutritionData.fats ? parseFloat(nutritionData.fats) : null,
-        vitamins: nutritionData.vitamins,
-        notes: nutritionData.notes,
+        vitamins: nutritionData.vitamins || null,
+        notes: nutritionData.notes || null,
+        pdf_url,
         created_by: session?.user.id,
-      }));
+      })) as any;
 
       const { error } = await supabase.from("nutrition").insert(nutritionPlans);
-
       if (error) {
-        toast({
-          title: "Failed to create nutrition plans",
-          description: error.message,
-          variant: "destructive",
-        });
+        toast({ title: "Failed to create nutrition plans", description: error.message, variant: "destructive" });
       } else {
-        toast({
-          title: "Nutrition Plans Created",
-          description: `Nutrition plan sent to all ${users.length} users successfully.`,
-        });
-        setNutritionData({
-          title: "",
-          description: "",
-          protein: "",
-          vitamins: "",
-          calories: "",
-          carbs: "",
-          fats: "",
-          notes: "",
-        });
-        setSelectedUser("");
+        toast({ title: "Nutrition Plans Created", description: `Sent to all ${users.length} users.` });
+        reset();
       }
     } else {
-      // Send to single user
       const { error } = await supabase.from("nutrition").insert({
         user_id: selectedUser,
         title: nutritionData.title,
@@ -128,31 +116,15 @@ export const AdminNutritionManager = () => {
         carbs: nutritionData.carbs ? parseFloat(nutritionData.carbs) : null,
         fats: nutritionData.fats ? parseFloat(nutritionData.fats) : null,
         notes: nutritionData.notes || null,
+        pdf_url,
         created_by: session?.user.id,
-      });
+      } as any);
 
       if (error) {
-        toast({
-          title: "Failed to create nutrition plan",
-          description: error.message,
-          variant: "destructive",
-        });
+        toast({ title: "Failed to create nutrition plan", description: error.message, variant: "destructive" });
       } else {
-        toast({
-          title: "Nutrition Plan Created",
-          description: "Nutrition plan has been assigned to the user.",
-        });
-        setNutritionData({
-          title: "",
-          description: "",
-          protein: "",
-          vitamins: "",
-          calories: "",
-          carbs: "",
-          fats: "",
-          notes: "",
-        });
-        setSelectedUser("");
+        toast({ title: "Nutrition Plan Created", description: "Plan has been assigned to the user." });
+        reset();
       }
     }
     setLoading(false);
