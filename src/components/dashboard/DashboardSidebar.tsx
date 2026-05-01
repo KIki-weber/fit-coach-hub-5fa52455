@@ -1,15 +1,15 @@
-import { 
-  User, 
-  Camera, 
-  Calendar, 
-  Calculator, 
-  Utensils, 
-  Mail, 
+import {
+  User,
+  Camera,
+  Calendar,
+  Calculator,
+  Utensils,
+  Mail,
   CalendarDays,
   Activity,
   Heart,
   KeyRound,
-  LogOut
+  LogOut,
 } from "lucide-react";
 import {
   Sidebar,
@@ -22,9 +22,11 @@ import {
   SidebarMenuItem,
   SidebarHeader,
   SidebarFooter,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import logoRunner from "@/assets/logo-runner.png";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/lib/i18n";
 
 interface DashboardSidebarProps {
   activeSection: string;
@@ -32,28 +34,36 @@ interface DashboardSidebarProps {
   onLogout: () => void;
 }
 
-const menuItems = [
-  { id: "profile", title: "My Profile", icon: User },
-  { id: "progress", title: "Progress Tracking", icon: Camera },
-  { id: "booking", title: "Book with Coach Dave", icon: Activity },
-  { id: "events", title: "Events", icon: CalendarDays },
-  { id: "calculators", title: "BMI & BMR Calculator", icon: Calculator },
-  { id: "heartrate", title: "Heart Rate Checker", icon: Heart },
-  { id: "nutrition", title: "AI Nutrition", icon: Utensils },
-  { id: "schedule", title: "My Schedule", icon: Calendar },
-  { id: "messages", title: "Messages", icon: Mail },
-  { id: "password", title: "Change Password", icon: KeyRound },
-];
-
 export function DashboardSidebar({ activeSection, onSectionChange, onLogout }: DashboardSidebarProps) {
+  const { isMobile, setOpenMobile } = useSidebar();
+  const { t } = useI18n();
+
+  const menuItems = [
+    { id: "profile", title: t("myProfile"), icon: User },
+    { id: "progress", title: t("progressTracking"), icon: Camera },
+    { id: "booking", title: t("bookCoach"), icon: Activity },
+    { id: "events", title: t("events"), icon: CalendarDays },
+    { id: "calculators", title: t("bmiBmr"), icon: Calculator },
+    { id: "heartrate", title: t("heartRate"), icon: Heart },
+    { id: "nutrition", title: t("aiNutrition"), icon: Utensils },
+    { id: "schedule", title: t("mySchedule"), icon: Calendar },
+    { id: "messages", title: t("messages"), icon: Mail },
+    { id: "password", title: t("changePassword"), icon: KeyRound },
+  ];
+
+  const handleClick = (id: string) => {
+    onSectionChange(id);
+    if (isMobile) setOpenMobile(false);
+  };
+
   return (
     <Sidebar className="border-r border-border">
       <SidebarHeader className="border-b border-border p-4">
         <div className="flex items-center gap-3">
-          <img src={logoRunner} alt="VitalityHub" className="w-8 h-8" />
+          <img src={logoRunner} alt="OneLove Fitness" className="w-8 h-8" />
           <div>
-            <h2 className="font-bold text-lg">VitalityHub</h2>
-            <p className="text-xs text-muted-foreground">User Dashboard</p>
+            <h2 className="font-bold text-lg bg-gradient-primary bg-clip-text text-transparent">OneLove Fitness</h2>
+            <p className="text-xs text-muted-foreground">{t("dashboard")}</p>
           </div>
         </div>
       </SidebarHeader>
@@ -67,7 +77,7 @@ export function DashboardSidebar({ activeSection, onSectionChange, onLogout }: D
                 <SidebarMenuItem key={item.id}>
                   <SidebarMenuButton
                     isActive={activeSection === item.id}
-                    onClick={() => onSectionChange(item.id)}
+                    onClick={() => handleClick(item.id)}
                     className="cursor-pointer"
                   >
                     <item.icon className="h-4 w-4" />
@@ -83,7 +93,7 @@ export function DashboardSidebar({ activeSection, onSectionChange, onLogout }: D
       <SidebarFooter className="border-t border-border p-4">
         <Button variant="ghost" onClick={onLogout} className="w-full justify-start">
           <LogOut className="h-4 w-4 mr-2" />
-          Logout
+          {t("logout")}
         </Button>
       </SidebarFooter>
     </Sidebar>
