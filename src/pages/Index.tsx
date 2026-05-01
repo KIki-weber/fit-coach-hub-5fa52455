@@ -22,6 +22,7 @@ interface EventItem {
 
 const Index = () => {
   const [events, setEvents] = useState<EventItem[]>([]);
+  const [active, setActive] = useState<EventItem | null>(null);
   useEffect(() => {
     supabase.from("events").select("*").order("created_at", { ascending: false }).limit(6)
       .then(({ data }) => { if (data) setEvents(data as any); });
@@ -32,33 +33,41 @@ const Index = () => {
       <Navbar />
 
 
-      {/* Hero Section with Background Image */}
-      <section 
-        className="relative min-h-[85vh] md:min-h-[90vh] flex items-center justify-center px-4"
+      {/* Hero — Neon Volt */}
+      <section
+        className="relative min-h-[88vh] md:min-h-[92vh] flex items-center justify-center px-4 overflow-hidden"
         style={{
           backgroundImage: `url(${heroImage})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-          backgroundAttachment: 'scroll'
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-b from-background/85 via-background/70 to-background" />
+        <div className="absolute inset-0 bg-gradient-to-br from-background/95 via-background/75 to-background/40 dark:from-background/95 dark:via-background/85 dark:to-background/60" />
+        <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-primary/30 blur-3xl" />
+        <div className="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-accent/20 blur-3xl" />
+
         <div className="container mx-auto relative z-10 text-center space-y-6 md:space-y-8 pt-20 md:pt-16 px-2">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold leading-tight">
-            Transform Your Health with
-            <span className="text-primary block mt-2">Expert Wellness Coaching</span>
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/15 border border-primary/30 backdrop-blur-sm">
+            <Zap className="w-4 h-4 text-primary" />
+            <span className="text-xs sm:text-sm font-semibold text-primary uppercase tracking-wider">Neon Volt Energy</span>
+          </div>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-extrabold leading-[1.05] tracking-tight">
+            Train with Purpose.
+            <span className="block mt-2 bg-gradient-primary bg-clip-text text-transparent text-glow">
+              Live with Power.
+            </span>
           </h1>
           <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-foreground/80 max-w-3xl mx-auto px-2">
-            Get personalized wellness plans, track your progress, and achieve your health goals with expert guidance.
+            OneLove Fitness — personalized coaching, smart nutrition, and high-voltage training plans built around you.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center px-4">
             <Link to="/auth?tab=signup" className="w-full sm:w-auto">
-              <Button size="lg" className="w-full sm:w-auto bg-gradient-primary shadow-smooth text-base md:text-lg px-6 md:px-8 py-5 md:py-6">
-                Start Free Trial
+              <Button size="lg" className="w-full sm:w-auto bg-gradient-primary shadow-glow text-base md:text-lg px-6 md:px-8 py-5 md:py-6 font-semibold">
+                Start Free Trial <ArrowRight className="w-5 h-5 ml-1" />
               </Button>
             </Link>
             <Link to="/about" className="w-full sm:w-auto">
-              <Button size="lg" variant="outline" className="w-full sm:w-auto text-base md:text-lg px-6 md:px-8 py-5 md:py-6 bg-background/50 backdrop-blur-sm">
+              <Button size="lg" variant="outline" className="w-full sm:w-auto text-base md:text-lg px-6 md:px-8 py-5 md:py-6 bg-background/50 backdrop-blur-sm border-primary/40 hover:bg-primary/10">
                 Learn More
               </Button>
             </Link>
