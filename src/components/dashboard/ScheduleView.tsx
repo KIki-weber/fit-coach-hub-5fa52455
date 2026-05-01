@@ -10,6 +10,7 @@ interface Schedule {
   description: string;
   date: string;
   time: string;
+  pdf_url?: string | null;
 }
 
 interface ScheduleViewProps {
