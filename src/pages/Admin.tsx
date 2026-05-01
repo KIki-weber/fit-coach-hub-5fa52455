@@ -114,7 +114,7 @@ const Admin = () => {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <img src={logoRunner} alt="VitalityHub" className="w-12 h-12 mx-auto mb-4 animate-pulse" />
+          <img src={logoRunner} alt="OneLove Fitness" className="w-12 h-12 mx-auto mb-4 animate-pulse" />
           <p className="text-muted-foreground">Loading...</p>
         </div>
       </div>
