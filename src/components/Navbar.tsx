@@ -25,8 +25,8 @@ export const Navbar = () => {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
       <div className="container mx-auto px-3 sm:px-4 py-3 md:py-4 flex items-center justify-between gap-2">
         <Link to="/" className="flex items-center gap-2 font-bold text-base sm:text-lg md:text-xl text-foreground shrink-0">
-          <img src={logoRunner} alt="VitalityHub" className="w-7 h-7 md:w-8 md:h-8" />
-          <span className="hidden sm:inline">VitalityHub</span>
+          <img src={logoRunner} alt="OneLove Fitness" className="w-7 h-7 md:w-8 md:h-8" />
+          <span className="hidden sm:inline bg-gradient-primary bg-clip-text text-transparent">OneLove Fitness</span>
         </Link>
 
         {/* Desktop Navigation */}
