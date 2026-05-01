@@ -178,7 +178,7 @@ const [signupData, setSignupData] = useState({
 
       toast({
         title: "Account Created!",
-        description: "Welcome to VitalityHub. Let's get started!",
+        description: "Welcome to OneLove Fitness. Let's get started!",
       });
       navigate("/dashboard");
     }
@@ -191,8 +191,8 @@ const [signupData, setSignupData] = useState({
     <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <Link to="/" className="flex items-center justify-center gap-2 mb-8">
-          <img src={logoRunner} alt="VitalityHub" className="w-10 h-10" />
-          <span className="text-2xl font-bold text-white">VitalityHub</span>
+          <img src={logoRunner} alt="OneLove Fitness" className="w-10 h-10" />
+          <span className="text-2xl font-bold text-white">OneLove Fitness</span>
         </Link>
 
         <Tabs defaultValue={defaultTab} className="w-full">
