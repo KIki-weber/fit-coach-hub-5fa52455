@@ -3,10 +3,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Activity, Users, Calendar, TrendingUp, Apple, Dumbbell, MessageSquare, Zap, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import heroImage from "@/assets/hero-fitness.jpg";
+import heroImage1 from "@/assets/hero-fi1tness.jpg";
+import heroImage2 from "@/assets/hero-fitness.jpg";
+import heroImage3 from "@/assets/hero-fitness2.jpg";
+import heroImage4 from "@/assets/hero-fitness3.jpg";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { useI18n } from "@/lib/i18n";
 
 interface EventItem {
   id: string;
@@ -20,12 +24,25 @@ interface EventItem {
 }
 
 
+const heroImages = [heroImage1, heroImage2, heroImage3, heroImage4];
+
 const Index = () => {
+  const { t } = useI18n();
   const [events, setEvents] = useState<EventItem[]>([]);
   const [active, setActive] = useState<EventItem | null>(null);
+  const [heroIndex, setHeroIndex] = useState(0);
+
   useEffect(() => {
     supabase.from("events").select("*").order("created_at", { ascending: false }).limit(6)
       .then(({ data }) => { if (data) setEvents(data as any); });
+  }, []);
+
+  useEffect(() => {
+    const interval = window.setInterval(() => {
+      setHeroIndex((current) => (current + 1) % heroImages.length);
+    }, 4000);
+
+    return () => window.clearInterval(interval);
   }, []);
 
   return (
@@ -34,14 +51,17 @@ const Index = () => {
 
 
       {/* Hero — Neon Volt */}
-      <section
-        className="relative min-h-[88vh] md:min-h-[92vh] flex items-center justify-center px-4 overflow-hidden"
-        style={{
-          backgroundImage: `url(${heroImage})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-        }}
-      >
+      <section className="relative min-h-[88vh] md:min-h-[92vh] flex items-center justify-center px-4 overflow-hidden">
+        {heroImages.map((image, index) => (
+          <img
+            key={index}
+            src={image}
+            alt="Fitness hero background"
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 h-full w-full object-cover transition-opacity duration-1000"
+            style={{ opacity: heroIndex === index ? 1 : 0 }}
+          />
+        ))}
         <div className="absolute inset-0 bg-gradient-to-br from-background/95 via-background/75 to-background/40 dark:from-background/95 dark:via-background/85 dark:to-background/60" />
         <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-primary/30 blur-3xl" />
         <div className="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-accent/20 blur-3xl" />
@@ -49,26 +69,26 @@ const Index = () => {
         <div className="container mx-auto relative z-10 text-center space-y-6 md:space-y-8 pt-20 md:pt-16 px-2">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/15 border border-primary/30 backdrop-blur-sm">
             <Zap className="w-4 h-4 text-primary" />
-            <span className="text-xs sm:text-sm font-semibold text-primary uppercase tracking-wider">Neon Volt Energy</span>
+            <span className="text-xs sm:text-sm font-semibold text-primary uppercase tracking-wider">{t("neonVolt")}</span>
           </div>
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-extrabold leading-[1.05] tracking-tight">
-            Train with Purpose.
+            {t("trainWithPurpose")}
             <span className="block mt-2 bg-gradient-primary bg-clip-text text-transparent text-glow">
-              Live with Power.
+              {t("liveWithPower")}
             </span>
           </h1>
           <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-foreground/80 max-w-3xl mx-auto px-2">
-            OneLove Fitness — personalized coaching, smart nutrition, and high-voltage training plans built around you.
+            {t("brand")} — personalized coaching, smart nutrition, and high-voltage training plans built around you.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center px-4">
             <Link to="/auth?tab=signup" className="w-full sm:w-auto">
               <Button size="lg" className="w-full sm:w-auto bg-gradient-primary shadow-glow text-base md:text-lg px-6 md:px-8 py-5 md:py-6 font-semibold">
-                Start Free Trial <ArrowRight className="w-5 h-5 ml-1" />
+                {t("startFreeTrial")} <ArrowRight className="w-5 h-5 ml-1" />
               </Button>
             </Link>
             <Link to="/about" className="w-full sm:w-auto">
               <Button size="lg" variant="outline" className="w-full sm:w-auto text-base md:text-lg px-6 md:px-8 py-5 md:py-6 bg-background/50 backdrop-blur-sm border-primary/40 hover:bg-primary/10">
-                Learn More
+                {t("learnMore")}
               </Button>
             </Link>
           </div>
@@ -79,7 +99,7 @@ const Index = () => {
       <section className="py-10 md:py-16 px-4 bg-secondary/30">
         <div className="container mx-auto">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 md:mb-12">
-            Why Choose <span className="text-primary">OneLove Fitness</span>?
+            {t("whyChoose")} <span className="text-primary">{t("brand")}</span>?
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             <Card className="shadow-card hover:shadow-smooth transition-shadow">
@@ -87,9 +107,9 @@ const Index = () => {
                 <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center mx-auto">
                   <Users className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-xl font-semibold">Expert Coaches</h3>
+                <h3 className="text-xl font-semibold">{t("expertCoaches")}</h3>
                 <p className="text-muted-foreground">
-                  Work with certified trainers who understand your goals
+                  {t("workWithCertified")}
                 </p>
               </CardContent>
             </Card>
@@ -99,9 +119,9 @@ const Index = () => {
                 <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center mx-auto">
                   <Calendar className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-xl font-semibold">Custom Schedules</h3>
+                <h3 className="text-xl font-semibold">{t("customSchedules")}</h3>
                 <p className="text-muted-foreground">
-                  Get personalized training schedules tailored to you
+                  {t("personalizedSchedules")}
                 </p>
               </CardContent>
             </Card>
@@ -111,9 +131,9 @@ const Index = () => {
                 <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center mx-auto">
                   <Activity className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-xl font-semibold">Track Progress</h3>
+                <h3 className="text-xl font-semibold">{t("trackProgress")}</h3>
                 <p className="text-muted-foreground">
-                  Monitor your BMI, BMR, and fitness metrics
+                  {t("monitorMetrics")}
                 </p>
               </CardContent>
             </Card>
@@ -123,9 +143,9 @@ const Index = () => {
                 <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center mx-auto">
                   <TrendingUp className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-xl font-semibold">See Results</h3>
+                <h3 className="text-xl font-semibold">{t("seeResults")}</h3>
                 <p className="text-muted-foreground">
-                  Achieve your fitness goals with proven methods
+                  {t("achieveGoals")}
                 </p>
               </CardContent>
             </Card>
@@ -138,10 +158,10 @@ const Index = () => {
         <div className="container mx-auto">
           <div className="text-center mb-8 md:mb-12">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 md:mb-4">
-              Our Wellness Services
+              {t("ourWellnessServices")}
             </h2>
             <p className="text-base md:text-xl text-muted-foreground max-w-2xl mx-auto px-2">
-              Comprehensive health and fitness solutions tailored to your needs
+              {t("comprehensiveHealth")}
             </p>
           </div>
 
@@ -151,15 +171,15 @@ const Index = () => {
                 <div className="w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center mx-auto">
                   <Dumbbell className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-2xl font-semibold text-center">Personal Training</h3>
+                <h3 className="text-2xl font-semibold text-center">{t("personalTraining")}</h3>
                 <p className="text-muted-foreground text-center">
-                  One-on-one coaching sessions with certified trainers. Get customized workout plans designed for your fitness level and goals.
+                  {t("oneOnOneCoaching")}
                 </p>
                 <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li>✓ Personalized exercise routines</li>
-                  <li>✓ Form correction and technique guidance</li>
-                  <li>✓ Progress tracking and adjustments</li>
-                  <li>✓ Flexible scheduling options</li>
+                  <li>✓ {t("exerciseRoutines")}</li>
+                  <li>✓ {t("formCorrection")}</li>
+                  <li>✓ {t("progressTracking2")}</li>
+                  <li>✓ {t("flexibleScheduling")}</li>
                 </ul>
               </CardContent>
             </Card>
@@ -169,15 +189,15 @@ const Index = () => {
                 <div className="w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center mx-auto">
                   <Apple className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-2xl font-semibold text-center">Nutrition Planning</h3>
+                <h3 className="text-2xl font-semibold text-center">{t("nutritionPlanning")}</h3>
                 <p className="text-muted-foreground text-center">
-                  Custom meal plans based on your BMI, BMR, and fitness goals. Learn to fuel your body properly for optimal results.
+                  {t("customMealPlans")}
                 </p>
                 <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li>✓ Personalized macronutrient targets</li>
-                  <li>✓ Meal suggestions and recipes</li>
-                  <li>✓ Supplement recommendations</li>
-                  <li>✓ Regular nutritional adjustments</li>
+                  <li>✓ {t("macronutrientTargets")}</li>
+                  <li>✓ {t("mealSuggestions")}</li>
+                  <li>✓ {t("supplementRecommendations")}</li>
+                  <li>✓ {t("nutritionalAdjustments")}</li>
                 </ul>
               </CardContent>
             </Card>
@@ -187,15 +207,15 @@ const Index = () => {
                 <div className="w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center mx-auto">
                   <MessageSquare className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-2xl font-semibold text-center">24/7 Support</h3>
+                <h3 className="text-2xl font-semibold text-center">{t("support24_7")}</h3>
                 <p className="text-muted-foreground text-center">
-                  Direct messaging with your coach anytime. Get answers to questions, motivation, and guidance whenever you need it.
+                  {t("directMessaging")}
                 </p>
                 <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li>✓ Real-time chat with trainers</li>
-                  <li>✓ Health tips and wellness advice</li>
-                  <li>✓ Schedule management tools</li>
-                  <li>✓ Event and workshop notifications</li>
+                  <li>✓ {t("realtimeChat")}</li>
+                  <li>✓ {t("healthTips")}</li>
+                  <li>✓ {t("scheduleManagement")}</li>
+                  <li>✓ {t("eventNotifications")}</li>
                 </ul>
               </CardContent>
             </Card>
@@ -208,8 +228,8 @@ const Index = () => {
         <section className="py-10 md:py-16 px-4 bg-secondary/20">
           <div className="container mx-auto">
             <div className="text-center mb-8 md:mb-12">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3">Upcoming Events</h2>
-              <p className="text-base md:text-lg text-muted-foreground">Latest events from Coach Dave</p>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3">{t("upcomingEvents")}</h2>
+              <p className="text-base md:text-lg text-muted-foreground">{t("latestEventsCoach")}</p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {events.map((ev) => (
@@ -238,7 +258,7 @@ const Index = () => {
                     )}
                     <p className="text-sm text-foreground/80 line-clamp-2">{ev.content}</p>
                     <div className="inline-flex items-center gap-1 text-sm text-primary font-semibold pt-1">
-                      View details <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      {t("viewDetails")} <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </div>
                   </div>
                 </button>
@@ -282,11 +302,11 @@ const Index = () => {
             Ready to Start Your Journey?
           </h2>
           <p className="text-base md:text-xl text-white/90 max-w-2xl mx-auto px-2">
-            Join thousands of people transforming their lives with OneLove Fitness coaching
+            {t("joinThousands")}
           </p>
           <Link to="/auth?tab=signup">
             <Button size="lg" className="bg-white text-primary hover:bg-white/90 shadow-smooth font-semibold">
-              Get Started Now
+              {t("getStarted")}
             </Button>
           </Link>
         </div>
@@ -295,7 +315,7 @@ const Index = () => {
       {/* Footer */}
       <footer className="py-6 md:py-8 px-4 border-t border-border">
         <div className="container mx-auto text-center text-muted-foreground text-sm md:text-base">
-          <p>© 2026 OneLove Fitness. All rights reserved.</p>
+          <p>© 2026 {t("brand")}. All rights reserved.</p>
         </div>
       </footer>
     </div>

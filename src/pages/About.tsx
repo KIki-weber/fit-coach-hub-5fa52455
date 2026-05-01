@@ -1,8 +1,11 @@
 import { Navbar } from "@/components/Navbar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Award, Target, Heart } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
+import dawitPhoto from "@/assets/photo_2_2026-04-30_06-10-42.jpg";
 
 const About = () => {
+  const { t } = useI18n();
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -10,15 +13,15 @@ const About = () => {
       <div className="pt-24 pb-16 px-4">
         <div className="container mx-auto max-w-4xl">
           <h1 className="text-4xl md:text-5xl font-bold mb-6 text-center">
-            About FitCoach Pro
+            {t("aboutFitCoachPro")}
           </h1>
           <p className="text-xl text-muted-foreground text-center mb-12">
-            Your trusted partner in achieving fitness excellence
+            {t("trustedPartner")}
           </p>
 
           <div className="prose prose-lg max-w-none mb-12">
             <p className="text-lg text-muted-foreground leading-relaxed">
-              FitCoach Pro is more than just a training platform – it's a comprehensive fitness ecosystem designed to help you reach your goals. We combine expert coaching, personalized training plans, and advanced tracking tools to deliver results that last.
+              {t("fitCoachProDesc")}
             </p>
           </div>
 
@@ -28,9 +31,9 @@ const About = () => {
                 <div className="w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center mx-auto">
                   <Award className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-xl font-semibold">Certified Experts</h3>
+                <h3 className="text-xl font-semibold">{t("certifiedExperts")}</h3>
                 <p className="text-muted-foreground">
-                  All our coaches are certified professionals with years of experience
+                  {t("allCoachesCertified")}
                 </p>
               </CardContent>
             </Card>
@@ -40,9 +43,9 @@ const About = () => {
                 <div className="w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center mx-auto">
                   <Target className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-xl font-semibold">Goal-Oriented</h3>
+                <h3 className="text-xl font-semibold">{t("goalOriented")}</h3>
                 <p className="text-muted-foreground">
-                  Every plan is tailored to your specific fitness objectives
+                  {t("everyPlanTailored")}
                 </p>
               </CardContent>
             </Card>
@@ -52,19 +55,38 @@ const About = () => {
                 <div className="w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center mx-auto">
                   <Heart className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-xl font-semibold">Community Support</h3>
+                <h3 className="text-xl font-semibold">{t("communitySupport")}</h3>
                 <p className="text-muted-foreground">
-                  Join a supportive community committed to health and wellness
+                  {t("joinSupportiveCommunity")}
                 </p>
               </CardContent>
             </Card>
           </div>
 
           <div className="bg-gradient-primary rounded-2xl p-8 text-center text-white">
-            <h2 className="text-3xl font-bold mb-4">Our Mission</h2>
+            <h2 className="text-3xl font-bold mb-4">{t("ourMission")}</h2>
             <p className="text-lg opacity-90 max-w-2xl mx-auto">
-              To empower individuals to achieve their fitness goals through personalized coaching, scientific training methods, and unwavering support. We believe everyone deserves access to expert guidance on their fitness journey.
+              {t("missionDesc")}
             </p>
+          </div>
+
+          <div className="mt-16 text-center">
+            <h2 className="text-3xl font-bold mb-8">{t("meetOurCoach")}</h2>
+            <div className="flex flex-col md:flex-row items-center justify-center gap-8 max-w-4xl mx-auto">
+              <div className="w-64 h-64 rounded-full overflow-hidden shadow-lg">
+                <img
+                  src={dawitPhoto}
+                  alt={t("dawitSemere")}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="text-left md:text-left max-w-md">
+                <h3 className="text-2xl font-semibold mb-4">{t("dawitSemere")}</h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  {t("dawitDescription")}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
