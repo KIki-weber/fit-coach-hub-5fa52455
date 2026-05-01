@@ -216,6 +216,17 @@ export const AdminScheduleManager = () => {
             </div>
           </div>
 
+          <div className="space-y-2">
+            <Label htmlFor="schedule-pdf">Attach PDF (optional)</Label>
+            <Input
+              id="schedule-pdf"
+              type="file"
+              accept="application/pdf"
+              onChange={(e) => setPdfFile(e.target.files?.[0] || null)}
+            />
+            {pdfFile && <p className="text-xs text-muted-foreground">Selected: {pdfFile.name}</p>}
+          </div>
+
           <Button type="submit" className="w-full bg-gradient-primary" disabled={loading}>
             <Plus className="w-4 h-4 mr-2" />
             {loading ? "Creating..." : "Create Schedule"}
