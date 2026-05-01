@@ -79,58 +79,48 @@ export const AdminScheduleManager = () => {
 
     setLoading(true);
     const { data: { session } } = await supabase.auth.getSession();
+    const pdf_url = await uploadPdf();
+
+    const reset = () => {
+      setScheduleData({ title: "", description: "", date: "", time: "" });
+      setPdfFile(null);
+      setSelectedUser("");
+    };
 
     if (selectedUser === "all") {
-      // Send to all users
       const schedules = users.map(user => ({
         user_id: user.user_id,
         title: scheduleData.title,
         description: scheduleData.description,
         date: scheduleData.date,
-        time: scheduleData.time,
+        time: scheduleData.time || null,
+        pdf_url,
         created_by: session?.user.id,
-      }));
+      })) as any;
 
       const { error } = await supabase.from("schedules").insert(schedules);
-
       if (error) {
-        toast({
-          title: "Failed to create schedules",
-          description: error.message,
-          variant: "destructive",
-        });
+        toast({ title: "Failed to create schedules", description: error.message, variant: "destructive" });
       } else {
-        toast({
-          title: "Schedules Created",
-          description: `Training schedule sent to all ${users.length} users successfully.`,
-        });
-        setScheduleData({ title: "", description: "", date: "", time: "" });
-        setSelectedUser("");
+        toast({ title: "Schedules Created", description: `Sent to all ${users.length} users.` });
+        reset();
       }
     } else {
-      // Send to single user
       const { error } = await supabase.from("schedules").insert({
         user_id: selectedUser,
         title: scheduleData.title,
         description: scheduleData.description,
         date: scheduleData.date,
         time: scheduleData.time || null,
+        pdf_url,
         created_by: session?.user.id,
-      });
+      } as any);
 
       if (error) {
-        toast({
-          title: "Failed to create schedule",
-          description: error.message,
-          variant: "destructive",
-        });
+        toast({ title: "Failed to create schedule", description: error.message, variant: "destructive" });
       } else {
-        toast({
-          title: "Schedule Created",
-          description: "Training schedule has been sent to the user.",
-        });
-        setScheduleData({ title: "", description: "", date: "", time: "" });
-        setSelectedUser("");
+        toast({ title: "Schedule Created", description: "Training schedule has been sent to the user." });
+        reset();
       }
     }
     setLoading(false);
