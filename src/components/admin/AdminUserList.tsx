@@ -3,12 +3,15 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Users, Camera, ChevronDown, ChevronUp, Filter, TrendingUp } from "lucide-react";
+import { Users, Camera, ChevronDown, ChevronUp, Filter, TrendingUp, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { format } from "date-fns";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { AdminEditUser } from "./AdminEditUser";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { useToast } from "@/hooks/use-toast";
 
 interface UserProfile {
   id: string;
@@ -63,6 +66,27 @@ export const AdminUserList = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [exercisePlanFilter, setExercisePlanFilter] = useState<string>("all");
   const [hasPhotosFilter, setHasPhotosFilter] = useState<string>("all");
+
+  const [editingUser, setEditingUser] = useState<UserProfile | null>(null);
+  const [deletingUser, setDeletingUser] = useState<UserProfile | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const { toast } = useToast();
+
+  const handleDelete = async () => {
+    if (!deletingUser) return;
+    setDeleting(true);
+    const { data, error } = await supabase.functions.invoke("admin-delete-user", {
+      body: { target_user_id: deletingUser.user_id },
+    });
+    setDeleting(false);
+    if (error || (data as any)?.error) {
+      toast({ title: "Delete failed", description: (data as any)?.error || error?.message, variant: "destructive" });
+    } else {
+      toast({ title: "User deleted" });
+      setDeletingUser(null);
+      fetchUsers();
+    }
+  };
 
   useEffect(() => {
     fetchUsers();
@@ -262,11 +286,19 @@ export const AdminUserList = () => {
                             <p className="text-sm text-muted-foreground">📱 {user.phone_number}</p>
                           )}
                         </div>
-                        {user.exercise_plan && (
-                          <Badge variant="secondary">
-                            {EXERCISE_PLAN_LABELS[user.exercise_plan] || user.exercise_plan}
-                          </Badge>
-                        )}
+                        <div className="flex items-center gap-2 flex-wrap justify-end">
+                          {user.exercise_plan && (
+                            <Badge variant="secondary">
+                              {EXERCISE_PLAN_LABELS[user.exercise_plan] || user.exercise_plan}
+                            </Badge>
+                          )}
+                          <Button size="sm" variant="outline" onClick={() => setEditingUser(user)}>
+                            <Pencil className="w-3.5 h-3.5 mr-1" /> Edit
+                          </Button>
+                          <Button size="sm" variant="destructive" onClick={() => setDeletingUser(user)}>
+                            <Trash2 className="w-3.5 h-3.5 mr-1" /> Delete
+                          </Button>
+                        </div>
                       </div>
                       
                       {user.photo_description && (
@@ -409,6 +441,37 @@ export const AdminUserList = () => {
           </div>
         )}
       </CardContent>
+
+      {editingUser && (
+        <AdminEditUser
+          open={!!editingUser}
+          user={editingUser}
+          onClose={() => setEditingUser(null)}
+          onSaved={fetchUsers}
+        />
+      )}
+
+      <AlertDialog open={!!deletingUser} onOpenChange={(o) => !o && setDeletingUser(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete user?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This permanently removes {deletingUser?.full_name || deletingUser?.email} and all their data
+              (bookings, messages, schedules, nutrition, progress). This cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDelete}
+              disabled={deleting}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {deleting ? "Deleting..." : "Delete"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Card>
   );
 };
