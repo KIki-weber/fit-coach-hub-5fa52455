@@ -21,6 +21,30 @@ interface UserOption {
   weight_unit: string | null;
   photo_url: string | null;
   exercise_plan: string | null;
+  gender: string | null;
+}
+
+// Convert to metric for BMI/BMR
+const toMetric = (u: UserOption) => {
+  const heightCm = u.height ? (u.height_unit === "in" ? u.height * 2.54 : u.height) : null;
+  const weightKg = u.weight ? (u.weight_unit === "lb" ? u.weight * 0.453592 : u.weight) : null;
+  return { heightCm, weightKg };
+};
+
+const calcBMI = (u: UserOption) => {
+  const { heightCm, weightKg } = toMetric(u);
+  if (!heightCm || !weightKg) return null;
+  const m = heightCm / 100;
+  return Math.round((weightKg / (m * m)) * 10) / 10;
+};
+
+const calcBMR = (u: UserOption) => {
+  const { heightCm, weightKg } = toMetric(u);
+  if (!heightCm || !weightKg || !u.age) return null;
+  // Mifflin-St Jeor
+  const base = 10 * weightKg + 6.25 * heightCm - 5 * u.age;
+  const bmr = u.gender === "female" ? base - 161 : base + 5;
+  return Math.round(bmr);
 }
 
 export const AdminScheduleManager = () => {
@@ -56,7 +80,7 @@ export const AdminScheduleManager = () => {
   const fetchUsers = async () => {
     const { data } = await supabase
       .from("profiles")
-      .select("user_id, full_name, email, age, height, height_unit, weight, weight_unit, photo_url, exercise_plan")
+      .select("user_id, full_name, email, age, height, height_unit, weight, weight_unit, photo_url, exercise_plan, gender")
       .order("full_name");
 
     if (data) {
@@ -164,9 +188,12 @@ export const AdminScheduleManager = () => {
                 <p className="font-semibold">{selected.full_name || selected.email}</p>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-2 text-muted-foreground">
                   <div>Age: <span className="text-foreground font-medium">{selected.age ?? "N/A"}</span></div>
+                  <div>Gender: <span className="text-foreground font-medium capitalize">{selected.gender || "N/A"}</span></div>
                   <div>Height: <span className="text-foreground font-medium">{selected.height ? `${selected.height} ${selected.height_unit || 'cm'}` : "N/A"}</span></div>
                   <div>Weight: <span className="text-foreground font-medium">{selected.weight ? `${selected.weight} ${selected.weight_unit || 'kg'}` : "N/A"}</span></div>
-                  <div>Plan: <span className="text-foreground font-medium">{selected.exercise_plan || "N/A"}</span></div>
+                  <div>BMI: <span className="text-primary font-semibold">{calcBMI(selected) ?? "N/A"}</span></div>
+                  <div>BMR: <span className="text-primary font-semibold">{calcBMR(selected) ? `${calcBMR(selected)} kcal` : "N/A"}</span></div>
+                  <div className="col-span-2">Plan: <span className="text-foreground font-medium">{selected.exercise_plan || "N/A"}</span></div>
                 </div>
               </div>
             </div>

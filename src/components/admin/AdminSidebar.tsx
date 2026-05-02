@@ -8,6 +8,7 @@ import {
   LogOut,
   KeyRound,
   ClipboardList,
+  UserCog,
 } from "lucide-react";
 import {
   Sidebar,
@@ -47,6 +48,7 @@ export function AdminSidebar({ activeSection, onSectionChange, onLogout, newUser
     { id: "nutrition", title: t("nutritionPlans"), icon: Utensils },
     { id: "messages", title: t("messages"), icon: Mail },
     { id: "passwords", title: t("passwords"), icon: KeyRound },
+    { id: "profile", title: "My Profile", icon: UserCog },
   ];
 
   const handleClick = (id: string) => {

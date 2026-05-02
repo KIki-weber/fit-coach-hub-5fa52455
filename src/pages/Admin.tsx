@@ -12,6 +12,7 @@ import { AdminStatsOverview } from "@/components/admin/AdminStatsOverview";
 import { AdminBookingManager } from "@/components/admin/AdminBookingManager";
 import { AdminAddUser } from "@/components/admin/AdminAddUser";
 import { AdminPasswordReset } from "@/components/admin/AdminPasswordReset";
+import { AdminProfile } from "@/components/admin/AdminProfile";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { Bell } from "lucide-react";
@@ -148,6 +149,8 @@ const Admin = () => {
         return <AdminMessageSender />;
       case "passwords":
         return <AdminPasswordReset />;
+      case "profile":
+        return <AdminProfile />;
       default:
         return <AdminStatsOverview />;
     }
@@ -163,6 +166,7 @@ const Admin = () => {
       case "nutrition": return "Nutrition Plans";
       case "messages": return "Send Messages";
       case "passwords": return "Password Management";
+      case "profile": return "My Profile";
       default: return "Admin Panel";
     }
   };
