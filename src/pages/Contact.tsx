@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Mail, Phone, MapPin } from "lucide-react";
+import { Mail, Phone, MapPin, MessageCircle } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -16,13 +16,36 @@ const Contact = () => {
     message: ""
   });
 
+  const CONTACT_EMAIL = "onelovefitness512@gmail.com";
+  const PHONE_NUMBER = "+15129389057"; // WhatsApp format
+  const DISPLAY_PHONE = "+1 (512) 938-9057";
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Create mailto link with form data
+    const subject = encodeURIComponent(`New Message from ${formData.name}`);
+    const body = encodeURIComponent(
+      `Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`
+    );
+    const mailtoLink = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
+    
+    // Open mailto link
+    window.location.href = mailtoLink;
+    
     toast({
-      title: "Message Sent!",
-      description: "We'll get back to you as soon as possible.",
+      title: "Message Ready!",
+      description: "Your email client will open with the message prepared.",
     });
     setFormData({ name: "", email: "", message: "" });
+  };
+
+  const handleWhatsApp = () => {
+    const message = encodeURIComponent(
+      `Hello, I'm interested in your fitness coaching services.`
+    );
+    const whatsappLink = `https://wa.me/${PHONE_NUMBER}?text=${message}`;
+    window.open(whatsappLink, "_blank");
   };
 
   return (
@@ -93,7 +116,7 @@ const Contact = () => {
                     </div>
                     <div>
                       <h3 className="font-semibold mb-1">Email</h3>
-                      <p className="text-muted-foreground">support@fitcoachpro.com</p>
+                      <p className="text-muted-foreground">onelovefitness512@gmail.com</p>
                     </div>
                   </div>
                 </CardContent>
@@ -101,31 +124,44 @@ const Contact = () => {
 
               <Card className="shadow-card">
                 <CardContent className="pt-6">
-                  <div className="flex items-start gap-4">
+                  <div className="flex items-start gap-4 mb-4">
                     <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center flex-shrink-0">
                       <Phone className="w-6 h-6 text-white" />
                     </div>
                     <div>
                       <h3 className="font-semibold mb-1">Phone</h3>
-                      <p className="text-muted-foreground">+1 (555) 123-4567</p>
+                      <p className="text-muted-foreground">{DISPLAY_PHONE}</p>
                     </div>
                   </div>
+                  <Button 
+                    onClick={handleWhatsApp}
+                    className="w-full bg-green-500 hover:bg-green-600 text-white gap-2"
+                  >
+                    <MessageCircle className="w-4 h-4" />
+                    Message on WhatsApp
+                  </Button>
                 </CardContent>
               </Card>
 
               <Card className="shadow-card">
                 <CardContent className="pt-6">
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center flex-shrink-0">
-                      <MapPin className="w-6 h-6 text-white" />
+                  <div className="flex flex-col gap-4">
+                    <div className="flex items-start gap-4">
+                      <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center flex-shrink-0">
+                        <MapPin className="w-6 h-6 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold mb-1">Location</h3>
+                        <p className="text-muted-foreground">1610 Mayflower Dr, Richardson, US</p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="font-semibold mb-1">Location</h3>
-                      <p className="text-muted-foreground">
-                        123 Fitness Street<br />
-                        Health City, HC 12345
-                      </p>
-                    </div>
+                    <Button 
+                      onClick={() => window.open(`https://maps.google.com/?q=1610+Mayflower+Dr,+Richardson,+TX`, "_blank")}
+                      className="w-full bg-blue-500 hover:bg-blue-600 text-white gap-2"
+                    >
+                      <MapPin className="w-4 h-4" />
+                      View on Google Maps
+                    </Button>
                   </div>
                 </CardContent>
               </Card>

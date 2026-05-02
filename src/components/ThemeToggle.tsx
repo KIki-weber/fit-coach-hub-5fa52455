@@ -20,7 +20,7 @@ export const ThemeToggle = () => {
       variant="ghost"
       size="sm"
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      className="w-9 px-0 text-white hover:text-white"
+      className="w-9 px-0 text-slate-900 dark:text-white hover:text-slate-950 dark:hover:text-white"
     >
       <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
       <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />

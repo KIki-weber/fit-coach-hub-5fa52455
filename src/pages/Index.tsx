@@ -58,15 +58,15 @@ const Index = () => {
             src={image}
             alt="Fitness hero background"
             aria-hidden="true"
-            className="pointer-events-none absolute inset-0 h-full w-full object-cover transition-opacity duration-1000"
+            className="pointer-events-none absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 z-0"
             style={{ opacity: heroIndex === index ? 1 : 0 }}
           />
         ))}
-        <div className="absolute inset-0 bg-gradient-to-br from-background/95 via-background/75 to-background/40 dark:from-background/95 dark:via-background/85 dark:to-background/60" />
-        <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-primary/30 blur-3xl" />
-        <div className="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-accent/20 blur-3xl" />
+        <div className="absolute inset-0 bg-gradient-to-br from-background/15 via-background/10 to-background/0 dark:from-background/60 dark:via-background/35 dark:to-background/0 z-10" />
+        <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-primary/20 blur-3xl -z-10" />
+        <div className="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-accent/15 blur-3xl -z-10" />
 
-        <div className="container mx-auto relative z-10 text-center space-y-6 md:space-y-8 pt-20 md:pt-16 px-2">
+        <div className="container mx-auto relative z-20 text-center space-y-6 md:space-y-8 pt-20 md:pt-16 px-2">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/15 border border-primary/30 backdrop-blur-sm">
             <Zap className="w-4 h-4 text-primary" />
             <span className="text-xs sm:text-sm font-semibold text-primary uppercase tracking-wider">{t("neonVolt")}</span>
