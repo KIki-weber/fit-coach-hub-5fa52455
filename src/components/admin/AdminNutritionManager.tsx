@@ -13,8 +13,15 @@ interface UserOption {
   user_id: string;
   full_name: string;
   email: string;
-  height?: number;
-  weight?: number;
+  phone_number?: string;
+  age?: number | null;
+  gender?: string | null;
+  height?: number | null;
+  height_unit?: string | null;
+  weight?: number | null;
+  weight_unit?: string | null;
+  exercise_plan?: string | null;
+  photo_url?: string | null;
 }
 
 export const AdminNutritionManager = () => {
@@ -54,11 +61,11 @@ export const AdminNutritionManager = () => {
   const fetchUsers = async () => {
     const { data } = await supabase
       .from("profiles")
-      .select("user_id, full_name, email, height, weight")
+      .select("user_id, full_name, email, phone_number, age, gender, height, height_unit, weight, weight_unit, exercise_plan, photo_url")
       .order("full_name");
 
     if (data) {
-      setUsers(data);
+      setUsers(data as any);
     }
   };
 
@@ -131,9 +138,18 @@ export const AdminNutritionManager = () => {
   };
 
   const selectedUserData = users.find(u => u.user_id === selectedUser);
-  const bmi = selectedUserData?.height && selectedUserData?.weight 
-    ? (selectedUserData.weight / ((selectedUserData.height / 100) ** 2)).toFixed(1)
+  const heightCm = selectedUserData?.height
+    ? (selectedUserData.height_unit === "in" ? selectedUserData.height * 2.54 : selectedUserData.height)
     : null;
+  const weightKg = selectedUserData?.weight
+    ? (selectedUserData.weight_unit === "lb" ? selectedUserData.weight * 0.453592 : selectedUserData.weight)
+    : null;
+  const bmi = heightCm && weightKg ? (weightKg / ((heightCm / 100) ** 2)).toFixed(1) : null;
+  const bmr = heightCm && weightKg && selectedUserData?.age
+    ? Math.round((selectedUserData.gender === "female" ? -161 : 5) + 10 * weightKg + 6.25 * heightCm - 5 * selectedUserData.age)
+    : null;
+  // Recommended daily calories (sedentary x1.2, light x1.375)
+  const tdee = bmr ? Math.round(bmr * 1.375) : null;
 
   return (
     <Card className="shadow-card">
@@ -142,7 +158,7 @@ export const AdminNutritionManager = () => {
           <Apple className="w-5 h-5 text-primary" />
           Nutrition Manager
         </CardTitle>
-        <CardDescription>Create nutrition plans for users</CardDescription>
+        <CardDescription>Create nutrition plans for users — auto-calculates BMI, BMR & calorie needs</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleCreateNutrition} className="space-y-4">
@@ -166,14 +182,22 @@ export const AdminNutritionManager = () => {
               </div>
 
               {selectedUser && selectedUser !== "all" && selectedUserData && (
-                <div className="p-4 border rounded-lg bg-muted/50">
-                  <h4 className="font-semibold mb-2">User Information</h4>
-                  <div className="space-y-1 text-sm">
+                <div className="p-4 border rounded-lg bg-muted/50 space-y-2">
+                  <h4 className="font-semibold">User Information</h4>
+                  <div className="grid grid-cols-2 gap-2 text-sm">
                     <p><span className="font-medium">Name:</span> {selectedUserData.full_name || "N/A"}</p>
                     <p><span className="font-medium">Email:</span> {selectedUserData.email}</p>
-                    <p><span className="font-medium">Height:</span> {selectedUserData.height ? `${selectedUserData.height} cm` : "Not set"}</p>
-                    <p><span className="font-medium">Weight:</span> {selectedUserData.weight ? `${selectedUserData.weight} kg` : "Not set"}</p>
-                    {bmi && <p><span className="font-medium">BMI:</span> {bmi}</p>}
+                    <p><span className="font-medium">Phone:</span> {selectedUserData.phone_number || "N/A"}</p>
+                    <p><span className="font-medium">Age:</span> {selectedUserData.age ?? "N/A"}</p>
+                    <p><span className="font-medium">Gender:</span> <span className="capitalize">{selectedUserData.gender || "N/A"}</span></p>
+                    <p><span className="font-medium">Plan:</span> {selectedUserData.exercise_plan || "N/A"}</p>
+                    <p><span className="font-medium">Height:</span> {selectedUserData.height ? `${selectedUserData.height} ${selectedUserData.height_unit || 'cm'}` : "N/A"}</p>
+                    <p><span className="font-medium">Weight:</span> {selectedUserData.weight ? `${selectedUserData.weight} ${selectedUserData.weight_unit || 'kg'}` : "N/A"}</p>
+                  </div>
+                  <div className="pt-2 border-t border-border grid grid-cols-3 gap-2 text-sm">
+                    <p><span className="font-medium">BMI:</span> <span className="text-primary font-semibold">{bmi || "N/A"}</span></p>
+                    <p><span className="font-medium">BMR:</span> <span className="text-primary font-semibold">{bmr ? `${bmr}` : "N/A"}</span></p>
+                    <p><span className="font-medium">~Daily kcal:</span> <span className="text-primary font-semibold">{tdee || "N/A"}</span></p>
                   </div>
                 </div>
               )}
