@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
-import logoRunner from "@/assets/logo-runner.png";
+import logoImage from "@/assets/a.png";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { useI18n } from "@/lib/i18n";
 
@@ -24,8 +24,8 @@ export const Navbar = () => {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-transparent backdrop-blur-2xl border-b border-transparent shadow-none">
       <div className="container mx-auto px-3 sm:px-4 py-3 md:py-4 flex items-center justify-between gap-2">
-        <Link to="/" className="flex items-center gap-2 text-base sm:text-lg md:text-xl text-foreground shrink-0">
-          <img src={logoRunner} alt="Logo" className="w-12 h-12 md:w-14 md:h-14 rounded-none" />
+        <Link to="/" className="flex items-center text-base sm:text-lg md:text-xl text-foreground shrink-0 w-full max-w-[160px]">
+          <img src={logoImage} alt="Logo" className="block w-full h-full max-h-55 rounded-none object-cover" />
         </Link>
 
         {/* Desktop Navigation */}
