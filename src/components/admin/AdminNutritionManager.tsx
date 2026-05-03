@@ -105,8 +105,7 @@ export const AdminNutritionManager = () => {
         vitamins: nutritionData.vitamins || null,
         notes: nutritionData.notes || null,
         pdf_url,
-        created_by: session?.user.id,
-      })) as any;
+        image_url,
 
       const { error } = await supabase.from("nutrition").insert(nutritionPlans);
       if (error) {
@@ -127,8 +126,7 @@ export const AdminNutritionManager = () => {
         fats: nutritionData.fats ? parseFloat(nutritionData.fats) : null,
         notes: nutritionData.notes || null,
         pdf_url,
-        created_by: session?.user.id,
-      } as any);
+        image_url,
 
       if (error) {
         toast({ title: "Failed to create nutrition plan", description: error.message, variant: "destructive" });
