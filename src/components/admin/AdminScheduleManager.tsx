@@ -52,6 +52,7 @@ export const AdminScheduleManager = () => {
   const [users, setUsers] = useState<UserOption[]>([]);
   const [selectedUser, setSelectedUser] = useState("");
   const [pdfFile, setPdfFile] = useState<File | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [scheduleData, setScheduleData] = useState({
     title: "",
     description: "",
@@ -60,16 +61,16 @@ export const AdminScheduleManager = () => {
   });
   const [loading, setLoading] = useState(false);
 
-  const uploadPdf = async (): Promise<string | null> => {
-    if (!pdfFile) return null;
-    const ext = pdfFile.name.split(".").pop() || "pdf";
-    const path = `schedules/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-    const { error } = await supabase.storage.from("plan-pdfs").upload(path, pdfFile, { contentType: pdfFile.type || "application/pdf" });
+  const uploadFile = async (file: File | null, prefix: string, bucket: string): Promise<string | null> => {
+    if (!file) return null;
+    const ext = file.name.split(".").pop() || "bin";
+    const path = `${prefix}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+    const { error } = await supabase.storage.from(bucket).upload(path, file, { contentType: file.type || undefined });
     if (error) {
-      toast({ title: "PDF upload failed", description: error.message, variant: "destructive" });
+      toast({ title: "Upload failed", description: error.message, variant: "destructive" });
       return null;
     }
-    const { data } = supabase.storage.from("plan-pdfs").getPublicUrl(path);
+    const { data } = supabase.storage.from(bucket).getPublicUrl(path);
     return data.publicUrl;
   };
 
