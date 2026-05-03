@@ -29,6 +29,7 @@ export const AdminNutritionManager = () => {
   const [users, setUsers] = useState<UserOption[]>([]);
   const [selectedUser, setSelectedUser] = useState("");
   const [pdfFile, setPdfFile] = useState<File | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [nutritionData, setNutritionData] = useState({
     title: "",
     description: "",
@@ -41,16 +42,16 @@ export const AdminNutritionManager = () => {
   });
   const [loading, setLoading] = useState(false);
 
-  const uploadPdf = async (): Promise<string | null> => {
-    if (!pdfFile) return null;
-    const ext = pdfFile.name.split(".").pop() || "pdf";
-    const path = `nutrition/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-    const { error } = await supabase.storage.from("plan-pdfs").upload(path, pdfFile, { contentType: pdfFile.type || "application/pdf" });
+  const uploadFile = async (file: File | null, prefix: string, bucket: string): Promise<string | null> => {
+    if (!file) return null;
+    const ext = file.name.split(".").pop() || "bin";
+    const path = `${prefix}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+    const { error } = await supabase.storage.from(bucket).upload(path, file, { contentType: file.type || undefined });
     if (error) {
-      toast({ title: "PDF upload failed", description: error.message, variant: "destructive" });
+      toast({ title: "Upload failed", description: error.message, variant: "destructive" });
       return null;
     }
-    const { data } = supabase.storage.from("plan-pdfs").getPublicUrl(path);
+    const { data } = supabase.storage.from(bucket).getPublicUrl(path);
     return data.publicUrl;
   };
 
@@ -82,11 +83,13 @@ export const AdminNutritionManager = () => {
 
     setLoading(true);
     const { data: { session } } = await supabase.auth.getSession();
-    const pdf_url = await uploadPdf();
+    const pdf_url = await uploadFile(pdfFile, "nutrition", "plan-pdfs");
+    const image_url = await uploadFile(imageFile, "nutrition-images", "event-photos");
 
     const reset = () => {
       setNutritionData({ title: "", description: "", protein: "", vitamins: "", calories: "", carbs: "", fats: "", notes: "" });
       setPdfFile(null);
+      setImageFile(null);
       setSelectedUser("");
     };
 
@@ -102,6 +105,7 @@ export const AdminNutritionManager = () => {
         vitamins: nutritionData.vitamins || null,
         notes: nutritionData.notes || null,
         pdf_url,
+        image_url,
         created_by: session?.user.id,
       })) as any;
 
@@ -124,6 +128,7 @@ export const AdminNutritionManager = () => {
         fats: nutritionData.fats ? parseFloat(nutritionData.fats) : null,
         notes: nutritionData.notes || null,
         pdf_url,
+        image_url,
         created_by: session?.user.id,
       } as any);
 
@@ -306,6 +311,17 @@ export const AdminNutritionManager = () => {
                   onChange={(e) => setPdfFile(e.target.files?.[0] || null)}
                 />
                 {pdfFile && <p className="text-xs text-muted-foreground">Selected: {pdfFile.name}</p>}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="nutrition-image">Attach Photo (optional)</Label>
+                <Input
+                  id="nutrition-image"
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+                />
+                {imageFile && <p className="text-xs text-muted-foreground">Selected: {imageFile.name}</p>}
               </div>
 
               <Button type="submit" className="w-full bg-gradient-primary" disabled={loading}>

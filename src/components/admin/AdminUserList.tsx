@@ -90,6 +90,9 @@ export const AdminUserList = () => {
 
   useEffect(() => {
     fetchUsers();
+    const onAdded = () => fetchUsers();
+    window.addEventListener("admin:user-added", onAdded);
+    return () => window.removeEventListener("admin:user-added", onAdded);
   }, []);
 
   useEffect(() => {

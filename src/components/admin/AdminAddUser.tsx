@@ -39,7 +39,9 @@ export const AdminAddUser = () => {
       body: { ...form, mode },
     });
     if (error || (data as any)?.error) {
-      toast({ title: "Failed", description: (data as any)?.error || error?.message, variant: "destructive" });
+      const msg = (data as any)?.error || error?.message || "Unknown error";
+      toast({ title: "Failed to add user", description: msg, variant: "destructive" });
+      console.error("admin-create-user failed:", { error, data });
     } else {
       toast({
         title: mode === "invite" ? "Invitation sent" : "User created",
@@ -48,6 +50,7 @@ export const AdminAddUser = () => {
           : `${form.email} can log in immediately with the password you set.`,
       });
       setForm({ email: "", password: "", full_name: "", phone_number: "", exercise_plan: "", gender: "" });
+      window.dispatchEvent(new CustomEvent("admin:user-added"));
     }
     setLoading(false);
   };

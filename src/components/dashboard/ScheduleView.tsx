@@ -11,6 +11,7 @@ interface Schedule {
   date: string;
   time: string;
   pdf_url?: string | null;
+  image_url?: string | null;
 }
 
 interface ScheduleViewProps {
@@ -80,17 +81,38 @@ export const ScheduleView = ({ userId }: ScheduleViewProps) => {
                 {schedule.description && (
                   <p className="text-muted-foreground">{schedule.description}</p>
                 )}
-                {schedule.pdf_url && (
-                  <a
-                    href={schedule.pdf_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    download
-                    className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-primary/10 text-primary border border-primary/30 text-sm font-medium hover:bg-primary/20 transition"
-                  >
-                    📄 Download Plan PDF
+                {schedule.image_url && (
+                  <a href={schedule.image_url} target="_blank" rel="noreferrer">
+                    <img src={schedule.image_url} alt="Schedule attachment" className="mt-3 max-h-48 rounded-md border border-border" />
                   </a>
                 )}
+                <div className="flex flex-wrap gap-2 mt-3">
+                  {schedule.pdf_url && (
+                    <a
+                      href={schedule.pdf_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      download
+                      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-primary/10 text-primary border border-primary/30 text-sm font-medium hover:bg-primary/20 transition"
+                    >
+                      📄 Download PDF
+                    </a>
+                  )}
+                  <button
+                    onClick={() => {
+                      const txt = `Schedule: ${schedule.title}\nDate: ${schedule.date}${schedule.time ? ` ${schedule.time}` : ""}\n\n${schedule.description || ""}`;
+                      const blob = new Blob([txt], { type: "text/plain" });
+                      const a = document.createElement("a");
+                      a.href = URL.createObjectURL(blob);
+                      a.download = `${schedule.title || "schedule"}.txt`;
+                      a.click();
+                      URL.revokeObjectURL(a.href);
+                    }}
+                    className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-secondary text-foreground border border-border text-sm font-medium hover:bg-secondary/70 transition"
+                  >
+                    ⬇ Download Details
+                  </button>
+                </div>
               </div>
             ))}
           </div>

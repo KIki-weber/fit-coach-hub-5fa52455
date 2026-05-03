@@ -5,6 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import logoRunner from "@/assets/logo-runner.png";
 import { AdminUserList } from "@/components/admin/AdminUserList";
 import { AdminScheduleManager } from "@/components/admin/AdminScheduleManager";
+import { AdminNutritionList, AdminScheduleList } from "@/components/admin/AdminPlanLists";
 import { AdminMessageSender } from "@/components/admin/AdminMessageSender";
 import { AdminNutritionManager } from "@/components/admin/AdminNutritionManager";
 import { AdminEventManager } from "@/components/admin/AdminEventManager";
@@ -142,9 +143,9 @@ const Admin = () => {
       case "events":
         return <AdminEventManager />;
       case "schedules":
-        return <AdminScheduleManager />;
+        return <div className="space-y-6"><AdminScheduleManager /><AdminScheduleList /></div>;
       case "nutrition":
-        return <AdminNutritionManager />;
+        return <div className="space-y-6"><AdminNutritionManager /><AdminNutritionList /></div>;
       case "messages":
         return <AdminMessageSender />;
       case "passwords":

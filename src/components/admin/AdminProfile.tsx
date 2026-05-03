@@ -72,7 +72,8 @@ export const AdminProfile = () => {
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <Label>Email</Label>
-            <Input value={email} disabled />
+            <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+            <p className="text-xs text-muted-foreground">Changing email may require confirmation via the new address.</p>
           </div>
           <div className="space-y-2">
             <Label>Full Name</Label>
@@ -82,7 +83,24 @@ export const AdminProfile = () => {
             <Label>Phone</Label>
             <Input value={phone} onChange={(e) => setPhone(e.target.value)} />
           </div>
-          <Button onClick={saveProfile} disabled={loading} className="bg-gradient-primary">
+          <Button onClick={async () => {
+            setLoading(true);
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) { setLoading(false); return; }
+            let emailErr: string | null = null;
+            if (email && email !== user.email) {
+              const { error } = await supabase.auth.updateUser({ email });
+              if (error) emailErr = error.message;
+            }
+            const { error } = await supabase.from("profiles").update({
+              full_name: fullName || null,
+              phone_number: phone || null,
+              email: email || null,
+            }).eq("user_id", user.id);
+            setLoading(false);
+            if (error || emailErr) toast({ title: "Failed", description: emailErr || error?.message, variant: "destructive" });
+            else toast({ title: "Profile updated", description: emailErr ? undefined : "Changes saved successfully." });
+          }} disabled={loading} className="bg-gradient-primary">
             <Save className="w-4 h-4 mr-2" /> {loading ? "Saving..." : "Save Profile"}
           </Button>
         </CardContent>
