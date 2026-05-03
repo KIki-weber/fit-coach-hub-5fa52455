@@ -14,7 +14,28 @@ interface Nutrition {
   fats: number;
   notes: string;
   pdf_url?: string | null;
+  image_url?: string | null;
   created_at: string;
+}
+
+const downloadAsText = (plan: any) => {
+  const lines = [
+    `Nutrition Plan: ${plan.title}`,
+    plan.description ? `\nDescription: ${plan.description}` : "",
+    `\nCalories: ${plan.calories ?? "-"} kcal`,
+    `Protein: ${plan.protein ?? "-"} g`,
+    `Carbs: ${plan.carbs ?? "-"} g`,
+    `Fats: ${plan.fats ?? "-"} g`,
+    plan.vitamins ? `\nVitamins: ${plan.vitamins}` : "",
+    plan.notes ? `\nNotes: ${plan.notes}` : "",
+    `\nDate: ${new Date(plan.created_at).toLocaleString()}`,
+  ].join("\n");
+  const blob = new Blob([lines], { type: "text/plain" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `${plan.title || "nutrition"}.txt`;
+  a.click();
+  URL.revokeObjectURL(a.href);
 }
 
 export const NutritionView = () => {
@@ -126,17 +147,43 @@ export const NutritionView = () => {
                   </div>
                 )}
 
-                {plan.pdf_url && (
-                  <a
-                    href={plan.pdf_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    download
-                    className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-primary/10 text-primary border border-primary/30 text-sm font-medium hover:bg-primary/20 transition"
-                  >
-                    📄 Download PDF Plan
+                {plan.image_url && (
+                  <a href={plan.image_url} target="_blank" rel="noreferrer">
+                    <img src={plan.image_url} alt="Plan attachment" className="mt-3 max-h-48 rounded-md border border-border" />
                   </a>
                 )}
+
+                <div className="flex flex-wrap gap-2 mt-3">
+                  {plan.pdf_url && (
+                    <a
+                      href={plan.pdf_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      download
+                      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-primary/10 text-primary border border-primary/30 text-sm font-medium hover:bg-primary/20 transition"
+                    >
+                      📄 Download PDF
+                    </a>
+                  )}
+                  <button
+                    onClick={() => downloadAsText(plan)}
+                    className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-secondary text-foreground border border-border text-sm font-medium hover:bg-secondary/70 transition"
+                  >
+                    ⬇ Download Details
+                  </button>
+                </div>
+
+                <p className="text-xs text-muted-foreground mt-3">
+                  Created: {new Date(plan.created_at).toLocaleDateString()}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+};
 
                 <p className="text-xs text-muted-foreground mt-3">
                   Created: {new Date(plan.created_at).toLocaleDateString()}
