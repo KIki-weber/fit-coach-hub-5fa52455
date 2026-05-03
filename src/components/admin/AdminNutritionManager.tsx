@@ -106,6 +106,8 @@ export const AdminNutritionManager = () => {
         notes: nutritionData.notes || null,
         pdf_url,
         image_url,
+        created_by: session?.user.id,
+      })) as any;
 
       const { error } = await supabase.from("nutrition").insert(nutritionPlans);
       if (error) {
