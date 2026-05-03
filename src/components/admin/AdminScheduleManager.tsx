@@ -259,6 +259,17 @@ export const AdminScheduleManager = () => {
             {pdfFile && <p className="text-xs text-muted-foreground">Selected: {pdfFile.name}</p>}
           </div>
 
+          <div className="space-y-2">
+            <Label htmlFor="schedule-image">Attach Photo (optional)</Label>
+            <Input
+              id="schedule-image"
+              type="file"
+              accept="image/*"
+              onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+            />
+            {imageFile && <p className="text-xs text-muted-foreground">Selected: {imageFile.name}</p>}
+          </div>
+
           <Button type="submit" className="w-full bg-gradient-primary" disabled={loading}>
             <Plus className="w-4 h-4 mr-2" />
             {loading ? "Creating..." : "Create Schedule"}
