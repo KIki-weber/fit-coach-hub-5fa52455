@@ -139,6 +139,7 @@ export type Database = {
           description: string | null
           fats: number | null
           id: string
+          image_url: string | null
           notes: string | null
           pdf_url: string | null
           protein: number | null
@@ -155,6 +156,7 @@ export type Database = {
           description?: string | null
           fats?: number | null
           id?: string
+          image_url?: string | null
           notes?: string | null
           pdf_url?: string | null
           protein?: number | null
@@ -171,6 +173,7 @@ export type Database = {
           description?: string | null
           fats?: number | null
           id?: string
+          image_url?: string | null
           notes?: string | null
           pdf_url?: string | null
           protein?: number | null
@@ -290,6 +293,7 @@ export type Database = {
           date: string
           description: string | null
           id: string
+          image_url: string | null
           pdf_url: string | null
           time: string | null
           title: string
@@ -302,6 +306,7 @@ export type Database = {
           date: string
           description?: string | null
           id?: string
+          image_url?: string | null
           pdf_url?: string | null
           time?: string | null
           title: string
@@ -314,6 +319,7 @@ export type Database = {
           date?: string
           description?: string | null
           id?: string
+          image_url?: string | null
           pdf_url?: string | null
           time?: string | null
           title?: string
