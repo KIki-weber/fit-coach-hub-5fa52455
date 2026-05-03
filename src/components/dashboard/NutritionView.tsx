@@ -184,15 +184,3 @@ export const NutritionView = () => {
     </Card>
   );
 };
-
-                <p className="text-xs text-muted-foreground mt-3">
-                  Created: {new Date(plan.created_at).toLocaleDateString()}
-                </p>
-              </div>
-            ))}
-          </div>
-        )}
-      </CardContent>
-    </Card>
-  );
-};
