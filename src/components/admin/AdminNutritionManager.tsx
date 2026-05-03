@@ -127,6 +127,8 @@ export const AdminNutritionManager = () => {
         notes: nutritionData.notes || null,
         pdf_url,
         image_url,
+        created_by: session?.user.id,
+      } as any);
 
       if (error) {
         toast({ title: "Failed to create nutrition plan", description: error.message, variant: "destructive" });
