@@ -104,11 +104,13 @@ export const AdminScheduleManager = () => {
 
     setLoading(true);
     const { data: { session } } = await supabase.auth.getSession();
-    const pdf_url = await uploadPdf();
+    const pdf_url = await uploadFile(pdfFile, "schedules", "plan-pdfs");
+    const image_url = await uploadFile(imageFile, "schedule-images", "event-photos");
 
     const reset = () => {
       setScheduleData({ title: "", description: "", date: "", time: "" });
       setPdfFile(null);
+      setImageFile(null);
       setSelectedUser("");
     };
 
@@ -120,6 +122,7 @@ export const AdminScheduleManager = () => {
         date: scheduleData.date,
         time: scheduleData.time || null,
         pdf_url,
+        image_url,
         created_by: session?.user.id,
       })) as any;
 
@@ -138,6 +141,7 @@ export const AdminScheduleManager = () => {
         date: scheduleData.date,
         time: scheduleData.time || null,
         pdf_url,
+        image_url,
         created_by: session?.user.id,
       } as any);
 
