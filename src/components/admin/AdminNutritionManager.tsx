@@ -313,6 +313,17 @@ export const AdminNutritionManager = () => {
                 {pdfFile && <p className="text-xs text-muted-foreground">Selected: {pdfFile.name}</p>}
               </div>
 
+              <div className="space-y-2">
+                <Label htmlFor="nutrition-image">Attach Photo (optional)</Label>
+                <Input
+                  id="nutrition-image"
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+                />
+                {imageFile && <p className="text-xs text-muted-foreground">Selected: {imageFile.name}</p>}
+              </div>
+
               <Button type="submit" className="w-full bg-gradient-primary" disabled={loading}>
                 <Apple className="w-4 h-4 mr-2" />
                 {loading ? "Creating..." : "Create Nutrition Plan"}
