@@ -45,7 +45,18 @@ Deno.serve(async (req) => {
     if (!body.email) return json({ error: "Email required" }, 400);
 
     if (body.mode === "invite") {
+      const APP_URL = "https://davecoach.online";
+      const params = new URLSearchParams({
+        tab: "signup",
+        email: body.email,
+        full_name: body.full_name || "",
+        phone_number: body.phone_number || "",
+        exercise_plan: body.exercise_plan || "",
+        gender: body.gender || "",
+      });
+      const redirectTo = `${APP_URL}/auth?${params.toString()}`;
       const { data, error } = await admin.auth.admin.inviteUserByEmail(body.email, {
+        redirectTo,
         data: {
           full_name: body.full_name || "",
           phone_number: body.phone_number || "",
