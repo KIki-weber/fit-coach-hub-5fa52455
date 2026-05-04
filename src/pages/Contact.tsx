@@ -16,7 +16,7 @@ const Contact = () => {
     message: ""
   });
 
-  const CONTACT_EMAIL = "onelovefitness@gmail.com";
+  const CONTACT_EMAIL = "onelovefitness12@gmail.com";
   const PHONE_NUMBER = "+15129389057"; // WhatsApp format
   const DISPLAY_PHONE = "+1 (512) 938-9057";
 
