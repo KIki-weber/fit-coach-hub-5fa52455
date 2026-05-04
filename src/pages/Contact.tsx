@@ -16,7 +16,7 @@ const Contact = () => {
     message: ""
   });
 
-  const CONTACT_EMAIL = "onelovefitness@gmail.com";
+  const CONTACT_EMAIL = "onelovefitness12@gmail.com";
   const PHONE_NUMBER = "+15129389057"; // WhatsApp format
   const DISPLAY_PHONE = "+1 (512) 938-9057";
 
@@ -116,7 +116,7 @@ const Contact = () => {
                     </div>
                     <div>
                       <h3 className="font-semibold mb-1">Email</h3>
-                      <p className="text-muted-foreground">onelovefitness@gmail.com</p>
+                      <p className="text-muted-foreground">onelovefitness12@gmail.com</p>
                     </div>
                   </div>
                 </CardContent>
