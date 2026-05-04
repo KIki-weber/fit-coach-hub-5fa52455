@@ -90,6 +90,25 @@ const [signupData, setSignupData] = useState({
     });
   }, [navigate]);
 
+  // Autofill signup from invitation link query params
+  useEffect(() => {
+    const email = searchParams.get("email");
+    const full_name = searchParams.get("full_name");
+    const phone_number = searchParams.get("phone_number");
+    const exercise_plan = searchParams.get("exercise_plan");
+    const gender = searchParams.get("gender");
+    if (email || full_name || phone_number || exercise_plan || gender) {
+      setSignupData((prev) => ({
+        ...prev,
+        email: email || prev.email,
+        fullName: full_name || prev.fullName,
+        phoneNumber: phone_number || prev.phoneNumber,
+        exercisePlan: exercise_plan || prev.exercisePlan,
+        gender: gender || prev.gender,
+      }));
+    }
+  }, [searchParams]);
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
