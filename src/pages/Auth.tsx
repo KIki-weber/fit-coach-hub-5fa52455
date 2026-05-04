@@ -138,7 +138,7 @@ const [signupData, setSignupData] = useState({
     e.preventDefault();
     setLoading(true);
 
-    const redirectUrl = `${window.location.origin}/dashboard`;
+    const redirectUrl = `https://davecoach.online/dashboard`;
     
     // Convert height to cm for storage
     let heightInCm = parseFloat(signupData.height);
