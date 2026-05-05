@@ -114,11 +114,11 @@ export const AdminProfile = () => {
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <Label>New Password</Label>
-            <Input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
+            <PasswordInput value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
           </div>
           <div className="space-y-2">
             <Label>Confirm Password</Label>
-            <Input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+            <PasswordInput value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
           </div>
           <Button onClick={changePassword} disabled={pwLoading} className="bg-gradient-primary">
             {pwLoading ? "Updating..." : "Update Password"}
