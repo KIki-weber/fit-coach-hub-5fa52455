@@ -57,7 +57,9 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
       const storedH = data.height ? Number(data.height) : null;
       const storedW = data.weight ? Number(data.weight) : null;
       const displayH = storedH == null ? "" :
-        heightUnit === "in" ? String(cmToInch(storedH)) : String(storedH);
+        heightUnit === "in" ? String(cmToInch(storedH)) :
+        heightUnit === "ft" ? String(cmToFeet(storedH)) :
+        String(storedH);
       const displayW = storedW == null ? "" :
         weightUnit === "lb" ? String(kgToLb(storedW)) : String(storedW);
       setProfile({
@@ -79,11 +81,13 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
   const handleHeightUnitChange = (newUnit: string) => {
     const val = parseFloat(profile.height);
     if (!isNaN(val)) {
-      const converted = profile.height_unit === "cm" && newUnit === "in"
-        ? cmToInch(val)
-        : profile.height_unit === "in" && newUnit === "cm"
-        ? inchToCm(val)
+      // first to cm, then to newUnit
+      const cm = profile.height_unit === "in" ? inchToCm(val)
+        : profile.height_unit === "ft" ? feetToCm(val)
         : val;
+      const converted = newUnit === "in" ? cmToInch(cm)
+        : newUnit === "ft" ? cmToFeet(cm)
+        : cm;
       setProfile({ ...profile, height: String(converted), height_unit: newUnit });
     } else {
       setProfile({ ...profile, height_unit: newUnit });
@@ -133,7 +137,11 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
     // Normalize for storage: height->cm, weight->kg
     const hVal = parseFloat(profile.height);
     const wVal = parseFloat(profile.weight);
-    const heightCm = isNaN(hVal) ? null : (profile.height_unit === "in" ? inchToCm(hVal) : hVal);
+    const heightCm = isNaN(hVal) ? null : (
+      profile.height_unit === "in" ? inchToCm(hVal)
+      : profile.height_unit === "ft" ? feetToCm(hVal)
+      : hVal
+    );
     const weightKg = isNaN(wVal) ? null : (profile.weight_unit === "lb" ? lbToKg(wVal) : wVal);
 
     const { error } = await supabase
@@ -160,9 +168,16 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
 
   // Derived auto-converted display
   const heightAlt = profile.height && !isNaN(parseFloat(profile.height))
-    ? profile.height_unit === "cm"
-      ? `${cmToInch(parseFloat(profile.height))} in`
-      : `${inchToCm(parseFloat(profile.height))} cm`
+    ? (() => {
+        const v = parseFloat(profile.height);
+        const cm = profile.height_unit === "in" ? inchToCm(v)
+          : profile.height_unit === "ft" ? feetToCm(v)
+          : v;
+        const inches = cmToInch(cm);
+        const ft = Math.floor(inches / 12);
+        const inLeft = +(inches - ft * 12).toFixed(1);
+        return `${cm} cm · ${inches} in · ${ft}'${inLeft}"`;
+      })()
     : null;
   const weightAlt = profile.weight && !isNaN(parseFloat(profile.weight))
     ? profile.weight_unit === "kg"
