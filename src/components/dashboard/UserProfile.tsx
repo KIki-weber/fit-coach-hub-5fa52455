@@ -15,6 +15,8 @@ interface UserProfileProps {
 
 const cmToInch = (cm: number) => +(cm / 2.54).toFixed(2);
 const inchToCm = (inch: number) => +(inch * 2.54).toFixed(2);
+const cmToFeet = (cm: number) => +(cm / 30.48).toFixed(4); // decimal feet
+const feetToCm = (ft: number) => +(ft * 30.48).toFixed(2);
 const kgToLb = (kg: number) => +(kg * 2.20462).toFixed(2);
 const lbToKg = (lb: number) => +(lb / 2.20462).toFixed(2);
 
