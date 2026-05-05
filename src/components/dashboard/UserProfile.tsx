@@ -15,6 +15,8 @@ interface UserProfileProps {
 
 const cmToInch = (cm: number) => +(cm / 2.54).toFixed(2);
 const inchToCm = (inch: number) => +(inch * 2.54).toFixed(2);
+const cmToFeet = (cm: number) => +(cm / 30.48).toFixed(4); // decimal feet
+const feetToCm = (ft: number) => +(ft * 30.48).toFixed(2);
 const kgToLb = (kg: number) => +(kg * 2.20462).toFixed(2);
 const lbToKg = (lb: number) => +(lb / 2.20462).toFixed(2);
 
@@ -55,7 +57,9 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
       const storedH = data.height ? Number(data.height) : null;
       const storedW = data.weight ? Number(data.weight) : null;
       const displayH = storedH == null ? "" :
-        heightUnit === "in" ? String(cmToInch(storedH)) : String(storedH);
+        heightUnit === "in" ? String(cmToInch(storedH)) :
+        heightUnit === "ft" ? String(cmToFeet(storedH)) :
+        String(storedH);
       const displayW = storedW == null ? "" :
         weightUnit === "lb" ? String(kgToLb(storedW)) : String(storedW);
       setProfile({
@@ -77,11 +81,13 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
   const handleHeightUnitChange = (newUnit: string) => {
     const val = parseFloat(profile.height);
     if (!isNaN(val)) {
-      const converted = profile.height_unit === "cm" && newUnit === "in"
-        ? cmToInch(val)
-        : profile.height_unit === "in" && newUnit === "cm"
-        ? inchToCm(val)
+      // first to cm, then to newUnit
+      const cm = profile.height_unit === "in" ? inchToCm(val)
+        : profile.height_unit === "ft" ? feetToCm(val)
         : val;
+      const converted = newUnit === "in" ? cmToInch(cm)
+        : newUnit === "ft" ? cmToFeet(cm)
+        : cm;
       setProfile({ ...profile, height: String(converted), height_unit: newUnit });
     } else {
       setProfile({ ...profile, height_unit: newUnit });
@@ -131,7 +137,11 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
     // Normalize for storage: height->cm, weight->kg
     const hVal = parseFloat(profile.height);
     const wVal = parseFloat(profile.weight);
-    const heightCm = isNaN(hVal) ? null : (profile.height_unit === "in" ? inchToCm(hVal) : hVal);
+    const heightCm = isNaN(hVal) ? null : (
+      profile.height_unit === "in" ? inchToCm(hVal)
+      : profile.height_unit === "ft" ? feetToCm(hVal)
+      : hVal
+    );
     const weightKg = isNaN(wVal) ? null : (profile.weight_unit === "lb" ? lbToKg(wVal) : wVal);
 
     const { error } = await supabase
@@ -158,9 +168,16 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
 
   // Derived auto-converted display
   const heightAlt = profile.height && !isNaN(parseFloat(profile.height))
-    ? profile.height_unit === "cm"
-      ? `${cmToInch(parseFloat(profile.height))} in`
-      : `${inchToCm(parseFloat(profile.height))} cm`
+    ? (() => {
+        const v = parseFloat(profile.height);
+        const cm = profile.height_unit === "in" ? inchToCm(v)
+          : profile.height_unit === "ft" ? feetToCm(v)
+          : v;
+        const inches = cmToInch(cm);
+        const ft = Math.floor(inches / 12);
+        const inLeft = +(inches - ft * 12).toFixed(1);
+        return `${cm} cm · ${inches} in · ${ft}'${inLeft}"`;
+      })()
     : null;
   const weightAlt = profile.weight && !isNaN(parseFloat(profile.weight))
     ? profile.weight_unit === "kg"
@@ -232,17 +249,69 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
 
           <div className="space-y-2">
             <Label>Height</Label>
-            <div className="flex gap-2">
-              <Input type="number" step="0.1" value={profile.height}
-                onChange={(e) => setProfile({ ...profile, height: e.target.value })} />
-              <Select value={profile.height_unit} onValueChange={handleHeightUnitChange}>
-                <SelectTrigger className="w-24"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="in">in</SelectItem>
-                  <SelectItem value="cm">cm</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            {profile.height_unit === "ft" ? (
+              <div className="flex gap-2">
+                <Input
+                  type="number"
+                  placeholder="ft"
+                  value={(() => {
+                    const v = parseFloat(profile.height);
+                    if (isNaN(v)) return "";
+                    return String(Math.floor(v));
+                  })()}
+                  onChange={(e) => {
+                    const ft = parseFloat(e.target.value) || 0;
+                    const curIn = (() => {
+                      const v = parseFloat(profile.height);
+                      if (isNaN(v)) return 0;
+                      return +(v - Math.floor(v)).toFixed(2) * 12;
+                    })();
+                    const total = ft + (curIn / 12);
+                    setProfile({ ...profile, height: String(total) });
+                  }}
+                />
+                <Input
+                  type="number"
+                  placeholder="in"
+                  value={(() => {
+                    const v = parseFloat(profile.height);
+                    if (isNaN(v)) return "";
+                    return String(Math.round((v - Math.floor(v)) * 12));
+                  })()}
+                  onChange={(e) => {
+                    const inc = parseFloat(e.target.value) || 0;
+                    const ft = (() => {
+                      const v = parseFloat(profile.height);
+                      if (isNaN(v)) return 0;
+                      return Math.floor(v);
+                    })();
+                    const total = ft + (inc / 12);
+                    setProfile({ ...profile, height: String(total) });
+                  }}
+                />
+                <Select value={profile.height_unit} onValueChange={handleHeightUnitChange}>
+                  <SelectTrigger className="w-24"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="in">in</SelectItem>
+                    <SelectItem value="ft">ft+in</SelectItem>
+                    <SelectItem value="cm">cm</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            ) : (
+              <div className="flex gap-2">
+                <Input type="number" step="0.1" value={profile.height}
+                  onChange={(e) => setProfile({ ...profile, height: e.target.value })} />
+                <Select value={profile.height_unit} onValueChange={handleHeightUnitChange}>
+                  <SelectTrigger className="w-24"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="in">in</SelectItem>
+                    <SelectItem value="ft">ft+in</SelectItem>
+                    <SelectItem value="cm">cm</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
             {heightAlt && <p className="text-xs text-muted-foreground">≈ {heightAlt}</p>}
           </div>
 

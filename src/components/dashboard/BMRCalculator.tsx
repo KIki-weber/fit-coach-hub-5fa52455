@@ -16,15 +16,15 @@ type Unit = "metric" | "imperial";
 
 export const BMRCalculator = ({ onCalculate }: BMRCalculatorProps) => {
   const [unit, setUnit] = useState<Unit>("imperial");
-  const [height, setHeight] = useState("");
+  const [heightCm, setHeightCm] = useState("");
+  const [feet, setFeet] = useState("");
+  const [inches, setInches] = useState("");
   const [weight, setWeight] = useState("");
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("male");
   const [bmr, setBmr] = useState<number | null>(null);
 
-  useEffect(() => {
-    autoFill();
-  }, []);
+  useEffect(() => { autoFill(); }, []);
 
   const autoFill = async () => {
     const { data: { session } } = await supabase.auth.getSession();
@@ -37,7 +37,17 @@ export const BMRCalculator = ({ onCalculate }: BMRCalculatorProps) => {
     if (!data) return;
     const useImperial = (data.height_unit === "in" || data.weight_unit === "lb");
     setUnit(useImperial ? "imperial" : "metric");
-    if (data.height) setHeight(useImperial ? (Number(data.height) / 2.54).toFixed(1) : String(data.height));
+    if (data.height) {
+      const cm = Number(data.height);
+      if (useImperial) {
+        const totalIn = cm / 2.54;
+        const ft = Math.floor(totalIn / 12);
+        setFeet(String(ft));
+        setInches(String(+(totalIn - ft * 12).toFixed(1)));
+      } else {
+        setHeightCm(String(cm));
+      }
+    }
     if (data.weight) setWeight(useImperial ? (Number(data.weight) * 2.20462).toFixed(1) : String(data.weight));
     if ((data as any).age) setAge(String((data as any).age));
     if (data.gender) setGender(data.gender === "female" ? "female" : "male");
@@ -46,19 +56,22 @@ export const BMRCalculator = ({ onCalculate }: BMRCalculatorProps) => {
   const calculateBMR = () => {
     const a = parseFloat(age);
     let w = parseFloat(weight);
-    let h = parseFloat(height);
-    if (!(w > 0 && h > 0 && a > 0)) return;
-    // Convert to metric for Mifflin/Harris formula consistency
+    if (!(w > 0 && a > 0)) return;
+    let h_cm: number;
     if (unit === "imperial") {
-      w = w * 0.453592; // lb → kg
-      h = h * 2.54;     // in → cm
+      const totalIn = (parseFloat(feet) || 0) * 12 + (parseFloat(inches) || 0);
+      if (totalIn <= 0) return;
+      h_cm = totalIn * 2.54;
+      w = w * 0.453592;
+    } else {
+      h_cm = parseFloat(heightCm);
+      if (!(h_cm > 0)) return;
     }
     const result = gender === "male"
-      ? 88.362 + (13.397 * w) + (4.799 * h) - (5.677 * a)
-      : 447.593 + (9.247 * w) + (3.098 * h) - (4.330 * a);
+      ? 88.362 + (13.397 * w) + (4.799 * h_cm) - (5.677 * a)
+      : 447.593 + (9.247 * w) + (3.098 * h_cm) - (4.330 * a);
     const v = Math.round(result);
-    setBmr(v);
-    onCalculate?.(v);
+    setBmr(v); onCalculate?.(v);
   };
 
   return (
@@ -74,7 +87,7 @@ export const BMRCalculator = ({ onCalculate }: BMRCalculatorProps) => {
         <div className="flex items-center justify-between gap-2">
           <Tabs value={unit} onValueChange={(v) => setUnit(v as Unit)}>
             <TabsList>
-              <TabsTrigger value="imperial">lb / in</TabsTrigger>
+              <TabsTrigger value="imperial">lb / ft+in</TabsTrigger>
               <TabsTrigger value="metric">kg / cm</TabsTrigger>
             </TabsList>
           </Tabs>
@@ -83,36 +96,54 @@ export const BMRCalculator = ({ onCalculate }: BMRCalculatorProps) => {
           </Button>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="bmr-height">Height ({unit === "imperial" ? "in" : "cm"})</Label>
-            <Input id="bmr-height" type="number" value={height} onChange={(e) => setHeight(e.target.value)} />
+        {unit === "imperial" ? (
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Feet</Label>
+              <Input type="number" value={feet} onChange={(e) => setFeet(e.target.value)} />
+            </div>
+            <div className="space-y-2">
+              <Label>Inches</Label>
+              <Input type="number" value={inches} onChange={(e) => setInches(e.target.value)} />
+            </div>
+            <div className="space-y-2">
+              <Label>Weight (lb)</Label>
+              <Input type="number" value={weight} onChange={(e) => setWeight(e.target.value)} />
+            </div>
+            <div className="space-y-2">
+              <Label>Age</Label>
+              <Input type="number" value={age} onChange={(e) => setAge(e.target.value)} />
+            </div>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="bmr-weight">Weight ({unit === "imperial" ? "lb" : "kg"})</Label>
-            <Input id="bmr-weight" type="number" value={weight} onChange={(e) => setWeight(e.target.value)} />
+        ) : (
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Height (cm)</Label>
+              <Input type="number" value={heightCm} onChange={(e) => setHeightCm(e.target.value)} />
+            </div>
+            <div className="space-y-2">
+              <Label>Weight (kg)</Label>
+              <Input type="number" value={weight} onChange={(e) => setWeight(e.target.value)} />
+            </div>
+            <div className="space-y-2">
+              <Label>Age</Label>
+              <Input type="number" value={age} onChange={(e) => setAge(e.target.value)} />
+            </div>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="bmr-age">Age</Label>
-            <Input id="bmr-age" type="number" value={age} onChange={(e) => setAge(e.target.value)} />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="bmr-gender">Gender</Label>
-            <Select value={gender} onValueChange={setGender}>
-              <SelectTrigger id="bmr-gender">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="male">Male</SelectItem>
-                <SelectItem value="female">Female</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+        )}
+
+        <div className="space-y-2">
+          <Label>Gender</Label>
+          <Select value={gender} onValueChange={setGender}>
+            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="male">Male</SelectItem>
+              <SelectItem value="female">Female</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
-        <Button onClick={calculateBMR} className="w-full bg-gradient-primary">
-          Calculate BMR
-        </Button>
+        <Button onClick={calculateBMR} className="w-full bg-gradient-primary">Calculate BMR</Button>
 
         {bmr !== null && (
           <div className="bg-secondary/50 rounded-lg p-4 text-center">

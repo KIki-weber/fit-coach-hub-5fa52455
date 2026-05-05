@@ -2,7 +2,7 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { KeyRound } from "lucide-react";
@@ -43,11 +43,11 @@ export const ChangePassword = () => {
         <form onSubmit={submit} className="space-y-4 max-w-md">
           <div className="space-y-2">
             <Label htmlFor="np">New password</Label>
-            <Input id="np" type="password" minLength={6} value={pwd} onChange={(e) => setPwd(e.target.value)} required />
+            <PasswordInput id="np" minLength={6} value={pwd} onChange={(e) => setPwd(e.target.value)} required />
           </div>
           <div className="space-y-2">
             <Label htmlFor="cp">Confirm password</Label>
-            <Input id="cp" type="password" minLength={6} value={confirm} onChange={(e) => setConfirm(e.target.value)} required />
+            <PasswordInput id="cp" minLength={6} value={confirm} onChange={(e) => setConfirm(e.target.value)} required />
           </div>
           <Button type="submit" disabled={loading} className="bg-gradient-primary">
             {loading ? "Updating…" : "Update password"}
