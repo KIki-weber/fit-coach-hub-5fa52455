@@ -15,13 +15,13 @@ type Unit = "metric" | "imperial";
 
 export const BMICalculator = ({ onCalculate }: BMICalculatorProps) => {
   const [unit, setUnit] = useState<Unit>("imperial");
-  const [height, setHeight] = useState("");
+  const [heightCm, setHeightCm] = useState("");
+  const [feet, setFeet] = useState("");
+  const [inches, setInches] = useState("");
   const [weight, setWeight] = useState("");
   const [bmi, setBmi] = useState<number | null>(null);
 
-  useEffect(() => {
-    autoFill();
-  }, []);
+  useEffect(() => { autoFill(); }, []);
 
   const autoFill = async () => {
     const { data: { session } } = await supabase.auth.getSession();
@@ -32,11 +32,19 @@ export const BMICalculator = ({ onCalculate }: BMICalculatorProps) => {
       .eq("user_id", session.user.id)
       .single();
     if (!data) return;
-    // DB stores cm/kg. Convert based on selected unit.
     const useImperial = (data.height_unit === "in" || data.weight_unit === "lb");
     setUnit(useImperial ? "imperial" : "metric");
     if (data.height) {
-      setHeight(useImperial ? (Number(data.height) / 2.54).toFixed(1) : String(data.height));
+      const cm = Number(data.height);
+      if (useImperial) {
+        const totalIn = cm / 2.54;
+        const ft = Math.floor(totalIn / 12);
+        const inLeft = +(totalIn - ft * 12).toFixed(1);
+        setFeet(String(ft));
+        setInches(String(inLeft));
+      } else {
+        setHeightCm(String(cm));
+      }
     }
     if (data.weight) {
       setWeight(useImperial ? (Number(data.weight) * 2.20462).toFixed(1) : String(data.weight));
@@ -44,21 +52,22 @@ export const BMICalculator = ({ onCalculate }: BMICalculatorProps) => {
   };
 
   const calculateBMI = () => {
-    let w = parseFloat(weight);
-    let h = parseFloat(height);
-    if (!(w > 0 && h > 0)) return;
+    const w = parseFloat(weight);
+    if (!(w > 0)) return;
+    let totalIn = 0, cm = 0;
     if (unit === "imperial") {
-      // BMI = 703 * lb / in^2
-      const result = 703 * w / (h * h);
+      totalIn = (parseFloat(feet) || 0) * 12 + (parseFloat(inches) || 0);
+      if (totalIn <= 0) return;
+      const result = 703 * w / (totalIn * totalIn);
       const v = Math.round(result * 10) / 10;
-      setBmi(v);
-      onCalculate?.(v);
+      setBmi(v); onCalculate?.(v);
     } else {
-      const m = h / 100;
+      cm = parseFloat(heightCm);
+      if (!(cm > 0)) return;
+      const m = cm / 100;
       const result = w / (m * m);
       const v = Math.round(result * 10) / 10;
-      setBmi(v);
-      onCalculate?.(v);
+      setBmi(v); onCalculate?.(v);
     }
   };
 
@@ -82,7 +91,7 @@ export const BMICalculator = ({ onCalculate }: BMICalculatorProps) => {
         <div className="flex items-center justify-between gap-2">
           <Tabs value={unit} onValueChange={(v) => setUnit(v as Unit)}>
             <TabsList>
-              <TabsTrigger value="imperial">lb / in</TabsTrigger>
+              <TabsTrigger value="imperial">lb / ft+in</TabsTrigger>
               <TabsTrigger value="metric">kg / cm</TabsTrigger>
             </TabsList>
           </Tabs>
@@ -91,32 +100,35 @@ export const BMICalculator = ({ onCalculate }: BMICalculatorProps) => {
           </Button>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="bmi-height">Height ({unit === "imperial" ? "in" : "cm"})</Label>
-            <Input
-              id="bmi-height"
-              type="number"
-              value={height}
-              onChange={(e) => setHeight(e.target.value)}
-              placeholder={unit === "imperial" ? "67" : "170"}
-            />
+        {unit === "imperial" ? (
+          <div className="grid grid-cols-3 gap-3">
+            <div className="space-y-2">
+              <Label>Feet</Label>
+              <Input type="number" value={feet} onChange={(e) => setFeet(e.target.value)} placeholder="5" />
+            </div>
+            <div className="space-y-2">
+              <Label>Inches</Label>
+              <Input type="number" value={inches} onChange={(e) => setInches(e.target.value)} placeholder="7" />
+            </div>
+            <div className="space-y-2">
+              <Label>Weight (lb)</Label>
+              <Input type="number" value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="154" />
+            </div>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="bmi-weight">Weight ({unit === "imperial" ? "lb" : "kg"})</Label>
-            <Input
-              id="bmi-weight"
-              type="number"
-              value={weight}
-              onChange={(e) => setWeight(e.target.value)}
-              placeholder={unit === "imperial" ? "154" : "70"}
-            />
+        ) : (
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Height (cm)</Label>
+              <Input type="number" value={heightCm} onChange={(e) => setHeightCm(e.target.value)} placeholder="170" />
+            </div>
+            <div className="space-y-2">
+              <Label>Weight (kg)</Label>
+              <Input type="number" value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="70" />
+            </div>
           </div>
-        </div>
+        )}
 
-        <Button onClick={calculateBMI} className="w-full bg-gradient-primary">
-          Calculate BMI
-        </Button>
+        <Button onClick={calculateBMI} className="w-full bg-gradient-primary">Calculate BMI</Button>
 
         {bmi !== null && (
           <div className="bg-secondary/50 rounded-lg p-4 text-center">
