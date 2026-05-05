@@ -232,17 +232,69 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
 
           <div className="space-y-2">
             <Label>Height</Label>
-            <div className="flex gap-2">
-              <Input type="number" step="0.1" value={profile.height}
-                onChange={(e) => setProfile({ ...profile, height: e.target.value })} />
-              <Select value={profile.height_unit} onValueChange={handleHeightUnitChange}>
-                <SelectTrigger className="w-24"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="in">in</SelectItem>
-                  <SelectItem value="cm">cm</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            {profile.height_unit === "ft" ? (
+              <div className="flex gap-2">
+                <Input
+                  type="number"
+                  placeholder="ft"
+                  value={(() => {
+                    const v = parseFloat(profile.height);
+                    if (isNaN(v)) return "";
+                    return String(Math.floor(v));
+                  })()}
+                  onChange={(e) => {
+                    const ft = parseFloat(e.target.value) || 0;
+                    const curIn = (() => {
+                      const v = parseFloat(profile.height);
+                      if (isNaN(v)) return 0;
+                      return +(v - Math.floor(v)).toFixed(2) * 12;
+                    })();
+                    const total = ft + (curIn / 12);
+                    setProfile({ ...profile, height: String(total) });
+                  }}
+                />
+                <Input
+                  type="number"
+                  placeholder="in"
+                  value={(() => {
+                    const v = parseFloat(profile.height);
+                    if (isNaN(v)) return "";
+                    return String(Math.round((v - Math.floor(v)) * 12));
+                  })()}
+                  onChange={(e) => {
+                    const inc = parseFloat(e.target.value) || 0;
+                    const ft = (() => {
+                      const v = parseFloat(profile.height);
+                      if (isNaN(v)) return 0;
+                      return Math.floor(v);
+                    })();
+                    const total = ft + (inc / 12);
+                    setProfile({ ...profile, height: String(total) });
+                  }}
+                />
+                <Select value={profile.height_unit} onValueChange={handleHeightUnitChange}>
+                  <SelectTrigger className="w-24"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="in">in</SelectItem>
+                    <SelectItem value="ft">ft+in</SelectItem>
+                    <SelectItem value="cm">cm</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            ) : (
+              <div className="flex gap-2">
+                <Input type="number" step="0.1" value={profile.height}
+                  onChange={(e) => setProfile({ ...profile, height: e.target.value })} />
+                <Select value={profile.height_unit} onValueChange={handleHeightUnitChange}>
+                  <SelectTrigger className="w-24"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="in">in</SelectItem>
+                    <SelectItem value="ft">ft+in</SelectItem>
+                    <SelectItem value="cm">cm</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
             {heightAlt && <p className="text-xs text-muted-foreground">≈ {heightAlt}</p>}
           </div>
 
