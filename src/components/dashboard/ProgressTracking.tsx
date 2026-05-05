@@ -45,8 +45,36 @@ export const ProgressTracking = ({ userId }: ProgressTrackingProps) => {
   useEffect(() => {
     if (userId) {
       fetchEntries();
+      autoFillFromProfile();
     }
   }, [userId]);
+
+  const autoFillFromProfile = async () => {
+    const { data } = await supabase
+      .from("profiles")
+      .select("height, weight, height_unit, weight_unit")
+      .eq("user_id", userId)
+      .single();
+    if (!data) return;
+    const hUnit = (data as any).height_unit || "cm";
+    const wUnit = (data as any).weight_unit || "kg";
+    // DB stores cm/kg — convert to selected unit for display
+    let h = "";
+    if (data.height) {
+      h = hUnit === "in" ? (Number(data.height) / 2.54).toFixed(1) : String(data.height);
+    }
+    let w = "";
+    if (data.weight) {
+      w = wUnit === "lb" ? (Number(data.weight) * 2.20462).toFixed(1) : String(data.weight);
+    }
+    setFormData((prev) => ({
+      ...prev,
+      height: prev.height || h,
+      heightUnit: hUnit === "in" ? "inch" : "cm",
+      weight: prev.weight || w,
+      weightUnit: wUnit,
+    }));
+  };
 
   const fetchEntries = async () => {
     const { data, error } = await supabase
