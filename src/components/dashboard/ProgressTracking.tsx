@@ -14,6 +14,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 interface ProgressEntry {
   id: string;
   photo_url: string | null;
+  previous_photo_url: string | null;
   height: number | null;
   height_unit: string;
   weight: number | null;
@@ -125,12 +126,16 @@ export const ProgressTracking = ({ userId }: ProgressTrackingProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
+    // The "previous" photo is the most recent existing entry's current photo
+    const previous_photo_url = entries[0]?.photo_url || null;
+
     const { error } = await supabase
       .from("progress_tracking")
       .insert({
         user_id: userId,
         photo_url: formData.photoUrl || null,
+        previous_photo_url,
         height: formData.height ? parseFloat(formData.height) : null,
         height_unit: formData.heightUnit,
         weight: formData.weight ? parseFloat(formData.weight) : null,
