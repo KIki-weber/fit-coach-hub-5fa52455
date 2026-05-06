@@ -200,6 +200,7 @@ export type Database = {
           photo_description: string | null
           photo_uploaded_at: string | null
           photo_url: string | null
+          progress_public: boolean
           updated_at: string | null
           user_id: string
           weight: number | null
@@ -220,6 +221,7 @@ export type Database = {
           photo_description?: string | null
           photo_uploaded_at?: string | null
           photo_url?: string | null
+          progress_public?: boolean
           updated_at?: string | null
           user_id: string
           weight?: number | null
@@ -240,6 +242,7 @@ export type Database = {
           photo_description?: string | null
           photo_uploaded_at?: string | null
           photo_url?: string | null
+          progress_public?: boolean
           updated_at?: string | null
           user_id?: string
           weight?: number | null
@@ -255,6 +258,7 @@ export type Database = {
           id: string
           notes: string | null
           photo_url: string | null
+          previous_photo_url: string | null
           updated_at: string
           user_id: string
           weight: number | null
@@ -267,6 +271,7 @@ export type Database = {
           id?: string
           notes?: string | null
           photo_url?: string | null
+          previous_photo_url?: string | null
           updated_at?: string
           user_id: string
           weight?: number | null
@@ -279,6 +284,7 @@ export type Database = {
           id?: string
           notes?: string | null
           photo_url?: string | null
+          previous_photo_url?: string | null
           updated_at?: string
           user_id?: string
           weight?: number | null
@@ -361,6 +367,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_progress_public: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
       app_role: "admin" | "user"

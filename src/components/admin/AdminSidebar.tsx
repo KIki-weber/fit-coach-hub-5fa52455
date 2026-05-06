@@ -9,6 +9,7 @@ import {
   KeyRound,
   ClipboardList,
   UserCog,
+  Activity,
 } from "lucide-react";
 import {
   Sidebar,
@@ -46,6 +47,7 @@ export function AdminSidebar({ activeSection, onSectionChange, onLogout, newUser
     { id: "events", title: t("events"), icon: CalendarDays },
     { id: "schedules", title: t("schedules"), icon: Calendar },
     { id: "nutrition", title: t("nutritionPlans"), icon: Utensils },
+    { id: "progress", title: "User Progress", icon: Activity },
     { id: "messages", title: t("messages"), icon: Mail },
     { id: "passwords", title: t("passwords"), icon: KeyRound },
     { id: "profile", title: "My Profile", icon: UserCog },

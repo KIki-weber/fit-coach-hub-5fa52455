@@ -14,6 +14,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 interface ProgressEntry {
   id: string;
   photo_url: string | null;
+  previous_photo_url: string | null;
   height: number | null;
   height_unit: string;
   weight: number | null;
@@ -125,12 +126,16 @@ export const ProgressTracking = ({ userId }: ProgressTrackingProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
+    // The "previous" photo is the most recent existing entry's current photo
+    const previous_photo_url = entries[0]?.photo_url || null;
+
     const { error } = await supabase
       .from("progress_tracking")
       .insert({
         user_id: userId,
         photo_url: formData.photoUrl || null,
+        previous_photo_url,
         height: formData.height ? parseFloat(formData.height) : null,
         height_unit: formData.heightUnit,
         weight: formData.weight ? parseFloat(formData.weight) : null,
@@ -263,18 +268,27 @@ export const ProgressTracking = ({ userId }: ProgressTrackingProps) => {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label>Progress Photo</Label>
-              <div className="flex items-center gap-4">
-                <Input
-                  type="file"
-                  accept="image/*"
-                  onChange={handlePhotoUpload}
-                  disabled={uploading}
-                />
-                {formData.photoUrl && (
-                  <img src={formData.photoUrl} alt="Preview" className="w-16 h-16 object-cover rounded" />
-                )}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Previous Photo (auto)</Label>
+                <div className="aspect-square bg-muted rounded-lg overflow-hidden flex items-center justify-center">
+                  {entries[0]?.photo_url ? (
+                    <img src={entries[0].photo_url} alt="Previous" className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-xs text-muted-foreground p-2 text-center">No previous photo yet</span>
+                  )}
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label>New Current Photo</Label>
+                <div className="aspect-square bg-muted rounded-lg overflow-hidden flex items-center justify-center relative">
+                  {formData.photoUrl ? (
+                    <img src={formData.photoUrl} alt="Preview" className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-xs text-muted-foreground p-2 text-center">Upload below</span>
+                  )}
+                </div>
+                <Input type="file" accept="image/*" onChange={handlePhotoUpload} disabled={uploading} />
               </div>
             </div>
 
@@ -350,15 +364,35 @@ export const ProgressTracking = ({ userId }: ProgressTrackingProps) => {
 
             {/* Progress Entries Grid */}
             <div className="grid gap-4">
-              {entries.map((entry) => (
-                <div key={entry.id} className="flex gap-4 p-4 border rounded-lg">
-                  {entry.photo_url && (
-                    <img
-                      src={entry.photo_url}
-                      alt="Progress"
-                      className="w-24 h-24 object-cover rounded-lg"
-                    />
-                  )}
+              {entries.map((entry, idx) => {
+                const prevEntry = entries[idx + 1];
+                const wDelta = (entry.weight != null && prevEntry?.weight != null)
+                  ? +(Number(entry.weight) - Number(prevEntry.weight)).toFixed(1)
+                  : null;
+                return (
+                <div key={entry.id} className="flex flex-col sm:flex-row gap-4 p-4 border rounded-lg">
+                  <div className="flex gap-2">
+                    <div className="w-24">
+                      <p className="text-[10px] uppercase text-muted-foreground mb-1">Previous</p>
+                      <div className="w-24 h-24 rounded-lg overflow-hidden bg-muted">
+                        {entry.previous_photo_url ? (
+                          <img src={entry.previous_photo_url} alt="Previous" className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-[10px] text-muted-foreground text-center px-1">No previous</div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="w-24">
+                      <p className="text-[10px] uppercase text-muted-foreground mb-1">Now</p>
+                      <div className="w-24 h-24 rounded-lg overflow-hidden bg-muted">
+                        {entry.photo_url ? (
+                          <img src={entry.photo_url} alt="Now" className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-[10px] text-muted-foreground">No photo</div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
                   <div className="flex-1">
                     <div className="flex justify-between items-start">
                       <div>
@@ -373,6 +407,15 @@ export const ProgressTracking = ({ userId }: ProgressTrackingProps) => {
                             <strong>Weight:</strong> {formatWeight(entry.weight, entry.weight_unit)}
                           </span>
                         </div>
+                        {wDelta != null && (
+                          <p className="text-sm mt-1">
+                            <strong>Change:</strong>{" "}
+                            <span className={wDelta < 0 ? "text-primary" : wDelta > 0 ? "text-destructive" : ""}>
+                              {wDelta > 0 ? "+" : ""}{wDelta} {entry.weight_unit}
+                            </span>{" "}
+                            since previous
+                          </p>
+                        )}
                         {entry.notes && (
                           <p className="text-sm mt-2 text-muted-foreground">{entry.notes}</p>
                         )}
@@ -388,7 +431,8 @@ export const ProgressTracking = ({ userId }: ProgressTrackingProps) => {
                     </div>
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}
