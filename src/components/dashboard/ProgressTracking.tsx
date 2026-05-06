@@ -268,18 +268,27 @@ export const ProgressTracking = ({ userId }: ProgressTrackingProps) => {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label>Progress Photo</Label>
-              <div className="flex items-center gap-4">
-                <Input
-                  type="file"
-                  accept="image/*"
-                  onChange={handlePhotoUpload}
-                  disabled={uploading}
-                />
-                {formData.photoUrl && (
-                  <img src={formData.photoUrl} alt="Preview" className="w-16 h-16 object-cover rounded" />
-                )}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Previous Photo (auto)</Label>
+                <div className="aspect-square bg-muted rounded-lg overflow-hidden flex items-center justify-center">
+                  {entries[0]?.photo_url ? (
+                    <img src={entries[0].photo_url} alt="Previous" className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-xs text-muted-foreground p-2 text-center">No previous photo yet</span>
+                  )}
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label>New Current Photo</Label>
+                <div className="aspect-square bg-muted rounded-lg overflow-hidden flex items-center justify-center relative">
+                  {formData.photoUrl ? (
+                    <img src={formData.photoUrl} alt="Preview" className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-xs text-muted-foreground p-2 text-center">Upload below</span>
+                  )}
+                </div>
+                <Input type="file" accept="image/*" onChange={handlePhotoUpload} disabled={uploading} />
               </div>
             </div>
 
