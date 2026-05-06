@@ -364,15 +364,35 @@ export const ProgressTracking = ({ userId }: ProgressTrackingProps) => {
 
             {/* Progress Entries Grid */}
             <div className="grid gap-4">
-              {entries.map((entry) => (
-                <div key={entry.id} className="flex gap-4 p-4 border rounded-lg">
-                  {entry.photo_url && (
-                    <img
-                      src={entry.photo_url}
-                      alt="Progress"
-                      className="w-24 h-24 object-cover rounded-lg"
-                    />
-                  )}
+              {entries.map((entry, idx) => {
+                const prevEntry = entries[idx + 1];
+                const wDelta = (entry.weight != null && prevEntry?.weight != null)
+                  ? +(Number(entry.weight) - Number(prevEntry.weight)).toFixed(1)
+                  : null;
+                return (
+                <div key={entry.id} className="flex flex-col sm:flex-row gap-4 p-4 border rounded-lg">
+                  <div className="flex gap-2">
+                    <div className="w-24">
+                      <p className="text-[10px] uppercase text-muted-foreground mb-1">Previous</p>
+                      <div className="w-24 h-24 rounded-lg overflow-hidden bg-muted">
+                        {entry.previous_photo_url ? (
+                          <img src={entry.previous_photo_url} alt="Previous" className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-[10px] text-muted-foreground text-center px-1">No previous</div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="w-24">
+                      <p className="text-[10px] uppercase text-muted-foreground mb-1">Now</p>
+                      <div className="w-24 h-24 rounded-lg overflow-hidden bg-muted">
+                        {entry.photo_url ? (
+                          <img src={entry.photo_url} alt="Now" className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-[10px] text-muted-foreground">No photo</div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
                   <div className="flex-1">
                     <div className="flex justify-between items-start">
                       <div>
