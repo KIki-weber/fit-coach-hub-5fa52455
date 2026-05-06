@@ -407,6 +407,15 @@ export const ProgressTracking = ({ userId }: ProgressTrackingProps) => {
                             <strong>Weight:</strong> {formatWeight(entry.weight, entry.weight_unit)}
                           </span>
                         </div>
+                        {wDelta != null && (
+                          <p className="text-sm mt-1">
+                            <strong>Change:</strong>{" "}
+                            <span className={wDelta < 0 ? "text-primary" : wDelta > 0 ? "text-destructive" : ""}>
+                              {wDelta > 0 ? "+" : ""}{wDelta} {entry.weight_unit}
+                            </span>{" "}
+                            since previous
+                          </p>
+                        )}
                         {entry.notes && (
                           <p className="text-sm mt-2 text-muted-foreground">{entry.notes}</p>
                         )}
@@ -422,7 +431,8 @@ export const ProgressTracking = ({ userId }: ProgressTrackingProps) => {
                     </div>
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}
