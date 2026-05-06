@@ -14,6 +14,7 @@ import { AdminBookingManager } from "@/components/admin/AdminBookingManager";
 import { AdminAddUser } from "@/components/admin/AdminAddUser";
 import { AdminPasswordReset } from "@/components/admin/AdminPasswordReset";
 import { AdminProfile } from "@/components/admin/AdminProfile";
+import { AdminProgressManager } from "@/components/admin/AdminProgressManager";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { Bell } from "lucide-react";
@@ -146,6 +147,8 @@ const Admin = () => {
         return <div className="space-y-6"><AdminScheduleManager /><AdminScheduleList /></div>;
       case "nutrition":
         return <div className="space-y-6"><AdminNutritionManager /><AdminNutritionList /></div>;
+      case "progress":
+        return <AdminProgressManager />;
       case "messages":
         return <AdminMessageSender />;
       case "passwords":
@@ -165,6 +168,7 @@ const Admin = () => {
       case "events": return "Event Management";
       case "schedules": return "Schedule Management";
       case "nutrition": return "Nutrition Plans";
+      case "progress": return "User Progress";
       case "messages": return "Send Messages";
       case "passwords": return "Password Management";
       case "profile": return "My Profile";
