@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -11,33 +11,45 @@ import { useI18n } from "@/lib/i18n";
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { t } = useI18n();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const navLinks = [
-    { to: "/", label: t("home") },
-    { to: "/about", label: t("about") },
-    { to: "/services", label: "Services" },
-    { to: "/nutrition", label: t("nutrition") },
-    { to: "/training", label: t("training") },
-    { to: "/contact", label: t("contact") },
+    { id: "home", label: t("home") },
+    { id: "about", label: t("about") },
+    { id: "services", label: "Services" },
+    { id: "nutrition", label: t("nutrition") },
+    { id: "training", label: t("training") },
+    { id: "trainers", label: "Our Trainers" },
+    { id: "contact", label: t("contact") },
   ];
 
-  return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-transparent backdrop-blur-2xl border-b border-transparent shadow-none">
-      <div className="container mx-auto px-3 sm:px-4 py-3 md:py-4 flex items-center justify-between gap-2">
-        <Link to="/" className="flex items-center text-base sm:text-lg md:text-xl text-foreground shrink-0 w-full max-w-[160px]">
-          <img src={logoImage} alt="Logo" className="block w-full h-full max-h-55 rounded-none object-cover" />
-        </Link>
+  const scrollTo = (id: string) => {
+    setIsOpen(false);
+    if (location.pathname !== "/") {
+      navigate(`/#${id}`);
+      return;
+    }
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
-        {/* Desktop Navigation */}
+  return (
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/70 backdrop-blur-2xl border-b border-border/40 shadow-sm">
+      <div className="container mx-auto px-3 sm:px-4 py-3 md:py-4 flex items-center justify-between gap-2">
+        <button onClick={() => scrollTo("home")} className="flex items-center text-base sm:text-lg md:text-xl text-foreground shrink-0 w-full max-w-[160px]">
+          <img src={logoImage} alt="Logo" className="block w-full h-full max-h-55 rounded-none object-cover" />
+        </button>
+
         <div className="hidden lg:flex items-center gap-5 xl:gap-7">
           {navLinks.map((link) => (
-            <Link
-              key={link.to}
-              to={link.to}
+            <button
+              key={link.id}
+              onClick={() => scrollTo(link.id)}
               className="text-foreground hover:text-primary transition-colors text-sm xl:text-base font-medium"
             >
               {link.label}
-            </Link>
+            </button>
           ))}
         </div>
 
@@ -47,7 +59,6 @@ export const Navbar = () => {
           </div>
           <ThemeToggle />
 
-          {/* Desktop Auth Buttons */}
           <div className="hidden sm:flex items-center gap-2">
             <Link to="/auth">
               <Button variant="ghost" size="sm" className="text-xs md:text-sm">
@@ -61,7 +72,6 @@ export const Navbar = () => {
             </Link>
           </div>
 
-          {/* Mobile Menu */}
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild className="lg:hidden">
               <Button variant="ghost" size="icon" className="h-9 w-9">
@@ -72,14 +82,13 @@ export const Navbar = () => {
               <div className="flex flex-col gap-6 mt-8">
                 <div className="flex flex-col gap-3">
                   {navLinks.map((link) => (
-                    <Link
-                      key={link.to}
-                      to={link.to}
-                      onClick={() => setIsOpen(false)}
-                      className="text-foreground hover:text-primary transition-colors text-lg font-medium py-2"
+                    <button
+                      key={link.id}
+                      onClick={() => scrollTo(link.id)}
+                      className="text-left text-foreground hover:text-primary transition-colors text-lg font-medium py-2"
                     >
                       {link.label}
-                    </Link>
+                    </button>
                   ))}
                 </div>
 
