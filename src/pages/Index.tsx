@@ -10,10 +10,10 @@ import {
   Mail, Phone, MapPin, MessageCircle, Clock,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
-import heroImage1 from "@/assets/hero-fi1tness.jpg";
+import heroImage1 from "@/assets/enhanced_hero_fitness (1).jpg";
 import heroImage2 from "@/assets/hero-fitness4.jpg";
 import heroImage3 from "@/assets/hero-fitness2.jpg";
-import heroImage4 from "@/assets/hero-fitness3.jpg";
+import heroImage4 from "@/assets/enhanced_hero_fitness3 (1).jpg";
 import dawitPhoto from "@/assets/photo_2_2026-04-30_06-10-42.jpg";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -116,19 +116,19 @@ const Index = () => {
       <Navbar />
 
       {/* Hero */}
-      <section id="home" className="relative min-h-[88vh] md:min-h-[92vh] flex items-center justify-center px-4 overflow-hidden pt-24 md:pt-28 scroll-mt-24">
+      <section id="home" className="relative min-h-[100vh] md:min-h-[92vh] flex items-center justify-center px-4 overflow-hidden pt-20 md:pt-28 scroll-mt-0 mt-16 md:mt-0">
         {heroImages.map((image, index) => (
           <img
             key={index}
             src={image}
             alt="Fitness hero background"
             aria-hidden="true"
-            className="pointer-events-none absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 z-0"
+            className="pointer-events-none absolute inset-y-0 left-0 right-0 h-full w-full object-cover transition-opacity duration-1000 z-0 top-16 md:top-0"
             style={{ opacity: heroIndex === index ? 1 : 0 }}
           />
         ))}
-        <div className="absolute inset-0 bg-gradient-to-br from-background/15 via-background/10 to-background/0 dark:from-background/60 dark:via-background/35 dark:to-background/0 z-10" />
-        <div className="container mx-auto relative z-20 text-center space-y-6 md:space-y-8 px-2">
+        <div className="absolute inset-0 bg-gradient-to-br from-background/20 via-background/15 to-background/0 dark:from-background/70 dark:via-background/45 dark:to-background/5 z-10 top-16 md:top-0" />
+        <div className="container mx-auto relative z-20 text-center space-y-4 md:space-y-8 px-2 sm:px-4">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/15 border border-primary/30 backdrop-blur-sm">
             <Zap className="w-4 h-4 text-primary" />
             <span className="text-xs sm:text-sm font-semibold text-primary uppercase tracking-wider">{t("neonVolt")}</span>

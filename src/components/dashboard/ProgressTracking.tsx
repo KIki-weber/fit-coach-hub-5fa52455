@@ -222,20 +222,21 @@ export const ProgressTracking = ({ userId }: ProgressTrackingProps) => {
       </CardHeader>
       <CardContent>
         {showForm && (
-          <form onSubmit={handleSubmit} className="space-y-4 mb-6 p-4 border rounded-lg bg-muted/50">
-            <div className="grid grid-cols-2 gap-4">
+          <form onSubmit={handleSubmit} className="space-y-4 mb-6 p-3 sm:p-4 border rounded-lg bg-muted/50">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div className="space-y-2">
-                <Label>Height</Label>
+                <Label className="text-sm">Height</Label>
                 <div className="flex gap-2">
                   <Input
                     type="number"
                     step="0.1"
                     value={formData.height}
                     onChange={(e) => setFormData({ ...formData, height: e.target.value })}
-                    placeholder="Enter height"
+                    placeholder="Height"
+                    className="text-sm"
                   />
                   <Select value={formData.heightUnit} onValueChange={(v) => setFormData({ ...formData, heightUnit: v })}>
-                    <SelectTrigger className="w-24">
+                    <SelectTrigger className="w-20 sm:w-24 text-sm">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -246,17 +247,18 @@ export const ProgressTracking = ({ userId }: ProgressTrackingProps) => {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label>Weight</Label>
+                <Label className="text-sm">Weight</Label>
                 <div className="flex gap-2">
                   <Input
                     type="number"
                     step="0.1"
                     value={formData.weight}
                     onChange={(e) => setFormData({ ...formData, weight: e.target.value })}
-                    placeholder="Enter weight"
+                    placeholder="Weight"
+                    className="text-sm"
                   />
                   <Select value={formData.weightUnit} onValueChange={(v) => setFormData({ ...formData, weightUnit: v })}>
-                    <SelectTrigger className="w-24">
+                    <SelectTrigger className="w-20 sm:w-24 text-sm">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -268,10 +270,10 @@ export const ProgressTracking = ({ userId }: ProgressTrackingProps) => {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>Previous Photo (auto)</Label>
-                <div className="aspect-square bg-muted rounded-lg overflow-hidden flex items-center justify-center">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+              <div className="space-y-2 min-w-0">
+                <Label className="text-sm">Previous Photo (auto)</Label>
+                <div className="w-full aspect-square bg-muted rounded-lg overflow-hidden flex items-center justify-center">
                   {entries[0]?.photo_url ? (
                     <img src={entries[0].photo_url} alt="Previous" className="w-full h-full object-cover" />
                   ) : (
@@ -279,33 +281,34 @@ export const ProgressTracking = ({ userId }: ProgressTrackingProps) => {
                   )}
                 </div>
               </div>
-              <div className="space-y-2">
-                <Label>New Current Photo</Label>
-                <div className="aspect-square bg-muted rounded-lg overflow-hidden flex items-center justify-center relative">
+              <div className="space-y-2 min-w-0">
+                <Label className="text-sm">New Current Photo</Label>
+                <div className="w-full aspect-square bg-muted rounded-lg overflow-hidden flex items-center justify-center relative">
                   {formData.photoUrl ? (
                     <img src={formData.photoUrl} alt="Preview" className="w-full h-full object-cover" />
                   ) : (
                     <span className="text-xs text-muted-foreground p-2 text-center">Upload below</span>
                   )}
                 </div>
-                <Input type="file" accept="image/*" onChange={handlePhotoUpload} disabled={uploading} />
+                <Input type="file" accept="image/*" onChange={handlePhotoUpload} disabled={uploading} className="text-xs" />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label>Notes</Label>
+              <Label className="text-sm">Notes</Label>
               <Textarea
                 value={formData.notes}
                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                 placeholder="How are you feeling? Any milestones?"
+                className="text-sm resize-none"
               />
             </div>
 
-            <div className="flex gap-2">
-              <Button type="submit" disabled={uploading}>
+            <div className="flex gap-2 flex-col sm:flex-row">
+              <Button type="submit" disabled={uploading} className="w-full sm:w-auto">
                 Save Progress
               </Button>
-              <Button type="button" variant="outline" onClick={() => setShowForm(false)}>
+              <Button type="button" variant="outline" onClick={() => setShowForm(false)} className="w-full sm:w-auto">
                 Cancel
               </Button>
             </div>
@@ -320,12 +323,14 @@ export const ProgressTracking = ({ userId }: ProgressTrackingProps) => {
           <div className="space-y-6">
             {/* Weight Progress Chart */}
             {entries.filter(e => e.weight).length > 1 && (
-              <div className="p-4 border rounded-lg bg-muted/30">
-                <h4 className="font-semibold flex items-center gap-2 mb-4">
+              <div className="p-3 sm:p-4 border rounded-lg bg-muted/30">
+                <h4 className="font-semibold flex items-center gap-2 mb-4 text-sm sm:text-base">
                   <TrendingUp className="w-4 h-4 text-primary" />
                   Weight Progress Over Time
                 </h4>
-                <ResponsiveContainer width="100%" height={250}>
+                <div className="-mx-3 sm:-mx-4 overflow-x-auto">
+                  <div className="min-w-full" style={{minWidth: '100%', width: '100%'}}>
+                  <ResponsiveContainer width="100%" height={220}>
                   <LineChart
                     data={[...entries]
                       .filter(e => e.weight)
@@ -336,11 +341,11 @@ export const ProgressTracking = ({ userId }: ProgressTrackingProps) => {
                         originalWeight: e.weight,
                         unit: e.weight_unit
                       }))}
-                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                    margin={{ top: 10, right: 12, left: 0, bottom: 10 }}
                   >
-                    <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                    <XAxis dataKey="date" className="text-xs" />
-                    <YAxis domain={['auto', 'auto']} className="text-xs" />
+                    <CartesianGrid strokeDasharray="3 3" className="stroke-muted" stroke="hsl(var(--border))" />
+                    <XAxis dataKey="date" className="text-[11px]" tick={{fontSize: 11}} />
+                    <YAxis domain={['auto', 'auto']} className="text-[11px]" tick={{fontSize: 11}} width={35} />
                     <Tooltip
                       contentStyle={{ backgroundColor: 'hsl(var(--background))', border: '1px solid hsl(var(--border))' }}
                       formatter={(value: number, name: string, props: any) => [
@@ -359,56 +364,58 @@ export const ProgressTracking = ({ userId }: ProgressTrackingProps) => {
                     />
                   </LineChart>
                 </ResponsiveContainer>
+                  </div>
+                </div>
               </div>
             )}
 
             {/* Progress Entries Grid */}
-            <div className="grid gap-4">
+            <div className="grid gap-3 sm:gap-4">
               {entries.map((entry, idx) => {
                 const prevEntry = entries[idx + 1];
                 const wDelta = (entry.weight != null && prevEntry?.weight != null)
                   ? +(Number(entry.weight) - Number(prevEntry.weight)).toFixed(1)
                   : null;
                 return (
-                <div key={entry.id} className="flex flex-col sm:flex-row gap-4 p-4 border rounded-lg">
-                  <div className="flex gap-2">
-                    <div className="w-24">
-                      <p className="text-[10px] uppercase text-muted-foreground mb-1">Previous</p>
-                      <div className="w-24 h-24 rounded-lg overflow-hidden bg-muted">
+                <div key={entry.id} className="flex flex-col gap-3 sm:gap-4 p-3 sm:p-4 border rounded-lg">
+                  <div className="flex gap-2 overflow-x-auto pb-2">
+                    <div className="flex-shrink-0 w-20 sm:w-24">
+                      <p className="text-[9px] sm:text-[10px] uppercase text-muted-foreground mb-1">Previous</p>
+                      <div className="w-20 sm:w-24 aspect-square h-20 sm:h-24 rounded-lg overflow-hidden bg-muted">
                         {entry.previous_photo_url ? (
                           <img src={entry.previous_photo_url} alt="Previous" className="w-full h-full object-cover" />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-[10px] text-muted-foreground text-center px-1">No previous</div>
+                          <div className="w-full h-full flex items-center justify-center text-[9px] text-muted-foreground text-center px-1">No previous</div>
                         )}
                       </div>
                     </div>
-                    <div className="w-24">
-                      <p className="text-[10px] uppercase text-muted-foreground mb-1">Now</p>
-                      <div className="w-24 h-24 rounded-lg overflow-hidden bg-muted">
+                    <div className="flex-shrink-0 w-20 sm:w-24">
+                      <p className="text-[9px] sm:text-[10px] uppercase text-muted-foreground mb-1">Now</p>
+                      <div className="w-20 sm:w-24 aspect-square h-20 sm:h-24 rounded-lg overflow-hidden bg-muted">
                         {entry.photo_url ? (
                           <img src={entry.photo_url} alt="Now" className="w-full h-full object-cover" />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-[10px] text-muted-foreground">No photo</div>
+                          <div className="w-full h-full flex items-center justify-center text-[9px] text-muted-foreground">No photo</div>
                         )}
                       </div>
                     </div>
                   </div>
-                  <div className="flex-1">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <p className="text-sm text-muted-foreground">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex justify-between items-start gap-2">
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs sm:text-sm text-muted-foreground line-clamp-1">
                           {format(new Date(entry.created_at), "PPP 'at' p")}
                         </p>
-                        <div className="flex gap-4 mt-2">
-                          <span className="text-sm">
+                        <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 mt-2 text-xs sm:text-sm">
+                          <span className="truncate">
                             <strong>Height:</strong> {formatHeight(entry.height, entry.height_unit)}
                           </span>
-                          <span className="text-sm">
+                          <span className="truncate">
                             <strong>Weight:</strong> {formatWeight(entry.weight, entry.weight_unit)}
                           </span>
                         </div>
                         {wDelta != null && (
-                          <p className="text-sm mt-1">
+                          <p className="text-xs sm:text-sm mt-1">
                             <strong>Change:</strong>{" "}
                             <span className={wDelta < 0 ? "text-primary" : wDelta > 0 ? "text-destructive" : ""}>
                               {wDelta > 0 ? "+" : ""}{wDelta} {entry.weight_unit}
@@ -417,14 +424,14 @@ export const ProgressTracking = ({ userId }: ProgressTrackingProps) => {
                           </p>
                         )}
                         {entry.notes && (
-                          <p className="text-sm mt-2 text-muted-foreground">{entry.notes}</p>
+                          <p className="text-xs sm:text-sm mt-2 text-muted-foreground line-clamp-2">{entry.notes}</p>
                         )}
                       </div>
                       <Button
                         variant="ghost"
-                        size="icon"
+                        size="sm"
                         onClick={() => handleDelete(entry.id)}
-                        className="text-destructive hover:text-destructive"
+                        className="text-destructive hover:text-destructive flex-shrink-0"
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>
